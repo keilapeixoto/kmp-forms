@@ -74,12 +74,59 @@ function KMPVisaForm(){
       ["Assinatura",f.assinatura],["Data",f.dataAssinatura]
     ].filter(([,v])=>v).map(([k,v])=>`${k}: ${v}`).join("\n");
     const corpo=`Nova solicitação — KMP Consulting\nData: ${new Date().toLocaleString("pt-BR")}\n\n${"─".repeat(50)}\n\n${linhas}`;
-    try{
-      const res=await fetch("https://api.web3forms.com/submit",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({access_key:WEB3FORMS_KEY,subject:`Nova Solicitação de Visto — ${nome}`,from_name:"Formulário KMP Consulting",message:corpo,replyto:f.email||""})});
-      const data=await res.json();
-      if(data.success){setSubmitted(true);}else{throw new Error(data.message);}
-    }catch(e){setSendError("Não foi possível enviar. Verifique a chave Web3Forms.");}
-    finally{setSending(false);}
+    try {
+
+  const payload = {
+    access_key: WEB3FORMS_KEY,
+    subject: `Nova Solicitação de Visto - ${nome}`,
+    from_name: "Formulário KMP Consulting",
+    message: corpo,
+    reply_to: f.email || ""
+  };
+
+  console.log("Payload enviado:", payload);
+
+  const res = await fetch(
+    "https://api.web3forms.com/submit",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify(payload)
+    }
+  );
+
+  const data = await res.json();
+
+  console.log("Resposta Web3Forms:", data);
+
+  if (data.success) {
+
+    setSubmitted(true);
+
+  } else {
+
+    throw new Error(
+      data.message || "Erro ao enviar formulário"
+    );
+
+  }
+
+} catch (e) {
+
+  console.error("Erro completo:", e);
+
+  setSendError(
+    e.message || "Não foi possível enviar o formulário."
+  );
+
+} finally {
+
+  setSending(false);
+
+}
   };
 
   const renderStep=()=>{
