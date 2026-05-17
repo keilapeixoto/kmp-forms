@@ -1,23 +1,7 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>KMP Consulting — Subclass 485</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
-<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-<style>*{box-sizing:border-box;margin:0;padding:0}body{background:#f8f8f8;font-family:'Outfit',sans-serif}</style>
-</head>
-<body>
-<div id="root"></div>
-<script type="text/babel">
-const{useState,useRef}=React;
+import { useState, useRef } from "react";
 const O="#F27B20",OD="#E06A10",OL="#FFF5EC",OG="linear-gradient(135deg,#F27B20 0%,#F5941E 100%)",DK="#1a1a1a",GR="#6b7280",BD="#e5e7eb";
-const WEB3FORMS_KEY="eb911200-f515-4a77-afbf-61c4f99be8cf";
 const sections=[{id:0,title:"Contexto da Aplicação",icon:"📋"},{id:1,title:"Dados Pessoais",icon:"👤"},{id:2,title:"Passaporte & Docs",icon:"📘"},{id:3,title:"Contato & Endereço",icon:"📍"},{id:4,title:"Histórico Endereços",icon:"🏠"},{id:5,title:"Histórico Viagens",icon:"🌍"},{id:6,title:"Qualificação",icon:"🎓"},{id:7,title:"Idioma & Inglês",icon:"💬"},{id:8,title:"Skills + AFP",icon:"✅"},{id:9,title:"Declarações",icon:"✍️"}];
-const bs={width:"100%",padding:"10px 14px",border:`1.5px solid ${BD}`,borderRadius:8,fontSize:14,fontFamily:"'Outfit',sans-serif",color:DK,background:"#fff",outline:"none",boxSizing:"border-box"};
+const bs={width:"100%",padding:"10px 14px",border:`1.5px solid ${BD}`,borderRadius:8,fontSize:14,fontFamily:"inherit",color:DK,background:"#fff",outline:"none",boxSizing:"border-box"};
 const fc={borderColor:O,boxShadow:`0 0 0 3px rgba(242,123,32,0.12)`};
 function Inp({placeholder,value,onChange,type="text"}){const[f,sf]=useState(false);return <input type={type} placeholder={placeholder} value={value||""} onChange={onChange} onFocus={()=>sf(true)} onBlur={()=>sf(false)} style={{...bs,...(f?fc:{})}}/>;}
 function Sel({options,placeholder,value,onChange}){const[f,sf]=useState(false);return(<select value={value||""} onChange={onChange} onFocus={()=>sf(true)} onBlur={()=>sf(false)} style={{...bs,...(f?fc:{}),color:value?DK:"#9ca3af",appearance:"none",backgroundImage:`url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%239ca3af' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`,backgroundRepeat:"no-repeat",backgroundPosition:"right 14px center",paddingRight:36}}><option value="" disabled>{placeholder||"Selecione"}</option>{options.map(o=><option key={o} value={o}>{o}</option>)}</select>);}
@@ -35,11 +19,8 @@ const visitReasons=["Holiday or leisure","Visit family","Business","Study","Work
 const auStates=["ACT","NSW","NT","QLD","SA","TAS","VIC","WA"];
 const testNames=["PTE Academic","IELTS","TOEFL iBT","Cambridge C1","OET"];
 
-function KMP485(){
+export default function KMP485Preview(){
   const[step,setStep]=useState(0);
-  const[submitted,setSubmitted]=useState(false);
-  const[sending,setSending]=useState(false);
-  const[sendError,setSendError]=useState(null);
   const[f,setF]=useState({});
   const[addresses,setAddresses]=useState([{id:1,current:"NÃO/NO",from:"",to:"",country:"",addr:"",suburb:"",state:"",post:""}]);
   const[travels,setTravels]=useState([{id:1,country:"",reason:"",from:"",to:""}]);
@@ -53,70 +34,6 @@ function KMP485(){
   const addTrav=()=>setTravels([...travels,{id:Date.now(),country:"",reason:"",from:"",to:""}]);
   const remTrav=(id)=>setTravels(travels.filter(t=>t.id!==id));
 
-  const handleSubmit=async()=>{
-    setSending(true);setSendError(null);
-    const nome=`${f.gName||""} ${f.fName||""}`.trim()||"Solicitante";
-    const addrTxt=addresses.map((a,i)=>`Endereço ${i+1}: ${a.addr}, ${a.suburb}, ${a.state} ${a.post}, ${a.country} (${a.from}${a.current==="SIM/YES"?" — atual":" → "+a.to})`).join("\n");
-    const travTxt=travels.map((t,i)=>`Viagem ${i+1}: ${t.country} — ${t.reason} (${t.from} → ${t.to})`).join("\n");
-    const docs=["d1","d2","d3","d4","d5","d6","d7","d8","d9","d10","d11","d12","d13","d14"];
-    const docLabels={d1:"Passaporte (todas as páginas)",d2:"Visto atual",d3:"AFP — Resultado",d4:"AFP — Recibo de solicitação",d5:"Travel History (PDF passaporte completo)",d6:"Comprovante de endereço",d7:"OVHC — single",d8:"Resultado IELTS/PTE em PDF",d9:"Skills Assessment — Solicitação",d10:"Skills Assessment — Aprovação",d11:"Completion Letter",d12:"Academic Results",d13:"Certificate",d14:"CoE(s) — junção 2 anos"};
-    const docsTxt=docs.filter(k=>f[k]).map(k=>`✓ ${docLabels[k]}`).join("\n")||"Nenhum marcado";
-    const corpo=`Subclass 485 — Temporary Graduate Visa\nData: ${new Date().toLocaleString("pt-BR")}\n\n${"─".repeat(50)}\n\nCONTEXTO\nStream: ${f.visaStream||""}\nQualificação AQF: ${f.aqf||""}\nLocalização atual: ${f.location||""}\nTipo referência: ${f.refType||""}\nNº referência: ${f.refNum||""}\n\nDADOS PESSOAIS\nNome: ${f.gName||""} ${f.fName||""}\nGênero: ${f.sex||""}\nData nascimento: ${f.dob||""}\nNascimento: ${f.pobCity||""}, ${f.pobState||""}, ${f.pobCountry||""}\nEstado civil: ${f.relStatus||""}\nOutros nomes: ${f.otherNames==="SIM/YES"?f.otherNamesD:"Não"}\nCidadão do passaporte: ${f.citizen||""}\nOutra cidadania: ${f.otherCitizen==="SIM/YES"?f.otherCitizenD:"Não"}\n\nPASSAPORTE\nSobrenome: ${f.pFam||""}\nNome: ${f.pGiv||""}\nNº: ${f.pNum||""}\nPaís: ${f.pCountry||""}\nNacionalidade: ${f.pNat||""}\nEmissão: ${f.pIssue||""}\nValidade: ${f.pExpiry||""}\nLocal emissão: ${f.pPlace||""}\nNº concessão visto AU: ${f.grantNum==="SIM/YES"?f.grantNumD:"Não"}\nCarteira identidade: ${f.natId||""}\nOutros passaportes: ${f.otherPass==="SIM/YES"?f.otherPassD:"Não"}\nExame saúde 12m: ${f.healthExam||""}\nFamília acompanhante: ${f.accomp||""}\nFamília não acompanhante: ${f.nonAccomp||""}\n\nCONTATO & ENDEREÇO\nPaís residência: ${f.residence||""}\nEndereço: ${f.addr||""}, ${f.suburb||""}, ${f.state||""} ${f.post||""}\nCelular: ${f.mobile||""}\nE-mail: ${f.email||""}\nEstado pretendido: ${f.intState||""}\nDestinatário autorizado: ${f.authR==="SIM/YES"?f.authRD:"Não"}\n\nHISTÓRICO DE ENDEREÇOS\n${addrTxt}\n\nHISTÓRICO DE VIAGENS\n${travTxt}\n\nQUALIFICAÇÃO AUSTRALIANA\nRequisito estudo cumprido: ${f.studyReq||""}\nEstudo online COVID: ${f.covid||""}\nCRICOS: ${f.cricos||""}\nQualificação: ${f.qualType||""}\nCurso: ${f.courseName||""}\nInstituição: ${f.institution||""}\nCampus: ${f.campus||""} ${f.campusPost||""} ${f.campusState||""}\nInício: ${f.courseStart||""}\nConclusão: ${f.courseEnd||""}\n\nIDIOMA & INGLÊS\nIdioma principal: ${f.mainLang||""}\nTeste inglês: ${f.engTest||""}\nNome teste: ${f.testName||""}\nData teste: ${f.testDate||""}\nNº referência: ${f.testRef||""}\nPaís teste: ${f.testCountry||""}\nNível: ${f.langAb||""}\nListening: ${f.sL||""} | Reading: ${f.sR||""} | Writing: ${f.sW||""} | Speaking: ${f.sS||""} | Overall: ${f.sO||""}\n\nSKILLS ASSESSMENT\nAplicou: ${f.skillsApp||""}\nOcupação: ${f.skillsOcc||""}\nAutoridade: ${f.skillsAuth||""}\nData: ${f.skillsDate||""}\nNº: ${f.skillsRef||""}\n\nAFP\nSolicitado: ${f.afp||""}\nData: ${f.afpDate||""}\nNº: ${f.afpRef||""}\n\nSEGURO SAÚDE\nTem seguro: ${f.ins||""}\nTipo: ${f.insType||""}\nSeguradora: ${f.insurer||""}\nCobertura: ${f.insFrom||""} → ${f.insTo||""}\n\nDECLARAÇÕES DE SAÚDE\nFora do país +3 meses: ${f.h1||""} | Hospital: ${f.h2||""} | Saúde: ${f.h3||""}\nAged care: ${f.h4||""} | Childcare: ${f.h5||""} | Sala aula: ${f.h6||""}\nTuberculose: ${f.h7||""} | Trat. médico: ${f.h8||""} | Cuidados contínuos: ${f.h9||""}\n\nDECLARAÇÕES DE CARÁTER\nAcusação pendente: ${f.c1||""} | Condenação: ${f.c2||""} | Violência doméstica: ${f.c3||""}\nMandado/Interpol: ${f.c4||""} | Ofensa sexual criança: ${f.c5||""} | Registro ofensor: ${f.c6||""}\nDeportado: ${f.c7||""} | Ultrapassou visto: ${f.c8||""} | Dívidas AU: ${f.c9||""}\nMilitar/polícia: ${f.c10||""} | Organização criminosa: ${f.c11||""}\n\nDOCUMENTOS DISPONÍVEIS\n${docsTxt}\n\nASSINATURA\n${f.sig||""} — ${f.sigDate||}`;
-    try {
-
-  const payload = {
-    access_key: WEB3FORMS_KEY,
-    subject: `Nova Solicitação 485 - ${nome}`,
-    from_name: "Formulário KMP Consulting",
-    message: corpo,
-    reply_to: f.email || ""
-  };
-
-  console.log("Payload enviado:", payload);
-
-  const res = await fetch(
-    "https://api.web3forms.com/submit",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      body: JSON.stringify(payload)
-    }
-  );
-
-  const data = await res.json();
-
-  console.log("Resposta Web3Forms:", data);
-
-  if (data.success) {
-
-    setSubmitted(true);
-
-  } else {
-
-    throw new Error(
-      data.message || "Erro ao enviar formulário"
-    );
-
-  }
-
-} catch (e) {
-
-  console.error("Erro completo:", e);
-
-  setSendError(
-    e.message || "Não foi possível enviar o formulário."
-  );
-
-} finally {
-
-  setSending(false);
-
-}
-  };
-
   const renderStep=()=>{
     switch(step){
       case 0:return(<>
@@ -125,7 +42,10 @@ function KMP485(){
         <Q><Lbl num={3} pt="Localização atual / Current location" req/><Radio options={["AUSTRALIA","OUTSIDE AUSTRALIA"]} value={f.location} onChange={s("location")}/></Q>
         <Dv text="Visto atual ou anterior"/>
         <Q><Lbl num={4} pt="Tipo de referência / Reference number type" req/><Sel options={["Transaction Reference Number (TRN)","Visa Identification Number (VIN)","Bridging visa evidence (BVE)","No current or previous visa"]} value={f.refType} onChange={s("refType")}/></Q>
-        <CF show={f.refType&&!f.refType.includes("No current")}><Inp placeholder="Número de referência (ex: EGP2Y8QOHM)" value={f.refNum} onChange={s("refNum")}/></CF>
+        <CF show={f.refType&&!f.refType.includes("No current")}>
+          <Inp placeholder="Número de referência / Reference number (ex: EGP2Y8QOHM)" value={f.refNum} onChange={s("refNum")}/>
+        </CF>
+
       </>);
       case 1:return(<>
         <Note text="⚠️ Digite os nomes EXATAMENTE como no passaporte"/>
@@ -135,7 +55,7 @@ function KMP485(){
         <Dv text="Local de nascimento / Place of birth"/>
         <R3><Q><Lbl pt="Cidade / Town" req/><Inp placeholder="SAO PAULO" value={f.pobCity} onChange={s("pobCity")}/></Q><Q><Lbl pt="Estado / Province"/><Inp placeholder="SAO PAULO" value={f.pobState} onChange={s("pobState")}/></Q><Q><Lbl pt="País / Country" req/><Inp placeholder="BRAZIL" value={f.pobCountry} onChange={s("pobCountry")}/></Q></R3>
         <Q><Lbl pt="Estado civil / Relationship status" req/><Sel options={["Never Married/Single","Married","De Facto","Separated","Divorced","Widowed"]} value={f.relStatus} onChange={s("relStatus")}/></Q>
-        <Q><Lbl pt="Já foi conhecido por outros nomes?" req/><Radio options={SN} value={f.otherNames} onChange={s("otherNames")}/><CF show={f.otherNames==="SIM/YES"}><Inp placeholder="Outros nomes / Other names" value={f.otherNamesD} onChange={s("otherNamesD")}/></CF></Q>
+        <Q><Lbl pt="Já foi conhecido por outros nomes?" en="Other names / maiden name / alias?" req/><Radio options={SN} value={f.otherNames} onChange={s("otherNames")}/><CF show={f.otherNames==="SIM/YES"}><Inp placeholder="Outros nomes / Other names" value={f.otherNamesD} onChange={s("otherNamesD")}/></CF></Q>
         <Q><Lbl pt="É cidadão do país do passaporte?" req/><Radio options={SN} value={f.citizen} onChange={s("citizen")}/></Q>
         <Q><Lbl pt="É cidadão de algum outro país?" req/><Radio options={SN} value={f.otherCitizen} onChange={s("otherCitizen")}/><CF show={f.otherCitizen==="SIM/YES"}><Inp placeholder="Ex: BRAZIL" value={f.otherCitizenD} onChange={s("otherCitizenD")}/></CF></Q>
       </>);
@@ -156,9 +76,9 @@ function KMP485(){
         <Dv text="Endereço Residencial"/>
         <Q><Lbl pt="Endereço / Street address" req/><Inp placeholder="17 Glenelg Avenue" value={f.addr} onChange={s("addr")}/></Q>
         <R3><Q><Lbl pt="Suburb / Town" req/><Inp value={f.suburb} onChange={s("suburb")}/></Q><Q><Lbl pt="Estado" req/><Sel options={auStates} value={f.state} onChange={s("state")}/></Q><Q><Lbl pt="Postcode" req/><Inp placeholder="4218" value={f.post} onChange={s("post")}/></Q></R3>
-        <R3><Q><Lbl pt="Celular / Mobile" req/><Inp placeholder="0400000000" value={f.mobile} onChange={s("mobile")}/></Q><Q><Lbl pt="Tel. residencial"/><Inp value={f.homePhone} onChange={s("homePhone")}/></Q><Q><Lbl pt="Tel. comercial"/><Inp value={f.bizPhone} onChange={s("bizPhone")}/></Q></R3>
+        <R3><Q><Lbl pt="Celular / Mobile" req/><Inp placeholder="0400000000" value={f.mobile} onChange={s("mobile")}/></Q><Q><Lbl pt="Telefone residencial"/><Inp value={f.homePhone} onChange={s("homePhone")}/></Q><Q><Lbl pt="Telefone comercial"/><Inp value={f.bizPhone} onChange={s("bizPhone")}/></Q></R3>
         <Q><Lbl pt="E-mail" req/><Inp type="email" value={f.email} onChange={s("email")}/></Q>
-        <Q><Lbl pt="Estado pretendido na Austrália" req/><Sel options={auStates} value={f.intState} onChange={s("intState")}/></Q>
+        <Q><Lbl pt="Estado pretendido de residência na Austrália" req/><Sel options={auStates} value={f.intState} onChange={s("intState")}/></Q>
         <Q><Lbl pt="Endereço postal é o mesmo que o residencial?" req/><Radio options={SN} value={f.samePost} onChange={s("samePost")}/><CF show={f.samePost==="NÃO/NO"}><Inp placeholder="Endereço postal" value={f.postAddr} onChange={s("postAddr")}/></CF></Q>
         <Q><Lbl pt="Autoriza outra pessoa a receber correspondências?" en="Authorised recipient?"/><Radio options={SN} value={f.authR} onChange={s("authR")}/><CF show={f.authR==="SIM/YES"}><Inp placeholder="Nome e dados do destinatário" value={f.authRD} onChange={s("authRD")}/></CF></Q>
       </>);
@@ -189,13 +109,13 @@ function KMP485(){
             </div>
             <Q><Lbl pt="País / Country" req/><Inp placeholder="Ex: INDONESIA" value={t.country} onChange={e=>updTrav(t.id,"country",e.target.value)}/></Q>
             <Q><Lbl pt="Motivo / Reason" req/><Sel options={visitReasons} value={t.reason} onChange={e=>updTrav(t.id,"reason",e.target.value)}/></Q>
-            <R2><Q><Lbl pt="Data entrada (mês/ano)" req/><Inp type="month" value={t.from} onChange={e=>updTrav(t.id,"from",e.target.value)}/></Q><Q><Lbl pt="Data saída (mês/ano)" req/><Inp type="month" value={t.to} onChange={e=>updTrav(t.id,"to",e.target.value)}/></Q></R2>
+            <R2><Q><Lbl pt="Data entrada / Date from" req/><Inp type="month" value={t.from} onChange={e=>updTrav(t.id,"from",e.target.value)}/></Q><Q><Lbl pt="Data saída / Date to" req/><Inp type="month" value={t.to} onChange={e=>updTrav(t.id,"to",e.target.value)}/></Q></R2>
           </div>
         ))}
         <button onClick={addTrav} style={{padding:"8px 16px",background:OL,border:`1.5px solid ${O}`,borderRadius:8,color:OD,fontSize:13,fontWeight:600,cursor:"pointer",marginTop:4}}>+ Adicionar viagem</button>
       </>);
       case 6:return(<>
-        <Q><Lbl pt="Cumpriu o requisito de estudo australiano nos 6 meses anteriores?" req/><Radio options={SN} value={f.studyReq} onChange={s("studyReq")}/><CF show={f.studyReq==="SIM/YES"}><Q mb={0}><Lbl pt="Data de conclusão do curso"/><Inp type="date" value={f.courseEndD} onChange={s("courseEndD")}/></Q></CF></Q>
+        <Q><Lbl pt="Cumpriu o requisito de estudo australiano nos 6 meses anteriores?" req/><Radio options={SN} value={f.studyReq} onChange={s("studyReq")}/><CF show={f.studyReq==="SIM/YES"}><Inp type="date" value={f.courseEndD} onChange={s("courseEndD")}/></CF></Q>
         <Q><Lbl pt="Fez estudo online fora da Austrália com visto estudante entre fev/2020 e dez/2021?" req/><Radio options={SN} value={f.covid} onChange={s("covid")}/></Q>
         <Dv text="Detalhes da Qualificação"/>
         <R2><Q><Lbl pt="Código CRICOS" req/><Inp placeholder="Ex: 104994K" value={f.cricos} onChange={s("cricos")}/></Q><Q><Lbl pt="Qualificação AQF" req/><Sel options={["AQF Certificate III","AQF Certificate IV","AQF Diploma","AQF Bachelor Degree","AQF Masters","AQF Doctoral"]} value={f.qualType} onChange={s("qualType")}/></Q></R2>
@@ -225,38 +145,67 @@ function KMP485(){
           <R2><Q><Lbl pt="Data da avaliação"/><Inp type="date" value={f.skillsDate} onChange={s("skillsDate")}/></Q><Q><Lbl pt="Nº referência"/><Inp placeholder="TRA26/999580120" value={f.skillsRef} onChange={s("skillsRef")}/></Q></R2>
         </CF>
         <Dv text="AFP — Australian Federal Police Check"/>
-        <Note text="Solicite em: afp.gov.au/our-services/national-police-checks"/>
         <Q><Lbl pt="AFP solicitado nos últimos 12 meses?" req/><Radio options={SN} value={f.afp} onChange={s("afp")}/></Q>
         <CF show={f.afp==="SIM/YES"}>
           <R2><Q><Lbl pt="Data solicitação AFP"/><Inp type="date" value={f.afpDate} onChange={s("afpDate")}/></Q><Q><Lbl pt="Nº referência AFP"/><Inp placeholder="16140813PC" value={f.afpRef} onChange={s("afpRef")}/></Q></R2>
         </CF>
         <Dv text="Seguro Saúde / Health Insurance"/>
-        <Note text="⚠️ OSHC não é aceito para o 485 — obrigatório OVHC single"/>
-        <Q><Lbl pt="Tem seguro saúde OVHC?" req/><Radio options={SN} value={f.ins} onChange={s("ins")}/></Q>
+        <Note text="⚠️ OSHC não é aceito para o 485 — obrigatório OVHC"/>
+        <Q><Lbl pt="Todos têm seguro saúde?" req/><Radio options={SN} value={f.ins} onChange={s("ins")}/></Q>
         <CF show={f.ins==="SIM/YES"}>
-          <R2><Q><Lbl pt="Seguradora / Insurer"/><Inp placeholder="Ex: BUPA, NIB, Medibank" value={f.insurer} onChange={s("insurer")}/></Q><Q><Lbl pt="Tipo de cobertura"/><Sel options={["OVHC Single","OVHC Family","Private health insurance"]} value={f.insType} onChange={s("insType")}/></Q></R2>
+          <R2><Q><Lbl pt="Tipo de seguro"/><Sel options={["OVHC","Private health insurance","Other"]} value={f.insType} onChange={s("insType")}/></Q><Q><Lbl pt="Seguradora"/><Inp placeholder="Ex: BUPA, NIB, Medibank" value={f.insurer} onChange={s("insurer")}/></Q></R2>
           <R2><Q><Lbl pt="Cobertura de" req/><Inp type="date" value={f.insFrom} onChange={s("insFrom")}/></Q><Q><Lbl pt="Cobertura até" req/><Inp type="date" value={f.insTo} onChange={s("insTo")}/></Q></R2>
         </CF>
       </>);
       case 9:return(<>
-        <Dv text="Declarações de Saúde / Health Declarations"/>
-        {[["h1","Viveu fora do país por +3 meses consecutivos nos últimos 5 anos?"],["h2","Pretende ser internado em hospital na Austrália?"],["h3","Pretende trabalhar como profissional de saúde?"],["h4","Pretende trabalhar em aged care ou disability care?"],["h5","Pretende trabalhar em childcare/creche?"],["h6","Pretende ficar em sala de aula por +3 meses?"],["h7","Já teve tuberculose, contato com TB ou raio-x com anormalidade?"],["h8","Requer tratamento médico (câncer, HIV, doença renal, etc.)?"],["h9","Requer cuidados médicos contínuos?"]].map(([k,pt])=>(<Q key={k}><Lbl pt={pt} req/><Radio options={SN} value={f[k]} onChange={s(k)}/></Q>))}
-        <Dv text="Declarações de Caráter / Character Declarations"/>
+        <Dv text="Declarações de Saúde"/>
+        {[["h1","Viveu fora do país por +3 meses consecutivos nos últimos 5 anos?"],["h2","Pretende ser internado em hospital na Austrália?"],["h3","Pretende trabalhar como profissional de saúde?"],["h4","Pretende trabalhar em aged care ou disability care?"],["h5","Pretende trabalhar em childcare/creche?"],["h6","Pretende ficar em sala de aula por +3 meses?"],["h7","Já teve tuberculose, contato com TB ou raio-x com anormalidade?"],["h8","Requer tratamento médico durante estadia (câncer, HIV, doença renal, etc.)?"],["h9","Requer cuidados médicos contínuos?"]].map(([k,pt])=>(<Q key={k}><Lbl pt={pt} req/><Radio options={SN} value={f[k]} onChange={s(k)}/></Q>))}
+        <Dv text="Declarações de Caráter"/>
         {[["c1","Acusação criminal pendente?"],["c2","Condenação criminal em qualquer país?"],["c3","Ordem de violência doméstica ou familiar?"],["c4","Mandado de prisão ou notificação da Interpol?"],["c5","Ofensa sexual envolvendo criança?"],["c6","Registrado como ofensor sexual?"],["c7","Removido ou deportado de algum país?"],["c8","Ultrapassou validade de visto em qualquer país?"],["c9","Dívidas com o governo australiano?"],["c10","Serviço militar, policial ou de inteligência?"],["c11","Associação com organização violenta ou criminosa?"]].map(([k,pt])=>(<Q key={k}><Lbl pt={pt} req/><Radio options={SN} value={f[k]} onChange={s(k)}/></Q>))}
         <Dv text="Documentos / Supporting Documents"/>
         <p style={{fontSize:13,color:GR,marginBottom:14,lineHeight:1.6}}>Marque os documentos disponíveis e envie para <strong style={{color:O}}>keila.peixoto@kmpconsulting.com.au</strong></p>
-        {[{group:"Documentos Pessoais",items:[["d1","📘 Passaporte (todas as páginas, incluindo em branco)"],["d2","🛂 Visto atual / Current visa"],["d3","🚔 AFP Police Check — Resultado","Solicite: afp.gov.au/our-services/national-police-checks"],["d4","🧾 AFP Police Check — Recibo de solicitação"],["d5","✈️ Travel History — PDF passaporte completo (todas as páginas)"],["d6","🏠 Comprovante de endereço / Proof of address"],["d7","🏥 OVHC — single"],["d8","💬 Resultado IELTS ou PTE em PDF"]]},{group:"Skills Assessment",items:[["d9","📋 Skills Assessment — Solicitação / Application"],["d10","✅ Skills Assessment — Aprovação / Approval"]]},{group:"Documentos da Escola",items:[["d11","📄 Completion Letter"],["d12","📊 Academic Results"],["d13","🎓 Certificate"],["d14","📋 CoE(s) do curso — junção de 2 anos"]]}].map(({group,items})=>(
+        {[
+          {group:"Documentos Pessoais / Personal Documents", items:[
+            ["d1","📘 Passaporte / Passport (todas as páginas, incluindo as em branco)"],
+            ["d2","🛂 Visto atual / Current visa"],
+            ["d3","🚔 AFP Police Check — Resultado / Result","Solicite em: afp.gov.au/our-services/national-police-checks"],
+            ["d4","🧾 AFP Police Check — Recibo de solicitação / Application receipt"],
+            ["d5","✈️ Travel History — PDF com TODAS as páginas do passaporte (incluindo em branco)"],
+            ["d6","🏠 Comprovante de endereço / Proof of address"],
+            ["d7","🏥 OVHC — Seguro saúde single / Health insurance (single cover)"],
+            ["d8","💬 Resultado IELTS ou PTE em PDF / English test results (PDF)"],
+          ]},
+          {group:"Skills Assessment", items:[
+            ["d9","📋 Skills Assessment — Solicitação / Application"],
+            ["d10","✅ Skills Assessment — Aprovação / Approval result"],
+          ]},
+          {group:"Documentos da Escola / Education Documents", items:[
+            ["d11","📄 Completion Letter (carta de conclusão)"],
+            ["d12","📊 Academic Results (resultados acadêmicos)"],
+            ["d13","🎓 Certificate (certificado de conclusão)"],
+            ["d14","📋 CoE(s) do curso — junção de 2 anos / CoE(s) for the course (combined 2 years)"],
+          ]},
+        ].map(({group,items})=>(
           <div key={group} style={{marginBottom:18}}>
             <p style={{fontSize:11,fontWeight:700,color:O,textTransform:"uppercase",letterSpacing:"0.07em",marginBottom:8}}>{group}</p>
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
-              {items.map(([k,lbl,hint])=>(<label key={k} onClick={()=>setF({...f,[k]:!f[k]})} style={{display:"flex",alignItems:"flex-start",gap:8,cursor:"pointer",padding:"10px 12px",borderRadius:8,background:f[k]?OL:"#fafafa",border:`1.5px solid ${f[k]?O:BD}`,transition:"all 0.15s"}}><span style={{width:20,height:20,borderRadius:5,border:`2px solid ${f[k]?O:"#d1d5db"}`,background:f[k]?O:"#fff",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,marginTop:1}}>{f[k]&&<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>}</span><div><span style={{fontSize:12,color:DK,lineHeight:1.4,display:"block"}}>{lbl}</span>{hint&&<span style={{fontSize:11,color:OD,display:"block",marginTop:2}}>{hint}</span>}</div></label>))}
+              {items.map(([k,lbl,hint])=>(
+                <label key={k} onClick={()=>setF({...f,[k]:!f[k]})} style={{display:"flex",alignItems:"flex-start",gap:8,cursor:"pointer",padding:"10px 12px",borderRadius:8,background:f[k]?OL:"#fafafa",border:`1.5px solid ${f[k]?O:BD}`,transition:"all 0.15s"}}>
+                  <span style={{width:20,height:20,borderRadius:5,border:`2px solid ${f[k]?O:"#d1d5db"}`,background:f[k]?O:"#fff",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,marginTop:1}}>
+                    {f[k]&&<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                  </span>
+                  <div>
+                    <span style={{fontSize:12,color:DK,lineHeight:1.4,display:"block"}}>{lbl}</span>
+                    {hint&&<span style={{fontSize:11,color:OD,display:"block",marginTop:2}}>{hint}</span>}
+                  </div>
+                </label>
+              ))}
             </div>
           </div>
         ))}
         <Dv text="Assinatura / Signature"/>
         <div style={{padding:"14px 18px",background:OL,borderRadius:10,marginBottom:18,borderLeft:`4px solid ${O}`}}>
           <p style={{fontSize:13,color:DK,lineHeight:1.7,margin:0}}>Declaro que as informações fornecidas são verdadeiras. Entendo que informações falsas podem resultar na recusa do visto.</p>
-          <p style={{fontSize:12,color:GR,fontStyle:"italic",margin:"6px 0 0"}}>I declare that the information provided is true and correct.</p>
         </div>
         <Q><Lbl pt="Assinatura digital / Digital signature" req/><Inp placeholder="Nome completo / Full name" value={f.sig} onChange={s("sig")}/></Q>
         <Q><Lbl pt="Data / Date" req/><Inp type="date" value={f.sigDate} onChange={s("sigDate")}/></Q>
@@ -265,23 +214,12 @@ function KMP485(){
     }
   };
 
-  if(submitted){return(
-    <div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",background:"#f8f8f8"}}>
-      <div style={{background:"#fff",borderRadius:20,padding:"48px 40px",textAlign:"center",maxWidth:480,boxShadow:"0 16px 48px rgba(0,0,0,0.08)"}}>
-        <div style={{width:64,height:64,borderRadius:16,background:OG,display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 18px"}}>
-          <svg width="30" height="30" viewBox="0 0 32 32" fill="none"><path d="M8 16L14 22L24 10" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/></svg>
-        </div>
-        <h2 style={{fontSize:24,fontWeight:800,color:DK,margin:"0 0 10px"}}>Formulário Enviado!</h2>
-        <p style={{color:GR,fontSize:14,lineHeight:1.6}}>Solicitação 485 recebida. A equipe da <strong style={{color:O}}>KMP Consulting</strong> entrará em contato em até 48 horas úteis.</p>
-        <button onClick={()=>{setSubmitted(false);setStep(0);setF({});setAddresses([{id:1,current:"NÃO/NO",from:"",to:"",country:"",addr:"",suburb:"",state:"",post:""}]);setTravels([{id:1,country:"",reason:"",from:"",to:""}]);}} style={{marginTop:22,padding:"11px 26px",background:"transparent",border:`1.5px solid ${O}`,borderRadius:10,color:O,fontSize:14,fontWeight:600,cursor:"pointer"}}>Novo Formulário</button>
-      </div>
-    </div>
-  );}
-
   return(
     <div ref={topRef} style={{minHeight:"100vh",background:"#f8f8f8"}}>
       <div style={{background:"#fff",borderBottom:`3px solid ${O}`,padding:"12px 20px",display:"flex",alignItems:"center",justifyContent:"center",gap:12}}>
-        <div style={{width:38,height:38,borderRadius:9,background:OG,display:"flex",alignItems:"center",justifyContent:"center"}}><span style={{color:"#fff",fontWeight:800,fontSize:14}}>kmp</span></div>
+        <div style={{width:38,height:38,borderRadius:9,background:OG,display:"flex",alignItems:"center",justifyContent:"center"}}>
+          <span style={{color:"#fff",fontWeight:800,fontSize:14}}>kmp</span>
+        </div>
         <div>
           <span style={{fontWeight:700,fontSize:16,color:DK}}>kmp<span style={{fontWeight:300}}> consulting</span></span>
           <span style={{display:"block",fontSize:9,color:O,fontWeight:500,letterSpacing:"0.1em",textTransform:"uppercase"}}>Estratégia que conecta. Futuro que transforma.</span>
@@ -293,27 +231,27 @@ function KMP485(){
           <p style={{fontSize:13,color:GR,margin:0}}>Formulário de Coleta de Dados — KMP Consulting</p>
         </div>
         <div style={{display:"flex",alignItems:"center",justifyContent:"center",marginBottom:8,flexWrap:"wrap",gap:1}}>
-          {sections.map((sec,i)=>(<div key={sec.id} style={{display:"flex",alignItems:"center"}}><button onClick={()=>go(i)} title={sec.title} style={{width:32,height:32,borderRadius:"50%",border:"none",cursor:"pointer",fontWeight:700,fontSize:12,background:i===step?OG:i<step?OL:"#e5e7eb",color:i===step?"#fff":i<step?OD:"#9ca3af",boxShadow:i===step?`0 2px 8px rgba(242,123,32,0.35)`:"none",transition:"all 0.2s",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{i<step?"✓":i+1}</button>{i<sections.length-1&&<div style={{width:16,height:2,background:i<step?O:"#e5e7eb"}}/>}</div>))}
+          {sections.map((sec,i)=>(
+            <div key={sec.id} style={{display:"flex",alignItems:"center"}}>
+              <button onClick={()=>go(i)} title={sec.title} style={{width:32,height:32,borderRadius:"50%",border:"none",cursor:"pointer",fontWeight:700,fontSize:12,background:i===step?OG:i<step?OL:"#e5e7eb",color:i===step?"#fff":i<step?OD:"#9ca3af",boxShadow:i===step?`0 2px 8px rgba(242,123,32,0.35)`:"none",transition:"all 0.2s",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                {i<step?"✓":i+1}
+              </button>
+              {i<sections.length-1&&<div style={{width:16,height:2,background:i<step?O:"#e5e7eb"}}/>}
+            </div>
+          ))}
         </div>
         <p style={{textAlign:"center",fontSize:12,color:GR,margin:"0 0 18px"}}>{sections[step].icon} Etapa {step+1} de {sections.length} — <strong style={{color:DK}}>{sections[step].title}</strong></p>
         <div style={{background:"#fff",borderRadius:14,padding:"26px 22px 20px",boxShadow:"0 4px 20px rgba(0,0,0,0.05)",border:"1px solid #eee"}}>
           {renderStep()}
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginTop:24,paddingTop:18,borderTop:`1px solid ${BD}`}}>
             {step>0?<button onClick={()=>go(step-1)} style={{padding:"9px 20px",background:"transparent",border:`1.5px solid ${BD}`,borderRadius:9,color:GR,fontSize:13,fontWeight:600,cursor:"pointer"}}>← Anterior</button>:<div/>}
-            <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
-              {sendError&&<p style={{fontSize:12,color:"#e53e3e",margin:0}}>⚠️ {sendError}</p>}
-              <button disabled={sending} onClick={()=>{if(step<sections.length-1)go(step+1);else handleSubmit();}} style={{padding:"9px 22px",background:sending?"#f5941e99":OG,border:"none",borderRadius:9,color:"#fff",fontSize:13,fontWeight:700,cursor:sending?"not-allowed":"pointer",boxShadow:`0 3px 12px rgba(242,123,32,0.3)`}}>
-                {step===sections.length-1?(sending?"Enviando…":"Enviar Formulário ✓"):"Próximo →"}
-              </button>
-            </div>
+            <button onClick={()=>{if(step<sections.length-1)go(step+1);}} style={{padding:"9px 22px",background:OG,border:"none",borderRadius:9,color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",boxShadow:`0 3px 12px rgba(242,123,32,0.3)`}}>
+              {step===sections.length-1?"Enviar Formulário ✓":"Próximo →"}
+            </button>
           </div>
         </div>
-        <p style={{textAlign:"center",fontSize:10,color:"#aaa",marginTop:14}}>© {new Date().getFullYear()} KMP Consulting — Todos os dados são confidenciais</p>
+        <p style={{textAlign:"center",fontSize:10,color:"#aaa",marginTop:14}}>© {new Date().getFullYear()} KMP Consulting</p>
       </div>
     </div>
   );
 }
-ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(KMP485));
-</script>
-</body>
-</html>
