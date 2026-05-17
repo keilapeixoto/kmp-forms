@@ -62,12 +62,59 @@ function KMP485(){
     const docLabels={d1:"Passaporte (todas as páginas)",d2:"Visto atual",d3:"AFP — Resultado",d4:"AFP — Recibo de solicitação",d5:"Travel History (PDF passaporte completo)",d6:"Comprovante de endereço",d7:"OVHC — single",d8:"Resultado IELTS/PTE em PDF",d9:"Skills Assessment — Solicitação",d10:"Skills Assessment — Aprovação",d11:"Completion Letter",d12:"Academic Results",d13:"Certificate",d14:"CoE(s) — junção 2 anos"};
     const docsTxt=docs.filter(k=>f[k]).map(k=>`✓ ${docLabels[k]}`).join("\n")||"Nenhum marcado";
     const corpo=`Subclass 485 — Temporary Graduate Visa\nData: ${new Date().toLocaleString("pt-BR")}\n\n${"─".repeat(50)}\n\nCONTEXTO\nStream: ${f.visaStream||""}\nQualificação AQF: ${f.aqf||""}\nLocalização atual: ${f.location||""}\nTipo referência: ${f.refType||""}\nNº referência: ${f.refNum||""}\n\nDADOS PESSOAIS\nNome: ${f.gName||""} ${f.fName||""}\nGênero: ${f.sex||""}\nData nascimento: ${f.dob||""}\nNascimento: ${f.pobCity||""}, ${f.pobState||""}, ${f.pobCountry||""}\nEstado civil: ${f.relStatus||""}\nOutros nomes: ${f.otherNames==="SIM/YES"?f.otherNamesD:"Não"}\nCidadão do passaporte: ${f.citizen||""}\nOutra cidadania: ${f.otherCitizen==="SIM/YES"?f.otherCitizenD:"Não"}\n\nPASSAPORTE\nSobrenome: ${f.pFam||""}\nNome: ${f.pGiv||""}\nNº: ${f.pNum||""}\nPaís: ${f.pCountry||""}\nNacionalidade: ${f.pNat||""}\nEmissão: ${f.pIssue||""}\nValidade: ${f.pExpiry||""}\nLocal emissão: ${f.pPlace||""}\nNº concessão visto AU: ${f.grantNum==="SIM/YES"?f.grantNumD:"Não"}\nCarteira identidade: ${f.natId||""}\nOutros passaportes: ${f.otherPass==="SIM/YES"?f.otherPassD:"Não"}\nExame saúde 12m: ${f.healthExam||""}\nFamília acompanhante: ${f.accomp||""}\nFamília não acompanhante: ${f.nonAccomp||""}\n\nCONTATO & ENDEREÇO\nPaís residência: ${f.residence||""}\nEndereço: ${f.addr||""}, ${f.suburb||""}, ${f.state||""} ${f.post||""}\nCelular: ${f.mobile||""}\nE-mail: ${f.email||""}\nEstado pretendido: ${f.intState||""}\nDestinatário autorizado: ${f.authR==="SIM/YES"?f.authRD:"Não"}\n\nHISTÓRICO DE ENDEREÇOS\n${addrTxt}\n\nHISTÓRICO DE VIAGENS\n${travTxt}\n\nQUALIFICAÇÃO AUSTRALIANA\nRequisito estudo cumprido: ${f.studyReq||""}\nEstudo online COVID: ${f.covid||""}\nCRICOS: ${f.cricos||""}\nQualificação: ${f.qualType||""}\nCurso: ${f.courseName||""}\nInstituição: ${f.institution||""}\nCampus: ${f.campus||""} ${f.campusPost||""} ${f.campusState||""}\nInício: ${f.courseStart||""}\nConclusão: ${f.courseEnd||""}\n\nIDIOMA & INGLÊS\nIdioma principal: ${f.mainLang||""}\nTeste inglês: ${f.engTest||""}\nNome teste: ${f.testName||""}\nData teste: ${f.testDate||""}\nNº referência: ${f.testRef||""}\nPaís teste: ${f.testCountry||""}\nNível: ${f.langAb||""}\nListening: ${f.sL||""} | Reading: ${f.sR||""} | Writing: ${f.sW||""} | Speaking: ${f.sS||""} | Overall: ${f.sO||""}\n\nSKILLS ASSESSMENT\nAplicou: ${f.skillsApp||""}\nOcupação: ${f.skillsOcc||""}\nAutoridade: ${f.skillsAuth||""}\nData: ${f.skillsDate||""}\nNº: ${f.skillsRef||""}\n\nAFP\nSolicitado: ${f.afp||""}\nData: ${f.afpDate||""}\nNº: ${f.afpRef||""}\n\nSEGURO SAÚDE\nTem seguro: ${f.ins||""}\nTipo: ${f.insType||""}\nSeguradora: ${f.insurer||""}\nCobertura: ${f.insFrom||""} → ${f.insTo||""}\n\nDECLARAÇÕES DE SAÚDE\nFora do país +3 meses: ${f.h1||""} | Hospital: ${f.h2||""} | Saúde: ${f.h3||""}\nAged care: ${f.h4||""} | Childcare: ${f.h5||""} | Sala aula: ${f.h6||""}\nTuberculose: ${f.h7||""} | Trat. médico: ${f.h8||""} | Cuidados contínuos: ${f.h9||""}\n\nDECLARAÇÕES DE CARÁTER\nAcusação pendente: ${f.c1||""} | Condenação: ${f.c2||""} | Violência doméstica: ${f.c3||""}\nMandado/Interpol: ${f.c4||""} | Ofensa sexual criança: ${f.c5||""} | Registro ofensor: ${f.c6||""}\nDeportado: ${f.c7||""} | Ultrapassou visto: ${f.c8||""} | Dívidas AU: ${f.c9||""}\nMilitar/polícia: ${f.c10||""} | Organização criminosa: ${f.c11||""}\n\nDOCUMENTOS DISPONÍVEIS\n${docsTxt}\n\nASSINATURA\n${f.sig||""} — ${f.sigDate||}`;
-    try{
-      const res=await fetch("https://api.web3forms.com/submit",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({access_key:WEB3FORMS_KEY,subject:`Nova Solicitação 485 — ${nome}`,from_name:"Formulário KMP Consulting",message:corpo,replyto:f.email||""})});
-      const data=await res.json();
-      if(data.success)setSubmitted(true);else throw new Error(data.message);
-    }catch(e){setSendError("Não foi possível enviar. Verifique a chave Web3Forms.");}
-    finally{setSending(false);}
+    try {
+
+  const payload = {
+    access_key: WEB3FORMS_KEY,
+    subject: `Nova Solicitação 485 - ${nome}`,
+    from_name: "Formulário KMP Consulting",
+    message: corpo,
+    reply_to: f.email || ""
+  };
+
+  console.log("Payload enviado:", payload);
+
+  const res = await fetch(
+    "https://api.web3forms.com/submit",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify(payload)
+    }
+  );
+
+  const data = await res.json();
+
+  console.log("Resposta Web3Forms:", data);
+
+  if (data.success) {
+
+    setSubmitted(true);
+
+  } else {
+
+    throw new Error(
+      data.message || "Erro ao enviar formulário"
+    );
+
+  }
+
+} catch (e) {
+
+  console.error("Erro completo:", e);
+
+  setSendError(
+    e.message || "Não foi possível enviar o formulário."
+  );
+
+} finally {
+
+  setSending(false);
+
+}
   };
 
   const renderStep=()=>{
