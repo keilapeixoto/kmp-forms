@@ -198,18 +198,32 @@ body{font-family:'Outfit',sans-serif;background:#e8e8e8;padding:28px 16px;color:
 const WEB3FORMS_KEY="WEB3FORMS_KEY_AQUI";
 const canvas=document.getElementById('sig-canvas');
 const ctx=canvas.getContext('2d');
-canvas.width=canvas.offsetWidth||600;
+const dpr=window.devicePixelRatio||1;
+function initCanvas(){
+  const rect=canvas.parentElement.getBoundingClientRect();
+  canvas.width=rect.width*dpr;
+  canvas.height=80*dpr;
+  canvas.style.width=rect.width+'px';
+  canvas.style.height='80px';
+  ctx.scale(dpr,dpr);
+  ctx.strokeStyle='#1a1a1a';ctx.lineWidth=1.8;ctx.lineCap='round';ctx.lineJoin='round';
+}
+window.addEventListener('load',initCanvas);
+window.addEventListener('resize',()=>{const data=ctx.getImageData(0,0,canvas.width,canvas.height);initCanvas();ctx.putImageData(data,0,0);});
 let drawing=false,hasSig=false;
-ctx.strokeStyle='#1a1a1a';ctx.lineWidth=1.8;ctx.lineCap='round';ctx.lineJoin='round';
-function getPos(e){const r=canvas.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return{x:(t.clientX-r.left)*(canvas.width/r.width),y:(t.clientY-r.top)*(canvas.height/r.height)};}
-canvas.addEventListener('mousedown',e=>{drawing=true;const p=getPos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);});
+function getPos(e){
+  const r=canvas.getBoundingClientRect();
+  const t=e.touches?e.touches[0]:e;
+  return{x:(t.clientX-r.left),y:(t.clientY-r.top)};
+}
+canvas.addEventListener('mousedown',e=>{e.preventDefault();drawing=true;const p=getPos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);});
 canvas.addEventListener('mousemove',e=>{if(!drawing)return;hasSig=true;const p=getPos(e);ctx.lineTo(p.x,p.y);ctx.stroke();});
 canvas.addEventListener('mouseup',()=>drawing=false);
 canvas.addEventListener('mouseleave',()=>drawing=false);
 canvas.addEventListener('touchstart',e=>{e.preventDefault();drawing=true;const p=getPos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);},{passive:false});
 canvas.addEventListener('touchmove',e=>{e.preventDefault();if(!drawing)return;hasSig=true;const p=getPos(e);ctx.lineTo(p.x,p.y);ctx.stroke();},{passive:false});
-canvas.addEventListener('touchend',()=>drawing=false);
-function clearSig(){ctx.clearRect(0,0,canvas.width,canvas.height);hasSig=false;}
+canvas.addEventListener('touchend',e=>{e.preventDefault();drawing=false;},{passive:false});
+function clearSig(){ctx.clearRect(0,0,canvas.width/dpr,canvas.height/dpr);hasSig=false;}
 async function submitForm(){
   const msg=document.getElementById('msg');
   const name=document.getElementById('sig-name').value.trim();
