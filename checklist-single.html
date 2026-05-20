@@ -3,99 +3,71 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Checklist Subclass 485 — KMP Consulting</title>
+<title>Checklist 485 Single — KMP Consulting</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Outfit',sans-serif;background:#e8e8e8;padding:28px 16px;color:#1a1a1a;font-size:13px}
-.page{background:#fff;width:210mm;max-width:100%;margin:0 auto;box-shadow:0 4px 28px rgba(0,0,0,0.13);overflow:hidden}
-
-/* Header gradient */
+.page{background:#fff;width:210mm;max-width:100%;margin:0 auto;box-shadow:0 4px 28px rgba(0,0,0,0.13)}
 .hdr{background:linear-gradient(135deg,#F27B20 0%,#F5941E 100%);padding:26px 36px;color:#fff;display:flex;justify-content:space-between;align-items:center}
 .logo-wrap{display:flex;align-items:center;gap:12px}
-.logo-box{width:44px;height:44px;background:rgba(255,255,255,0.2);border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:#fff;flex-shrink:0}
+.logo-box{width:44px;height:44px;background:rgba(255,255,255,0.2);border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:#fff;flex-shrink:0;border:2px solid rgba(255,255,255,0.5)}
 .logo-name{font-size:19px;font-weight:700}
 .logo-name span{font-weight:300}
 .logo-sub{font-size:8px;letter-spacing:0.13em;text-transform:uppercase;opacity:0.85;margin-top:2px;display:block}
 .hdr-right{text-align:right}
-.hdr-tag{font-size:10px;opacity:0.8;text-transform:uppercase;letter-spacing:0.1em;background:rgba(255,255,255,0.15);padding:3px 10px;border-radius:10px;display:inline-block;margin-bottom:6px}
-.hdr-type{font-size:15px;font-weight:800;display:block}
-
-/* Tabs */
-.tabs{display:flex;border-bottom:2px solid #f0f0f0}
-.tab{flex:1;padding:12px;text-align:center;font-size:13px;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;color:#9ca3af;background:#fff;border:none;font-family:'Outfit',sans-serif;transition:all 0.2s}
-.tab.active{color:#F27B20;border-bottom:3px solid #F27B20;background:#fffbf7}
-
-/* Content */
-.content{padding:26px 36px 28px;display:none}
-.content.active{display:block}
-.doc-title{text-align:center;margin-bottom:16px;padding-bottom:14px;border-bottom:1.5px solid #e5e7eb}
-.doc-title h1{font-size:16px;font-weight:800;color:#1a1a1a;margin-bottom:3px}
-.doc-title p{font-size:10.5px;color:#6b7280}
-.intro{border-left:3px solid #F27B20;padding:9px 13px;margin-bottom:18px;font-size:11px;color:#374151;line-height:1.7;background:#fffbf7}
-.section{margin-bottom:16px}
+.hdr-visa{font-size:9px;opacity:0.8;text-transform:uppercase;letter-spacing:0.1em;background:rgba(255,255,255,0.15);padding:3px 10px;border-radius:10px;display:inline-block;margin-bottom:6px}
+.hdr-type{font-size:13px;font-weight:800;display:block}
+.body{padding:22px 36px 26px}
+.doc-title{text-align:center;margin-bottom:14px;padding-bottom:12px;border-bottom:1.5px solid #e5e7eb}
+.doc-title h1{font-size:15px;font-weight:800;color:#1a1a1a;margin-bottom:3px}
+.doc-title p{font-size:10px;color:#6b7280}
+.intro{border-left:3px solid #F27B20;padding:8px 12px;margin-bottom:16px;font-size:11px;color:#374151;line-height:1.7;background:#fffbf7}
+.section{margin-bottom:15px}
 .sec-title{font-size:9px;font-weight:700;color:#F27B20;text-transform:uppercase;letter-spacing:0.12em;padding:5px 0;border-bottom:1.5px solid #fde8d0;margin-bottom:0}
-.item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid #f5f5f5}
+.item{display:flex;align-items:flex-start;gap:9px;padding:7px 0;border-bottom:1px solid #f5f5f5}
 .item:last-child{border-bottom:none}
-.cb{width:15px;height:15px;border:1.5px solid #d1d5db;border-radius:3px;flex-shrink:0;margin-top:1px;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center}
+.cb{width:14px;height:14px;border:1.5px solid #d1d5db;border-radius:3px;flex-shrink:0;margin-top:1px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .cb.checked{background:#F27B20;border-color:#F27B20}
-.cb.checked::after{content:'✓';color:#fff;font-size:10px;font-weight:700}
+.cb.checked::after{content:'✓';color:#fff;font-size:9px;font-weight:800}
 .item-body{flex:1}
-.item-main{font-size:12px;font-weight:700;color:#1a1a1a;line-height:1.4;display:flex;flex-wrap:wrap;align-items:center;gap:5px}
+.item-main{font-size:12px;font-weight:700;color:#1a1a1a;line-height:1.4}
 .item-note{font-size:10.5px;color:#6b7280;margin-top:2px;line-height:1.5}
-.item-warn{font-size:10px;color:#c2410c;margin-top:3px;font-weight:600;line-height:1.5}
-.item-link{font-size:10px;color:#F27B20;margin-top:2px}
-.badge{display:inline-flex;align-items:center;font-size:8.5px;font-weight:700;padding:1px 6px;border-radius:8px;border:1px solid transparent;white-space:nowrap}
-.b-ap{background:#fff7ed;color:#c2410c;border-color:#fde8d0}
-.b-dep{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
-
-/* Costs */
-.costs-title{font-size:9px;font-weight:700;color:#F27B20;text-transform:uppercase;letter-spacing:0.12em;padding:5px 0;border-bottom:1.5px solid #fde8d0;margin-bottom:10px}
-.cost-block{border:1px solid #e5e7eb;border-radius:6px;overflow:hidden;margin-bottom:10px}
+.item-warn{font-size:10px;color:#c2410c;margin-top:2px;font-weight:600;line-height:1.5}
+.item-link a{font-size:10px;color:#F27B20;margin-top:1px;display:block;text-decoration:none}
+.costs-title{font-size:9px;font-weight:700;color:#1a1a1a;text-transform:uppercase;letter-spacing:0.1em;padding:5px 0;border-bottom:1.5px solid #e5e7eb;margin-bottom:10px}
+.cost-block{border:1px solid #e5e7eb;border-radius:6px;overflow:hidden;margin-bottom:9px}
 .cost-block-hd{background:#f9fafb;padding:7px 12px;font-size:10px;font-weight:700;color:#374151;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;align-items:center}
 .method{font-size:9px;font-weight:600;padding:2px 8px;border-radius:8px}
-.m-payid{background:#dcfce7;color:#166534}
+.m-bsb{background:#dcfce7;color:#166534}
 .m-card{background:#dbeafe;color:#1e40af}
 .m-direct{background:#fef3c7;color:#92400e}
 .cost-row{display:flex;justify-content:space-between;padding:5px 12px;border-bottom:1px solid #f5f5f5;font-size:11.5px}
 .cost-row:last-child{border-bottom:none;font-weight:800;color:#F27B20}
 .cost-note{font-size:10px;color:#6b7280;font-style:italic;padding:5px 12px 7px;background:#f9fafb;border-top:1px solid #f0f0f0}
-
-/* Signature */
-.sig-box{border:1px solid #e5e7eb;border-radius:6px;padding:14px 16px;margin-bottom:10px}
-.sig-hd{font-size:9px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:10px}
-.sig-disclaimer{font-size:10.5px;color:#374151;line-height:1.7;margin-bottom:12px}
-.sig-row{margin-bottom:12px}
-.sig-row-lbl{font-size:9px;font-weight:700;color:#F27B20;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px}
+.sig-box{border:1px solid #e5e7eb;border-radius:6px;padding:13px 16px;margin-bottom:10px}
+.sig-hd{font-size:9px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px}
+.sig-disclaimer{font-size:10.5px;color:#374151;line-height:1.7;margin-bottom:11px}
 .sig-grid{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:4px}
-.sig-line{height:32px;border-bottom:1.5px solid #9ca3af}
+.sig-line{height:30px;border-bottom:1.5px solid #9ca3af}
 .sig-lbl{font-size:8.5px;color:#9ca3af;text-transform:uppercase;letter-spacing:0.06em;margin-top:3px}
-.sig-full-line{height:32px;border-bottom:1.5px solid #9ca3af;margin-top:10px}
-
-.footer{border-top:1.5px solid #e5e7eb;padding:9px 36px;display:flex;justify-content:space-between;align-items:center}
+.sig-full-line{height:30px;border-bottom:1.5px solid #9ca3af;margin-top:10px}
+.footer{border-top:1.5px solid #e5e7eb;padding:8px 36px;display:flex;justify-content:space-between;align-items:center}
 .footer-l{font-size:9px;color:#9ca3af}
-.footer-r{font-size:9px;font-weight:700;color:#F27B20}
-.center-note{text-align:center;font-size:9.5px;color:#9ca3af;margin-bottom:6px}
-
-.print-btn{position:fixed;bottom:22px;right:22px;background:#F27B20;color:#fff;border:none;padding:12px 20px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;box-shadow:0 4px 14px rgba(242,123,32,0.4)}
-
+.footer-r{font-size:9px;font-weight:700;color:#F27B20;white-space:nowrap}
+.print-btn{position:fixed;bottom:22px;right:22px;background:#F27B20;color:#fff;border:none;padding:11px 18px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;box-shadow:0 4px 14px rgba(242,123,32,0.4)}
 @page{size:A4;margin:0}
 @media print{
-  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
   body{background:#fff!important;padding:0!important}
   .page{box-shadow:none!important;width:100%!important}
-  .print-btn,.tabs{display:none!important}
-  .content{display:block!important}
+  .print-btn{display:none!important}
   .hdr{background:linear-gradient(135deg,#F27B20 0%,#F5941E 100%)!important}
   .intro{background:#fffbf7!important}
-  .cost-block-hd{background:#f9fafb!important}
-  .cost-note{background:#f9fafb!important}
-  .m-payid{background:#dcfce7!important}
+  .cost-block-hd,.cost-note{background:#f9fafb!important}
+  .m-bsb{background:#dcfce7!important}
   .m-card{background:#dbeafe!important}
   .m-direct{background:#fef3c7!important}
-  .b-ap{background:#fff7ed!important}
-  .b-dep{background:#eff6ff!important}
-  #single-c + #couple-c{page-break-before:always}
 }
 </style>
 </head>
@@ -110,47 +82,49 @@ body{font-family:'Outfit',sans-serif;background:#e8e8e8;padding:28px 16px;color:
       </div>
     </div>
     <div class="hdr-right">
-      <span class="hdr-tag"> Subclass 485 — Temporary Graduate Visa</span>
-      <span class="hdr-type" id="hdr-type">Single Application</span>
+      <span class="hdr-visa">Subclass 485 — Temporary Graduate Visa</span>
+      <span class="hdr-type">Single Application — Document Checklist</span>
     </div>
   </div>
 
-  <div class="tabs">
-    <button class="tab active" onclick="switchTab('single',this)"> Single Application</button>
-    <button class="tab" onclick="switchTab('couple',this)"> Couple Application</button>
-  </div>
-
-  <!-- SINGLE -->
-  <div class="content active" id="single-c">
+  <div class="body">
     <div class="doc-title">
       <h1>Document Checklist — Lista de Documentos</h1>
-      <p>Reúna todos os documentos abaixo e envie para keila.peixoto@kmpconsulting.com.au</p>
+      <p>Reúna todos os documentos e envie para keila.peixoto@kmpconsulting.com.au</p>
     </div>
     <div class="intro">Todos os documentos devem ser enviados em formato <strong>PDF ou JPG de alta qualidade</strong>. Documentos incompletos ou ilegíveis podem atrasar o processo.</div>
 
     <div class="section">
-      <div class="sec-title"> Documentos Pessoais &nbsp;/&nbsp; Personal Documents</div>
-      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Passaporte &nbsp;/&nbsp; Passport</div><div class="item-note">Todas as páginas escaneadas — inclusive as em branco, mesmo sem carimbo</div></div></div>
-      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Visto Atual &nbsp;/&nbsp; Current Visa</div><div class="item-note">Cópia do visto vigente (pode ser obtido via VEVO: immi.homeaffairs.gov.au)</div></div></div>
-      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">AFP Police Check — Resultado &nbsp;/&nbsp; Result</div><div class="item-note">Australian Federal Police National Police Check — resultado em PDF</div><div class="item-link">→ afp.gov.au/our-services/national-police-checks</div></div></div>
-      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">AFP Police Check — Recibo de Solicitação &nbsp;/&nbsp; Application Receipt</div><div class="item-note">Comprovante de que o check foi solicitado</div></div></div>
-      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Travel History</div><div class="item-note">PDF com fotos de <strong>todas</strong> as páginas do passaporte — incluindo as em branco</div></div></div>
-      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Comprovante de Endereço &nbsp;/&nbsp; Proof of Address</div><div class="item-note">Conta de luz, gás, internet, extrato bancário ou lease agreement</div></div></div>
-      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">OVHC — Overseas Visitor Health Cover &nbsp;(Single)</div><div class="item-note">Contrate e envie a apólice. Pago mensalmente por você diretamente.</div><div class="item-warn">⚠️ OSHC não é aceito para o Subclass 485 — obrigatório OVHC</div></div></div>
-      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Resultado IELTS ou PTE &nbsp;(PDF original)</div><div class="item-note">Score mínimo: <strong>Overall 55</strong> &nbsp;|&nbsp; Listening 40 &nbsp;|&nbsp; Reading 42 &nbsp;|&nbsp; Writing 41 &nbsp;|&nbsp; Speaking 39</div><div class="item-warn">⚠️ Realizado nos últimos 12 meses — data limite: anterior ao dia da aplicação</div></div></div>
+      <div class="sec-title">Documentos Pessoais / Personal Documents</div>
+      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Passaporte / Passport</div><div class="item-note">Todas as páginas — inclusive as em branco, mesmo sem carimbo</div></div></div>
+      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Visto Atual / Current Visa</div><div class="item-note">Cópia do visto vigente (VEVO: immi.homeaffairs.gov.au)</div></div></div>
+      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">AFP Police Check — Recibo de Solicitação / Application Receipt</div><div class="item-link"><a href="https://www.afp.gov.au/our-services/national-police-checks" target="_blank">afp.gov.au/our-services/national-police-checks</a></div></div></div>
+      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">AFP Police Check — Resultado / Result</div></div></div>
+      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Travel History</div><div class="item-note">PDF com todas as páginas do passaporte — incluindo as em branco</div></div></div>
+      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Comprovante de Endereço / Proof of Address</div><div class="item-note">Conta de luz, gás, internet, extrato bancário ou lease agreement</div></div></div>
+      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">OVHC — Overseas Visitor Health Cover (Single)</div><div class="item-note">Contrate e envie a apólice. Pago mensalmente por você diretamente.</div><div class="item-warn">OSHC não é aceito para o Subclass 485 — obrigatório OVHC</div></div></div>
+      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body">
+        <div class="item-main">Resultado IELTS ou PTE (PDF original)</div>
+        <div class="item-note"><strong>Score mínimo PTE:</strong> Overall 55 | Listening 40 | Reading 42 | Writing 41 | Speaking 39</div>
+        <div class="item-note"><strong>Score mínimo IELTS:</strong> At least 6.5 with a minimum of 5.5 in each of the four components (Listening, Reading, Writing, and Speaking)</div>
+        <div class="item-warn">Realizado nos últimos 12 meses — data limite do resultado adquirido é o dia anterior ao dia da aplicação</div>
+      </div></div>
     </div>
+
     <div class="section">
-      <div class="sec-title"> Histórico &nbsp;/&nbsp; History</div>
-      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Endereços dos Últimos 10 Anos</div><div class="item-note">Todos os endereços desde os 16 anos — sem gaps, mês e ano de entrada e saída</div></div></div>
-      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Viagens dos Últimos 10 Anos</div><div class="item-note">País, motivo e datas (mês e ano) de todas as viagens fora da Austrália</div></div></div>
+      <div class="sec-title">Histórico / History</div>
+      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Endereços dos Últimos 10 Anos / Address History</div><div class="item-note">Sem gaps entre as datas — mês e ano de entrada e saída de cada endereço</div></div></div>
+      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Viagens dos Últimos 10 Anos / Travel History</div><div class="item-note">País, motivo e datas (mês e ano) de todas as viagens fora da Austrália</div></div></div>
     </div>
+
     <div class="section">
-      <div class="sec-title"> Skills Assessment</div>
-      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Skills Assessment — Solicitação &nbsp;/&nbsp; Application</div></div></div>
-      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Skills Assessment — Aprovação &nbsp;/&nbsp; Approval Result</div><div class="item-warn">→ Caso ainda não tenha iniciado, entre em contato — enviarei detalhes e valores separadamente</div></div></div>
+      <div class="sec-title">Skills Assessment</div>
+      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Skills Assessment — Solicitação / Application</div></div></div>
+      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Skills Assessment — Aprovação / Approval Result</div><div class="item-warn">Caso ainda não tenha iniciado e queira realizar seu processo com a KMP, nos avise, pois também oferecemos esse serviço.</div></div></div>
     </div>
+
     <div class="section">
-      <div class="sec-title"> Documentos da Escola &nbsp;/&nbsp; Education Documents</div>
+      <div class="sec-title">Documentos da Escola / Education Documents</div>
       <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Completion Letter</div><div class="item-note">Carta de conclusão emitida pela instituição de ensino</div></div></div>
       <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Academic Results</div><div class="item-note">Resultados acadêmicos / transcript final do curso</div></div></div>
       <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Certificate</div><div class="item-note">Certificado de conclusão emitido pela instituição</div></div></div>
@@ -158,137 +132,40 @@ body{font-family:'Outfit',sans-serif;background:#e8e8e8;padding:28px 16px;color:
     </div>
 
     <div class="section">
-      <div class="costs-title"> Investimento &nbsp;/&nbsp; Costs</div>
+      <div class="costs-title">Detalhes de Pagamento / Payment Details</div>
       <div class="cost-block">
-        <div class="cost-block-hd"><span>KMP Consulting — Taxa de Serviço</span><span class="method m-payid">Via PAYID</span></div>
+        <div class="cost-block-hd"><span>KMP Consulting — Taxa de Serviço / Service Fee</span><span class="method m-bsb">Transferência Bancária</span></div>
         <div class="cost-row"><span>Service Fee</span><span>AUD $1,000.00</span></div>
-        <div class="cost-note">PAYID: mayara_peixoto@icloud.com</div>
+        <div class="cost-note">BSB: 923100 &nbsp;|&nbsp; Conta: 319505660 &nbsp;|&nbsp; Nome: Keila Mayara Peixoto</div>
       </div>
       <div class="cost-block">
-        <div class="cost-block-hd"><span>Governo Australiano — Government Fees</span><span class="method m-card">Credit Card</span></div>
+        <div class="cost-block-hd"><span>Governo / Government Application Charge</span><span class="method m-card">Credit Card</span></div>
         <div class="cost-row"><span>Temporary Graduate Visa (VAC)</span><span>AUD $4,600.00</span></div>
         <div class="cost-row"><span>Card Surcharge (1.40%)</span><span>AUD $64.40</span></div>
         <div class="cost-row"><span>Total</span><span>AUD $4,664.40</span></div>
-        <div class="cost-note">Pago pelo aplicante via cartão — utilize o Card Authorization Form da KMP Consulting</div>
+        <div class="cost-note">Pago via cartão de crédito — preencha o Card Authorisation Form da KMP Consulting</div>
       </div>
       <div class="cost-block">
-        <div class="cost-block-hd"><span>OVHC — Seguro Saúde</span><span class="method m-direct">Pago por você</span></div>
+        <div class="cost-block-hd"><span>OVHC — Seguro Saúde / Health Insurance</span><span class="method m-direct">Pago diretamente</span></div>
         <div class="cost-row"><span>Overseas Visitor Health Cover (Single)</span><span>Mensal / Monthly</span></div>
-        <div class="cost-note">Contrate diretamente e envie a apólice para keila.peixoto@kmpconsulting.com.au</div>
+        <div class="cost-note">Contrate (BUPA, NIB, Medibank etc.) e envie a apólice para keila.peixoto@kmpconsulting.com.au</div>
       </div>
     </div>
 
     <div class="sig-box">
-      <div class="sig-hd"> Client Acknowledgment</div>
-      <div class="sig-disclaimer">Confirmo que li e compreendi todos os requisitos deste checklist. &nbsp;/&nbsp; <em>I confirm that I have read and understood all requirements.</em></div>
+      <div class="sig-hd">Client Acknowledgment — Reconhecimento</div>
+      <div class="sig-disclaimer">Confirmo que li e compreendi todos os requisitos deste checklist. / <em>I confirm that I have read and understood all requirements listed.</em></div>
       <div class="sig-grid"><div><div class="sig-line"></div><div class="sig-lbl">Assinatura / Signature</div></div><div><div class="sig-line"></div><div class="sig-lbl">Data / Date (DD/MM/YYYY)</div></div></div>
-      <div class="sig-full-line"></div><div class="sig-lbl" style="margin-top:3px">Nome em Letra de Forma / Print Full Name</div>
+      <div class="sig-full-line"></div>
+      <div class="sig-lbl" style="margin-top:3px">Nome em Letra de Forma / Print Full Name</div>
     </div>
-    <div class="center-note">KMP Consulting &nbsp;|&nbsp; keila.peixoto@kmpconsulting.com.au</div>
+    <div style="text-align:center;font-size:9px;color:#9ca3af;margin-bottom:4px">KMP Consulting | keila.peixoto@kmpconsulting.com.au</div>
   </div>
-
-  <!-- COUPLE -->
-  <div class="content" id="couple-c">
-    <div class="doc-title">
-      <h1>Document Checklist — Lista de Documentos</h1>
-      <p>Envie para keila.peixoto@kmpconsulting.com.au &nbsp;|&nbsp; <span class="badge b-ap">Aplicante Principal</span> &nbsp;<span class="badge b-dep">Dependente</span></p>
-    </div>
-    <div class="intro"> Documentos marcados com <strong>Aplicante Principal</strong> e <strong>Dependente</strong> devem ser enviados separadamente para cada aplicante, em formato <strong>PDF ou JPG de alta qualidade</strong>.</div>
-
-    <div class="section">
-      <div class="sec-title"> Documentos Pessoais &nbsp;/&nbsp; Personal Documents</div>
-      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Passaporte <span class="badge b-ap">Aplicante Principal</span> <span class="badge b-dep">Dependente</span></div><div class="item-note">Todas as páginas — inclusive as em branco, mesmo sem carimbo</div></div></div>
-      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Visto Atual <span class="badge b-ap">Aplicante Principal</span> <span class="badge b-dep">Dependente</span></div><div class="item-note">Cópia do visto vigente de cada aplicante</div></div></div>
-      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">AFP Police Check — Resultado <span class="badge b-ap">Aplicante Principal</span> <span class="badge b-dep">Dependente</span></div><div class="item-link">→ afp.gov.au/our-services/national-police-checks</div></div></div>
-      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">AFP Police Check — Recibo <span class="badge b-ap">Aplicante Principal</span> <span class="badge b-dep">Dependente</span></div></div></div>
-      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Travel History <span class="badge b-ap">Aplicante Principal</span> <span class="badge b-dep">Dependente</span></div><div class="item-note">PDF com todas as páginas do passaporte — inclusive as em branco</div></div></div>
-      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Comprovante de Endereço <span class="badge b-ap">Aplicante Principal</span> <span class="badge b-dep">Dependente</span></div></div></div>
-      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">OVHC — Couple</div><div class="item-warn">⚠️ OSHC não é aceito — obrigatório OVHC Couple</div></div></div>
-      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Resultado IELTS ou PTE (PDF original) <span class="badge b-ap">Aplicante Principal</span></div><div class="item-note">Score mínimo: <strong>Overall 55</strong> &nbsp;|&nbsp; Listening 40 &nbsp;|&nbsp; Reading 42 &nbsp;|&nbsp; Writing 41 &nbsp;|&nbsp; Speaking 39</div><div class="item-warn">⚠️ Realizado nos últimos 12 meses — data limite: anterior ao dia da aplicação</div></div></div>
-    </div>
-    <div class="section">
-      <div class="sec-title"> Histórico &nbsp;/&nbsp; History</div>
-      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Endereços dos Últimos 10 Anos <span class="badge b-ap">Aplicante Principal</span> <span class="badge b-dep">Dependente</span></div><div class="item-note">Sem gaps entre as datas — mês e ano de entrada e saída de cada endereço</div></div></div>
-      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Viagens dos Últimos 10 Anos <span class="badge b-ap">Aplicante Principal</span> <span class="badge b-dep">Dependente</span></div></div></div>
-    </div>
-    <div class="section">
-      <div class="sec-title"> Documentos do Relacionamento</div>
-      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">De Facto Declaration &nbsp;ou&nbsp; Marriage Certificate</div><div class="item-note">De Facto se união com mais de 12 meses — ou certidão de casamento</div></div></div>
-      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Lease Agreement</div><div class="item-note">Contrato de aluguel com nome de ambos os aplicantes</div></div></div>
-      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Conta Bancária Conjunta / Joint Bank Account</div><div class="item-note">Extrato comprovando conta conjunta</div></div></div>
-    </div>
-    <div class="section">
-      <div class="sec-title"> Skills Assessment &nbsp;<span style="font-size:8px;font-weight:500;text-transform:none;letter-spacing:0;color:#9ca3af">— Aplicante Principal</span></div>
-      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Skills Assessment — Solicitação</div></div></div>
-      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Skills Assessment — Aprovação</div><div class="item-warn">→ Caso queiram aplicar o provisional, me avisem por favor</div></div></div>
-    </div>
-    <div class="section">
-      <div class="sec-title"> Documentos da Escola &nbsp;<span style="font-size:8px;font-weight:500;text-transform:none;letter-spacing:0;color:#9ca3af">— Aplicante Principal</span></div>
-      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Completion Letter</div></div></div>
-      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Academic Results</div></div></div>
-      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Certificate</div></div></div>
-      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">CoE(s) — junção de 2 anos de curso obrigatória</div></div></div>
-    </div>
-
-    <div class="section">
-      <div class="costs-title"> Investimento &nbsp;/&nbsp; Costs</div>
-      <div class="cost-block">
-        <div class="cost-block-hd"><span>KMP Consulting — Taxa de Serviço</span><span class="method m-payid">Via PAYID</span></div>
-        <div class="cost-row"><span>Aplicante Principal</span><span>AUD $1,000.00</span></div>
-        <div class="cost-row"><span>Dependente</span><span>AUD $100.00</span></div>
-        <div class="cost-row"><span>Subtotal KMP</span><span>AUD $1,100.00</span></div>
-        <div class="cost-note">PAYID: mayara_peixoto@icloud.com</div>
-      </div>
-      <div class="cost-block">
-        <div class="cost-block-hd"><span>Governo Australiano — Government Fees</span><span class="method m-card">Credit Card</span></div>
-        <div class="cost-row"><span>Temporary Graduate Visa VAC1</span><span>AUD $4,600.00</span></div>
-        <div class="cost-row"><span>Additional Applicant Charge (18+)</span><span>AUD $2,300.00</span></div>
-        <div class="cost-row"><span>Card Surcharge (1.40%)</span><span>AUD $96.60</span></div>
-        <div class="cost-row"><span>Total</span><span>AUD $6,996.60</span></div>
-        <div class="cost-note">Pago pelo aplicante via cartão — utilize o Card Authorization Form da KMP Consulting</div>
-      </div>
-      <div class="cost-block">
-        <div class="cost-block-hd"><span>OVHC — Seguro Saúde</span><span class="method m-direct">Pago por vocês</span></div>
-        <div class="cost-row"><span>Overseas Visitor Health Cover (Couple)</span><span>Mensal / Monthly</span></div>
-        <div class="cost-note">Contrate diretamente e envie a apólice para keila.peixoto@kmpconsulting.com.au</div>
-      </div>
-    </div>
-
-    <div class="sig-box">
-      <div class="sig-hd"> Client Acknowledgment</div>
-      <div class="sig-disclaimer">Confirmamos que lemos e compreendemos todos os requisitos deste checklist. &nbsp;/&nbsp; <em>We confirm that we have read and understood all requirements.</em></div>
-      <div class="sig-row">
-        <div class="sig-row-lbl">Aplicante Principal</div>
-        <div class="sig-grid"><div><div class="sig-line"></div><div class="sig-lbl">Assinatura / Signature</div></div><div><div class="sig-line"></div><div class="sig-lbl">Data (DD/MM/YYYY)</div></div></div>
-        <div class="sig-full-line"></div><div class="sig-lbl" style="margin-top:3px">Nome em Letra de Forma</div>
-      </div>
-      <div class="sig-row" style="margin-bottom:0;margin-top:12px">
-        <div class="sig-row-lbl">Dependente</div>
-        <div class="sig-grid"><div><div class="sig-line"></div><div class="sig-lbl">Assinatura / Signature</div></div><div><div class="sig-line"></div><div class="sig-lbl">Data (DD/MM/YYYY)</div></div></div>
-        <div class="sig-full-line"></div><div class="sig-lbl" style="margin-top:3px">Nome em Letra de Forma</div>
-      </div>
-    </div>
-    <div class="center-note">KMP Consulting &nbsp;|&nbsp; keila.peixoto@kmpconsulting.com.au</div>
-  </div>
-
   <div class="footer">
-    <span class="footer-l">KMP Consulting &nbsp;|&nbsp; keila.peixoto@kmpconsulting.com.au &nbsp;|&nbsp; Estratégia que conecta. Futuro que transforma.</span>
-    <span class="footer-r" id="footer-type">Subclass 485 — Single</span>
+    <span class="footer-l">KMP Consulting | keila.peixoto@kmpconsulting.com.au</span>
+    <span class="footer-r">Subclass 485 — Single Application</span>
   </div>
 </div>
-
-<button class="print-btn" onclick="window.print()">🖨️ Save as PDF</button>
-
-<script>
-function switchTab(type,el){
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.content').forEach(c=>c.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById(type+'-c').classList.add('active');
-  const isCouple=type==='couple';
-  document.getElementById('hdr-type').textContent=isCouple?'Couple Application':'Single Application';
-  document.getElementById('footer-type').textContent=isCouple?'Subclass 485 — Couple':'Subclass 485 — Single';
-}
-</script>
+<button class="print-btn" onclick="window.print()">Save as PDF</button>
 </body>
 </html>
