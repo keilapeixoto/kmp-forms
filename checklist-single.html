@@ -179,30 +179,10 @@ body{font-family:'Outfit',sans-serif;background:#e8e8e8;padding:28px 16px;color:
     <div style="text-align:center;font-size:9px;color:#9ca3af;margin-bottom:4px">KMP Consulting | keila.peixoto@kmpconsulting.com.au</div>
   </div>
   <div class="footer">
-
     <span class="footer-l">KMP Consulting | keila.peixoto@kmpconsulting.com.au</span>
     <span class="footer-r">Subclass 485 — Single Application</span>
   </div>
 </div>
 <button class="print-btn" onclick="window.print()">Save as PDF</button>
-<script>
-const WEB3FORMS_KEY="WEB3FORMS_KEY_AQUI";
-async function submitForm(){
-  const name=document.getElementById('sig-name').value.trim();
-  const date=document.getElementById('sig-date').value;
-  const email=document.getElementById('sig-email').value.trim();
-  const msg=document.getElementById('submit-msg');
-  if(!name||!email){msg.className='submit-msg err';msg.textContent='Por favor preencha nome e e-mail.';return;}
-  const checked=[...document.querySelectorAll('.cb.checked')].map(cb=>cb.nextElementSibling.querySelector('.item-main').textContent.trim());
-  const body=`Checklist 485 — Single Application\nData: ${new Date().toLocaleString('pt-BR')}\n\nCliente: ${name}\nE-mail: ${email}\nData: ${date}\n\n${'─'.repeat(40)}\n\nItens confirmados (${checked.length}):\n${checked.join('\n')||'Nenhum item marcado'}`;
-  msg.className='submit-msg';msg.textContent='Enviando...';msg.style.display='block';
-  try{
-    const r=await fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({access_key:WEB3FORMS_KEY,subject:`Checklist 485 Single — ${name}`,from_name:'KMP Consulting Forms',message:body,replyto:email})});
-    const d=await r.json();
-    if(d.success){msg.className='submit-msg ok';msg.textContent='Enviado com sucesso!';}
-    else throw new Error(d.message);
-  }catch(e){msg.className='submit-msg err';msg.textContent='Erro ao enviar. Verifique a chave Web3Forms.';}
-}
-</script>
 </body>
 </html>
