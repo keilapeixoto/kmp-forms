@@ -47,9 +47,7 @@ body{font-family:'Outfit',sans-serif;background:#e8e8e8;padding:28px 16px;color:
 .auth-text p:last-child{margin-bottom:0;font-size:10.5px;color:#9ca3af;font-style:italic}
 .sec-notice{background:#fef2f2;border:1px solid #fca5a5;border-radius:5px;padding:8px 12px;margin-bottom:14px}
 .sec-notice p{font-size:10px;color:#991b1b;line-height:1.6}
-.sig-canvas-wrap{border:1.5px solid #d1d5db;border-radius:6px;overflow:hidden;margin-bottom:4px;background:#fafafa}
-.sig-canvas-wrap canvas{display:block;width:100%;height:80px;cursor:crosshair;touch-action:none}
-.sig-clear{font-size:9px;color:#9ca3af;background:none;border:none;cursor:pointer;font-family:'Outfit',sans-serif;padding:2px 0;text-decoration:underline}
+.sig-block{margin-bottom:14px}
 .sig-block-lbl{font-size:9px;font-weight:700;color:#F27B20;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px}
 .sig-grid{display:grid;grid-template-columns:2fr 1fr;gap:20px;margin-bottom:4px}
 .sig-line{height:32px;border-bottom:1.5px solid #9ca3af}
@@ -58,7 +56,6 @@ body{font-family:'Outfit',sans-serif;background:#e8e8e8;padding:28px 16px;color:
 .footer{border-top:1.5px solid #e5e7eb;padding:8px 36px;display:flex;justify-content:space-between;align-items:center}
 .footer-l{font-size:9px;color:#9ca3af}
 .footer-r{font-size:9px;font-weight:700;color:#F27B20;white-space:nowrap}
-.print-btn{position:fixed;bottom:22px;right:22px;background:#F27B20;color:#fff;border:none;padding:11px 18px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;box-shadow:0 4px 14px rgba(242,123,32,0.4)}
 .submit-wrap{margin-top:14px;display:flex;flex-direction:column;gap:8px}
 .submit-btn{width:100%;padding:13px;background:linear-gradient(135deg,#F27B20,#F5941E);border:none;border-radius:8px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif}
 .submit-msg{font-size:11px;text-align:center;padding:9px;border-radius:6px;display:none}
@@ -190,17 +187,15 @@ body{font-family:'Outfit',sans-serif;background:#e8e8e8;padding:28px 16px;color:
 
     <!-- Signature -->
     <div class="divider"><span>Signature</span></div>
-    <div class="sig-block" style="margin-bottom:0">
+    <div class="sig-block">
       <div class="sig-block-lbl">Main Applicant — Aplicante Principal</div>
-      <div class="field" style="margin-bottom:8px">
-        <label>Signature / Assinatura <span>*</span></label>
-        <div class="sig-canvas-wrap"><canvas id="sig-canvas" height="80"></canvas></div>
-        <button class="sig-clear" onclick="clearSig()">Clear / Limpar</button>
-      </div>
-      <div class="sig-grid">
-        <div><input class="sig-input" id="sig-name" type="text" placeholder="Print Full Name"/><div class="sig-lbl">Print Full Name</div></div>
-        <div><input class="sig-input" id="sig-date" type="date"/><div class="sig-lbl">Date / Data (DD/MM/YYYY)</div></div>
-      </div>
+      <div class="sig-grid"><div><div class="sig-line"></div><div class="sig-lbl">Signature / Assinatura</div></div><div><div class="sig-line"></div><div class="sig-lbl">Date (DD/MM/YYYY)</div></div></div>
+      <div class="sig-full"></div><div class="sig-lbl" style="margin-top:3px">Print Full Name / Nome em Letra de Forma</div>
+    </div>
+    <div class="sig-block" style="margin-bottom:0">
+      <div class="sig-block-lbl">Dependent — Dependente</div>
+      <div class="sig-grid"><div><div class="sig-line"></div><div class="sig-lbl">Signature / Assinatura</div></div><div><div class="sig-line"></div><div class="sig-lbl">Date (DD/MM/YYYY)</div></div></div>
+      <div class="sig-full"></div><div class="sig-lbl" style="margin-top:3px">Print Full Name / Nome em Letra de Forma</div>
     </div>
 
     <!-- Submit -->
