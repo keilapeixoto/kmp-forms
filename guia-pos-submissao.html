@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Guia Pós-Submissão — KMP Consulting</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Outfit',sans-serif;background:#e8e8e8;padding:28px 16px;color:#1a1a1a;font-size:13px;line-height:1.55}
+.page{background:#fff;width:210mm;max-width:100%;margin:0 auto;box-shadow:0 4px 28px rgba(0,0,0,.13);overflow:hidden}
+
+/* ── HEADER ── */
+.hdr{background:#F27B20;padding:20px 36px 18px;display:flex;justify-content:space-between;align-items:center}
+.hdr-left{display:flex;align-items:center;gap:14px}
+.logo-box{width:44px;height:44px;background:#fff;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-box span{font-weight:800;font-size:14px;color:#F27B20;letter-spacing:-.5px}
+.hdr-text{}
+.hdr-name{font-size:18px;font-weight:700;color:#fff;line-height:1.2}
+.hdr-name em{font-style:normal;font-weight:300}
+.hdr-slogan{font-size:8px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.65);margin-top:3px}
+.hdr-right{text-align:right}
+.hdr-tag{display:inline-block;background:rgba(255,255,255,.18);border-radius:20px;padding:4px 12px;font-size:8.5px;font-weight:600;color:rgba(255,255,255,.9);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.hdr-doc{font-size:15px;font-weight:800;color:#fff;line-height:1.2}
+
+/* ── BODY ── */
+.body{padding:32px 36px 36px}
+
+/* ── INTRO ── */
+.intro-title{font-size:19px;font-weight:800;color:#1a1a1a;text-align:center;margin-bottom:6px}
+.intro-sub{font-size:11.5px;color:#9ca3af;text-align:center;margin-bottom:24px}
+.intro-hr{border:none;border-bottom:1.5px solid #e5e7eb;margin-bottom:24px}
+
+/* ── INTRO ALERT ── */
+.intro-alert{border-left:3.5px solid #F27B20;padding:10px 16px;background:#fff;margin-bottom:28px}
+.intro-alert p{font-size:12px;color:#374151;line-height:1.55}
+.intro-alert p b{color:#1a1a1a}
+
+/* ── SECTION ── */
+.section{margin-bottom:28px}
+.sec-hd{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:8px;border-bottom:1.5px solid #fde8cc}
+.sec-num{width:26px;height:26px;background:#F27B20;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;color:#fff;flex-shrink:0}
+.sec-title{font-size:10px;font-weight:700;color:#F27B20;text-transform:uppercase;letter-spacing:.12em}
+
+/* ── INFO CARD ── */
+.card{background:#f9fafb;border-radius:8px;padding:14px 16px;margin-bottom:10px}
+.card-title{font-size:12.5px;font-weight:700;color:#1a1a1a;margin-bottom:4px}
+.card-body{font-size:11.5px;color:#6b7280;line-height:1.55}
+.card-warn{font-size:11.5px;font-weight:600;color:#F27B20;margin-top:5px}
+
+/* ── ALERT CARD ── */
+.alert-card{background:#fff8f0;border:1px solid #fbd4a0;border-left:4px solid #F27B20;border-radius:8px;padding:14px 16px;margin-bottom:10px}
+.alert-card .card-title{color:#92400e}
+.alert-card .card-body{color:#78350f}
+
+/* ── TABLE ── */
+.info-table{width:100%;border-collapse:collapse;margin-bottom:10px;font-size:12px}
+.info-table thead tr{background:#F27B20}
+.info-table thead td{color:#fff;font-weight:700;padding:8px 12px}
+.info-table tbody tr:nth-child(odd){background:#f9fafb}
+.info-table tbody tr:nth-child(even){background:#fff}
+.info-table tbody td{padding:8px 12px;color:#374151;border-bottom:1px solid #e5e7eb}
+.info-table tbody td:first-child{font-weight:600;color:#1a1a1a}
+
+/* ── DIVIDER ── */
+.divider{border:none;border-bottom:1px solid #f3f4f6;margin:0 0 28px}
+
+/* ── FOOTER ── */
+.footer{background:#F27B20;padding:12px 36px;display:flex;justify-content:space-between;align-items:center;margin-top:0}
+.footer span{font-size:9px;color:rgba(255,255,255,.8);font-weight:400}
+.footer strong{color:#fff;font-weight:600}
+
+/* ── PRINT ── */
+.print-btn{display:block;margin:20px auto 0;background:#F27B20;color:#fff;border:none;padding:12px 32px;border-radius:8px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.04em}
+.print-btn:hover{background:#d96a10}
+@media print{
+  body{background:#fff;padding:0}
+  .page{box-shadow:none;width:100%}
+  .print-btn{display:none}
+  .section,.card,.alert-card{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="hdr">
+    <div class="hdr-left">
+      <div class="logo-box"><span>kmp</span></div>
+      <div class="hdr-text">
+        <div class="hdr-name"><b>kmp</b> <em>consulting</em></div>
+        <div class="hdr-slogan">Estratégia que conecta. Futuro que transforma.</div>
+      </div>
+    </div>
+    <div class="hdr-right">
+      <div class="hdr-tag">Pós-Submissão — Visto</div>
+      <div class="hdr-doc">Guia do Processo</div>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="body">
+
+    <div class="intro-title">O que acontece agora?</div>
+    <div class="intro-sub">Leia com atenção e guarde este documento para referência durante o processamento do seu visto.</div>
+    <hr class="intro-hr"/>
+
+    <div class="intro-alert">
+      <p>Em caso de dúvidas a qualquer momento do processo, <b>entre em contato com a KMP antes de tomar qualquer decisão</b> relacionada ao seu visto. Mudanças não comunicadas podem comprometer sua aplicação.</p>
+    </div>
+
+    <!-- 01 — BVA -->
+    <div class="section">
+      <div class="sec-hd">
+        <div class="sec-num">01</div>
+        <div class="sec-title">Bridging Visa A (BVA)</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Sua aplicação foi submetida com sucesso</div>
+        <div class="card-body">A submissão foi enviada ao Departamento de Home Affairs. Em conjunto, você recebeu a concessão do <b>Bridging Visa A (BVA)</b>, que garante a sua permanência legal na Austrália enquanto aguarda a decisão do Departamento.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Quando o BVA entra em vigor</div>
+        <div class="card-body">O BVA será ativado automaticamente apenas após o vencimento do seu visto atual. Até essa data, as condições do visto vigente continuam plenamente válidas.</div>
+      </div>
+    </div>
+
+    <hr class="divider"/>
+
+    <!-- 02 — VIAGENS -->
+    <div class="section">
+      <div class="sec-hd">
+        <div class="sec-num">02</div>
+        <div class="sec-title">Viagens Internacionais</div>
+      </div>
+      <div class="alert-card">
+        <div class="card-title">O BVA não permite retorno à Austrália após viagem ao exterior</div>
+        <div class="card-body">Não viaje sem consultar a KMP previamente enquanto a sua aplicação estiver em processamento.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Bridging Visa B (BVB) — obrigatório para quem precisa viajar</div>
+        <div class="card-body">Caso precise viajar antes da decisão do seu visto, é necessário solicitar um Bridging Visa B antes da saída do país.</div>
+        <div class="card-warn">Solicite com pelo menos 15 a 20 dias de antecedência da data da viagem.</div>
+      </div>
+      <table class="info-table">
+        <thead><tr><td>Detalhe</td><td>Valor / Prazo</td></tr></thead>
+        <tbody>
+          <tr><td>Taxa governamental (BVB)</td><td>AUD 190</td></tr>
+          <tr><td>Taxa administrativa KMP</td><td>AUD [a confirmar]</td></tr>
+          <tr><td>Antecedência recomendada</td><td>15 a 20 dias antes da viagem</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <hr class="divider"/>
+
+    <!-- 03 — SKILLS -->
+    <div class="section">
+      <div class="sec-hd">
+        <div class="sec-num">03</div>
+        <div class="sec-title">Skills Assessment</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Encaminhe a carta de aprovação assim que receber</div>
+        <div class="card-body">Caso o seu Skills Assessment ainda esteja em processamento, envie o resultado imediatamente após a emissão pela autoridade avaliadora.</div>
+        <div class="card-warn">O resultado positivo é essencial para a avaliação final do seu processo junto ao Home Affairs.</div>
+      </div>
+    </div>
+
+    <hr class="divider"/>
+
+    <!-- 04 — EXAMES -->
+    <div class="section">
+      <div class="sec-hd">
+        <div class="sec-num">04</div>
+        <div class="sec-title">Exames Médicos</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Agende pelo portal Bupa o quanto antes</div>
+        <div class="card-body">Caso tenha recebido uma solicitação de exames médicos, acesse o portal abaixo e realize o agendamento com antecedência:<br/><br/><span style="color:#F27B20;font-weight:600">bmvs.onlineappointmentscheduling.net.au/oasis</span></div>
+        <div class="card-warn">Pagamento realizado no ato do agendamento, via cartão de crédito ou débito.</div>
+      </div>
+      <table class="info-table">
+        <thead><tr><td>Campo</td><td>Informação</td></tr></thead>
+        <tbody>
+          <tr><td>HAP ID</td><td>Consta no canto superior direito do documento <b>"Request for Health Examination"</b>. Informe esse número durante o agendamento.</td></tr>
+          <tr><td>Guia de agendamento</td><td>Um guia passo a passo está em anexo para facilitar o processo.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <hr class="divider"/>
+
+    <!-- 05 — DADOS -->
+    <div class="section">
+      <div class="sec-hd">
+        <div class="sec-num">05</div>
+        <div class="sec-title">Atualização de Dados Pessoais</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Comunique qualquer alteração imediatamente</div>
+        <div class="card-body">Durante o processamento, qualquer mudança nas suas informações pessoais deve ser informada à KMP para que possamos manter seus dados atualizados junto ao Departamento de Home Affairs. Isso inclui:</div>
+      </div>
+      <table class="info-table">
+        <thead><tr><td colspan="2">Informações que devem ser atualizadas</td></tr></thead>
+        <tbody>
+          <tr><td>Endereço</td><td>Mudança de endereço residencial</td></tr>
+          <tr><td>Contato</td><td>Alteração de telefone ou endereço de e-mail</td></tr>
+          <tr><td>Passaporte</td><td>Renovação ou emissão de novo passaporte</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div><!-- /body -->
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <span><strong>KMP Consulting</strong> &nbsp;|&nbsp; keila.peixoto@kmpconsulting.com.au</span>
+    <span>Guia Pós-Submissão de Visto</span>
+  </div>
+
+</div><!-- /page -->
+
+<button class="print-btn" onclick="window.print()">🖨️ Salvar como PDF</button>
+
+</body>
+</html>
