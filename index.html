@@ -110,6 +110,7 @@ function KMPVisaForm(){
         access_key:WEB3FORMS_KEY,
         subject:`Nova Solicitação de Visto - ${nome}`,
         from_name:"Formulário KMP Consulting",
+        to:"vistos@kmpconsulting.com.au",
         message:corpo,
         reply_to:f.email||""
       };
@@ -212,7 +213,7 @@ function KMPVisaForm(){
         <Divider text="Upload de Documentos / Document Upload"/>
         <p style={{fontSize:13,color:GRAY,marginBottom:16,lineHeight:1.6}}>Anexe os documentos solicitados. Formatos aceitos: PDF, JPG, PNG (máx. 10MB por arquivo).<br/><em style={{fontSize:12}}>Attach the required documents. Accepted formats: PDF, JPG, PNG (max. 10MB each).</em></p>
         <FileUpload label="Cópia do passaporte (página de dados) / Passport bio page" fieldKey="passaporte" files={files} setFiles={setFiles}/>
-        <FileUpload label="Foto 3x4 ou 5x7 (fundo branco) / Passport photo (white background)" fieldKey="foto" files={files} setFiles={setFiles}/>
+
         <FileUpload label="Comprovante de renda / Proof of income" fieldKey="renda" files={files} setFiles={setFiles}/>
         <FileUpload label="Extrato bancário (últimos 3 meses) / Bank statement (last 3 months)" fieldKey="extrato" files={files} setFiles={setFiles}/>
         <FileUpload label="Comprovante de vínculo (trabalho/estudo) / Proof of ties (work/study)" fieldKey="vinculo" files={files} setFiles={setFiles}/>
