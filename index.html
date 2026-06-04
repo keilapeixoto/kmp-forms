@@ -35,12 +35,42 @@ function Q({children,mb=22}){return <div style={{marginBottom:mb}}>{children}</d
 function Divider({text}){return(<div style={{display:"flex",alignItems:"center",gap:12,margin:"28px 0 20px"}}><div style={{height:1,flex:1,background:BORDER}}/><span style={{fontSize:11,fontWeight:700,color:ORANGE,textTransform:"uppercase",letterSpacing:"0.08em"}}>{text}</span><div style={{height:1,flex:1,background:BORDER}}/></div>);}
 function CF({show,children}){if(!show)return null;return <div style={{marginTop:8,padding:"12px 16px",background:ORANGE_LIGHT,borderRadius:8,borderLeft:`3px solid ${ORANGE}`}}>{children}</div>;}
 
+function FileUpload({label,fieldKey,files,setFiles}){
+  const inputRef=useRef(null);
+  const current=files[fieldKey]||null;
+  const handleChange=(e)=>{
+    const file=e.target.files[0];
+    if(file)setFiles(prev=>({...prev,[fieldKey]:file}));
+  };
+  const handleRemove=(e)=>{
+    e.stopPropagation();
+    setFiles(prev=>{const n={...prev};delete n[fieldKey];return n;});
+    if(inputRef.current)inputRef.current.value="";
+  };
+  return(
+    <div style={{marginBottom:14}}>
+      <input ref={inputRef} type="file" accept=".pdf,.jpg,.jpeg,.png" onChange={handleChange} style={{display:"none"}}/>
+      <div onClick={()=>!current&&inputRef.current.click()} style={{border:current?`2px solid ${ORANGE}`:`2px dashed #d1d5db`,borderRadius:10,padding:"14px 16px",textAlign:"center",cursor:current?"default":"pointer",background:current?ORANGE_LIGHT:"#fafafa",transition:"all 0.2s",display:"flex",alignItems:"center",justifyContent:"space-between",gap:8}}>
+        {current?(
+          <>
+            <span style={{fontSize:13,color:ORANGE_DARK,fontWeight:500,textAlign:"left",wordBreak:"break-all"}}>✓ {current.name}</span>
+            <button onClick={handleRemove} style={{flexShrink:0,background:"none",border:`1px solid ${ORANGE}`,borderRadius:6,color:ORANGE_DARK,fontSize:12,fontWeight:600,cursor:"pointer",padding:"3px 10px",fontFamily:"'Outfit',sans-serif"}}>Remover</button>
+          </>
+        ):(
+          <span style={{fontSize:13,color:GRAY,width:"100%"}}>↑ {label} <span style={{fontSize:11,color:"#aaa"}}>(PDF, JPG, PNG — Máx. 10MB)</span></span>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function KMPVisaForm(){
   const[step,setStep]=useState(0);
   const[submitted,setSubmitted]=useState(false);
   const[sending,setSending]=useState(false);
   const[sendError,setSendError]=useState(null);
   const[f,setF]=useState({});
+  const[files,setFiles]=useState({});
   const topRef=useRef(null);
   const s=(key)=>(e)=>setF({...f,[key]:e?.target?e.target.value:e});
   const goStep=(n)=>{setStep(n);topRef.current?.scrollIntoView({behavior:"smooth"});};
@@ -71,62 +101,29 @@ function KMPVisaForm(){
       ["Acusação pendente",f.acusacao==="SIM/YES"?f.acusacaoDetalhe:"Não"],
       ["Descumpriu condições",f.descumpriu==="SIM/YES"?f.descumpriuDetalhe:"Não"],
       ["Visto recusado",f.recusado==="SIM/YES"?f.recusadoDetalhe:"Não"],
+      ["Documentos anexados",Object.keys(files).length>0?Object.values(files).map(fl=>fl.name).join(", "):"Nenhum"],
       ["Assinatura",f.assinatura],["Data",f.dataAssinatura]
     ].filter(([,v])=>v).map(([k,v])=>`${k}: ${v}`).join("\n");
     const corpo=`Nova solicitação — KMP Consulting\nData: ${new Date().toLocaleString("pt-BR")}\n\n${"─".repeat(50)}\n\n${linhas}`;
     try {
-
-  const payload = {
-    access_key: WEB3FORMS_KEY,
-    subject: `Nova Solicitação de Visto - ${nome}`,
-    from_name: "Formulário KMP Consulting",
-    message: corpo,
-    reply_to: f.email || ""
-  };
-
-  console.log("Payload enviado:", payload);
-
-  const res = await fetch(
-    "https://api.web3forms.com/submit",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      body: JSON.stringify(payload)
-    }
-  );
-
-  const data = await res.json();
-
-  console.log("Resposta Web3Forms:", data);
-
-  if (data.success) {
-
-    setSubmitted(true);
-
-  } else {
-
-    throw new Error(
-      data.message || "Erro ao enviar formulário"
-    );
-
-  }
-
-} catch (e) {
-
-  console.error("Erro completo:", e);
-
-  setSendError(
-    e.message || "Não foi possível enviar o formulário."
-  );
-
-} finally {
-
-  setSending(false);
-
-}
+      const payload={
+        access_key:WEB3FORMS_KEY,
+        subject:`Nova Solicitação de Visto - ${nome}`,
+        from_name:"Formulário KMP Consulting",
+        message:corpo,
+        reply_to:f.email||""
+      };
+      const res=await fetch("https://api.web3forms.com/submit",{
+        method:"POST",
+        headers:{"Content-Type":"application/json","Accept":"application/json"},
+        body:JSON.stringify(payload)
+      });
+      const data=await res.json();
+      if(data.success){setSubmitted(true);}
+      else{throw new Error(data.message||"Erro ao enviar formulário");}
+    }catch(e){
+      setSendError(e.message||"Não foi possível enviar o formulário.");
+    }finally{setSending(false);}
   };
 
   const renderStep=()=>{
@@ -212,7 +209,16 @@ function KMPVisaForm(){
           <p style={{fontSize:14,color:DARK,lineHeight:1.7,margin:0}}><strong>Declaração:</strong> Declaro que as informações fornecidas são verdadeiras. Entendo que informações falsas podem resultar na recusa do visto.</p>
           <p style={{fontSize:13,color:GRAY,lineHeight:1.6,margin:"10px 0 0",fontStyle:"italic"}}><em>I declare that the information provided is true and correct. I understand that false information may result in visa refusal.</em></p>
         </div>
-        <Q><Label textPt="Assinatura digital" textEn="Digital signature" required/><Input placeholder="Nome completo / Full name" value={f.assinatura} onChange={s("assinatura")}/></Q>
+        <Divider text="Upload de Documentos / Document Upload"/>
+        <p style={{fontSize:13,color:GRAY,marginBottom:16,lineHeight:1.6}}>Anexe os documentos solicitados. Formatos aceitos: PDF, JPG, PNG (máx. 10MB por arquivo).<br/><em style={{fontSize:12}}>Attach the required documents. Accepted formats: PDF, JPG, PNG (max. 10MB each).</em></p>
+        <FileUpload label="Cópia do passaporte (página de dados) / Passport bio page" fieldKey="passaporte" files={files} setFiles={setFiles}/>
+        <FileUpload label="Foto 3x4 ou 5x7 (fundo branco) / Passport photo (white background)" fieldKey="foto" files={files} setFiles={setFiles}/>
+        <FileUpload label="Comprovante de renda / Proof of income" fieldKey="renda" files={files} setFiles={setFiles}/>
+        <FileUpload label="Extrato bancário (últimos 3 meses) / Bank statement (last 3 months)" fieldKey="extrato" files={files} setFiles={setFiles}/>
+        <FileUpload label="Comprovante de vínculo (trabalho/estudo) / Proof of ties (work/study)" fieldKey="vinculo" files={files} setFiles={setFiles}/>
+        <FileUpload label="Itinerário de viagem, se houver / Travel itinerary, if applicable" fieldKey="itinerario" files={files} setFiles={setFiles}/>
+        <Divider text="Assinatura / Signature"/>
+        <Q><Label textPt="Assinatura digital" textEn="Type your full name as digital signature" required/><Input placeholder="Nome completo / Full name" value={f.assinatura} onChange={s("assinatura")}/></Q>
         <Q><Label textPt="Data" textEn="Date" required/><Input type="date" value={f.dataAssinatura} onChange={s("dataAssinatura")}/></Q>
       </>);
       default:return null;
@@ -227,7 +233,7 @@ function KMPVisaForm(){
         </div>
         <h2 style={{fontSize:26,fontWeight:800,color:DARK,margin:"0 0 10px"}}>Formulário Enviado!</h2>
         <p style={{color:GRAY,fontSize:15,lineHeight:1.6}}>Sua solicitação foi recebida. A equipe da <strong style={{color:ORANGE}}>KMP Consulting</strong> entrará em contato em até 48 horas úteis.</p>
-        <button onClick={()=>{setSubmitted(false);setStep(0);setF({});}} style={{marginTop:24,padding:"12px 28px",background:"transparent",border:`1.5px solid ${ORANGE}`,borderRadius:10,color:ORANGE,fontSize:14,fontWeight:600,cursor:"pointer"}}>Novo Formulário</button>
+        <button onClick={()=>{setSubmitted(false);setStep(0);setF({});setFiles({});}} style={{marginTop:24,padding:"12px 28px",background:"transparent",border:`1.5px solid ${ORANGE}`,borderRadius:10,color:ORANGE,fontSize:14,fontWeight:600,cursor:"pointer"}}>Novo Formulário</button>
       </div>
     </div>
   );}
