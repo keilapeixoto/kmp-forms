@@ -11,7 +11,7 @@
     --orange: #F27B20; --orange-light: #FDF0E6; --orange-dark: #C45E08;
     --graphite: #1E1E1E; --graphite-mid: #3A3A3A; --graphite-light: #6B6B6B;
     --stone: #F7F5F2; --stone-mid: #EAE6E0; --white: #FFFFFF;
-    --green: #2D6A4F; --font-display: 'Cormorant Garamond', serif;
+    --green: #2D6A4F; --green-light: #EAF4EE; --font-display: 'Cormorant Garamond', serif;
     --font-body: 'Outfit', sans-serif; --radius: 12px; --radius-sm: 8px;
   }
   html { scroll-behavior: smooth; }
@@ -30,9 +30,25 @@
   .hero h1 em { font-style: italic; color: var(--orange); }
   .hero p { font-size: 1rem; color: var(--graphite-light); line-height: 1.75; max-width: 520px; margin: 0 auto; }
   .divider { width: 48px; height: 2px; background: var(--orange); margin: 2rem auto; border-radius: 2px; }
+
+  /* Progress */
+  .progress-wrap { max-width: 1100px; margin: 0 auto 48px; padding: 0 2rem; }
+  .progress-steps { display: flex; align-items: center; max-width: 560px; margin: 0 auto; }
+  .progress-step { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; position: relative; }
+  .progress-step:not(:last-child)::after { content: ''; position: absolute; top: 16px; left: calc(50% + 16px); right: calc(-50% + 16px); height: 2px; background: var(--stone-mid); z-index: 0; transition: background 0.3s; }
+  .progress-step.done:not(:last-child)::after { background: var(--orange); }
+  .step-circle { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--stone-mid); background: var(--white); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: var(--graphite-light); z-index: 1; transition: all 0.3s; }
+  .progress-step.active .step-circle { border-color: var(--orange); background: var(--orange); color: white; }
+  .progress-step.done .step-circle { border-color: var(--orange); background: var(--orange); color: white; }
+  .step-label { font-size: 10px; font-weight: 500; color: var(--graphite-light); text-align: center; line-height: 1.3; letter-spacing: 0.04em; text-transform: uppercase; transition: color 0.3s; }
+  .progress-step.active .step-label, .progress-step.done .step-label { color: var(--orange-dark); }
+
+  /* Layout */
   .booking-wrapper { max-width: 1100px; margin: 0 auto; padding: 0 2rem 80px; display: grid; grid-template-columns: 1fr 1.4fr; gap: 40px; align-items: start; }
   .panel { background: var(--white); border-radius: var(--radius); border: 1px solid var(--stone-mid); padding: 2rem; }
   .panel-title { font-family: var(--font-display); font-size: 1.3rem; font-weight: 500; color: var(--graphite); margin-bottom: 1.5rem; }
+
+  /* Service cards */
   .service-card { border: 1.5px solid var(--stone-mid); border-radius: var(--radius-sm); padding: 1.25rem; cursor: pointer; transition: all 0.2s; margin-bottom: 0.75rem; position: relative; }
   .service-card:hover, .service-card.selected { border-color: var(--orange); background: var(--orange-light); }
   .service-card.selected::after { content: '✓'; position: absolute; top: 1rem; right: 1rem; width: 22px; height: 22px; background: var(--orange); color: white; border-radius: 50%; font-size: 12px; display: flex; align-items: center; justify-content: center; font-weight: 600; }
@@ -46,21 +62,81 @@
   .service-tag { font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; letter-spacing: 0.03em; }
   .tag-price { background: #FDF0E6; color: var(--orange-dark); }
   .tag-time { background: var(--stone); color: var(--graphite-light); }
+
+  /* Right col */
   .right-col { display: flex; flex-direction: column; gap: 24px; }
   .info-box { padding: 1rem; background: var(--orange-light); border-radius: var(--radius-sm); border-left: 3px solid var(--orange); }
   .info-box p { font-size: 12.5px; color: var(--orange-dark); line-height: 1.65; }
-  .calendar-frame-wrap { background: var(--white); border-radius: var(--radius); border: 1px solid var(--stone-mid); overflow: hidden; }
-  .calendar-frame-wrap iframe { display: block; width: 100%; min-height: 600px; border: none; }
   .authority-note { padding: 1rem 1.25rem; background: var(--stone); border-radius: var(--radius-sm); border: 1px solid var(--stone-mid); }
   .authority-note p { font-size: 12px; color: var(--graphite-light); line-height: 1.7; font-style: italic; }
-  .note { font-size: 11.5px; color: var(--graphite-light); line-height: 1.6; text-align: center; }
+
+  /* Right step panels */
+  .right-step { display: none; flex-direction: column; gap: 24px; }
+  .right-step.active { display: flex; animation: fadeUp 0.35s ease both; }
+
+  /* Payment blocks */
+  .pay-block { background: var(--stone); border-radius: var(--radius-sm); border: 1px solid var(--stone-mid); padding: 1.25rem; margin-bottom: 10px; }
+  .pay-block.highlight { background: var(--orange-light); border-color: var(--orange); }
+  .pay-label { font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--graphite-light); margin-bottom: 0.4rem; }
+  .pay-block.highlight .pay-label { color: var(--orange-dark); }
+  .pay-value { font-size: 1rem; font-weight: 600; color: var(--graphite); }
+  .pay-sub { font-size: 0.81rem; color: var(--graphite-light); margin-top: 3px; }
+  .pay-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .section-sep { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--graphite-light); margin: 1rem 0 0.6rem; }
+  .copy-btn { background: none; border: none; cursor: pointer; color: var(--orange); font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; transition: background 0.15s; margin-left: 6px; }
+  .copy-btn:hover { background: var(--orange-light); }
+  .selected-pill { display: inline-flex; align-items: center; background: var(--orange-light); border: 1px solid var(--orange); border-radius: 20px; padding: 5px 14px; font-size: 12px; font-weight: 500; color: var(--orange-dark); margin-bottom: 1.25rem; }
+
+  /* Upload */
+  .upload-area { border: 2px dashed var(--stone-mid); border-radius: var(--radius-sm); padding: 1.75rem; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--stone); position: relative; }
+  .upload-area:hover, .upload-area.dragover { border-color: var(--orange); background: var(--orange-light); }
+  .upload-area input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+  .upload-icon { width: 38px; height: 38px; margin: 0 auto 0.65rem; background: var(--orange-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+  .upload-icon svg { width: 18px; height: 18px; fill: none; stroke: var(--orange); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .upload-text { font-size: 0.82rem; color: var(--graphite-light); line-height: 1.6; }
+  .upload-text strong { color: var(--graphite); }
+  .file-preview { display: none; align-items: center; gap: 10px; background: var(--green-light); border: 1px solid var(--green); border-radius: var(--radius-sm); padding: 0.75rem 1rem; margin-top: 0.75rem; }
+  .file-preview.visible { display: flex; }
+  .file-preview svg { width: 16px; height: 16px; fill: none; stroke: var(--green); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+  .file-preview span { font-size: 0.81rem; color: var(--green); font-weight: 500; }
+
+  /* Form */
+  .field { margin-bottom: 0.85rem; }
+  .field label { display: block; font-size: 11px; font-weight: 600; color: var(--graphite-mid); margin-bottom: 5px; letter-spacing: 0.05em; text-transform: uppercase; }
+  .field input { width: 100%; padding: 0.7rem 0.9rem; border: 1.5px solid var(--stone-mid); border-radius: var(--radius-sm); font-family: var(--font-body); font-size: 0.88rem; color: var(--graphite); background: var(--white); transition: border-color 0.2s; outline: none; }
+  .field input:focus { border-color: var(--orange); }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  /* Buttons */
+  .btn { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-body); font-size: 0.88rem; font-weight: 600; padding: 0.75rem 1.5rem; border-radius: var(--radius-sm); cursor: pointer; transition: all 0.2s; border: none; text-decoration: none; }
+  .btn-primary { background: var(--orange); color: white; }
+  .btn-primary:hover { background: var(--orange-dark); transform: translateY(-1px); }
+  .btn-primary:disabled { background: var(--stone-mid); color: var(--graphite-light); cursor: not-allowed; transform: none; }
+  .btn-outline { background: transparent; color: var(--orange); border: 1.5px solid var(--orange); }
+  .btn-outline:hover { background: var(--orange-light); }
+  .btn-row { display: flex; gap: 10px; margin-top: 1.25rem; flex-wrap: wrap; }
+
+  /* Success */
+  .success-block { text-align: center; padding: 2rem; display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+  .success-icon { width: 56px; height: 56px; background: var(--green-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+  .success-icon svg { width: 24px; height: 24px; fill: none; stroke: var(--green); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  .success-title { font-family: var(--font-display); font-size: 1.5rem; font-weight: 500; color: var(--graphite); }
+  .success-text { font-size: 0.85rem; color: var(--graphite-light); line-height: 1.75; max-width: 380px; }
+  .divider-thin { width: 100%; height: 1px; background: var(--stone-mid); }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+  .panel { animation: fadeUp 0.4s ease both; }
   footer { text-align: center; padding: 2rem; font-size: 12px; color: var(--graphite-light); border-top: 1px solid var(--stone-mid); }
   footer a { color: var(--orange); text-decoration: none; }
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-  .panel, .right-col > * { animation: fadeUp 0.4s ease both; }
-  .right-col > *:nth-child(1) { animation-delay: 0.05s; }
-  .right-col > *:nth-child(2) { animation-delay: 0.12s; }
-  @media (max-width: 768px) { .booking-wrapper { grid-template-columns: 1fr; padding: 0 1rem 60px; } .hero { padding: 100px 1rem 40px; } nav { padding: 0 1rem; } }
+
+  @media (max-width: 768px) {
+    .booking-wrapper { grid-template-columns: 1fr; padding: 0 1rem 60px; }
+    .hero { padding: 100px 1rem 40px; }
+    nav { padding: 0 1rem; }
+    .progress-wrap { padding: 0 1rem; }
+    .progress-step .step-label { display: none; }
+    .field-row, .pay-grid { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body>
@@ -68,7 +144,7 @@
 <nav>
   <a href="https://kmp-forms.vercel.app" class="nav-logo">KMP <span>Consulting</span></a>
   <div class="nav-right">
-    <span class="nav-flag">🇦🇺</span>
+    <span class="nav-flag">Australia</span>
     <div class="lang-toggle">
       <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
       <button class="lang-btn" id="btn-pt" onclick="setLang('pt')">PT</button>
@@ -80,15 +156,27 @@
   <p class="hero-eyebrow" id="hero-eyebrow">Book a Consultation</p>
   <h1 id="hero-h1">Schedule your <em>consultation</em><br>with KMP Consulting</h1>
   <div class="divider"></div>
-  <p id="hero-p">Choose your service, then select an available time directly in our calendar. You will receive the Google Meet link by email after booking.</p>
+  <p id="hero-p">Follow the steps below to confirm your session. Your booking is only secured once payment has been verified.</p>
 </section>
 
+<!-- Progress Bar -->
+<div class="progress-wrap">
+  <div class="progress-steps">
+    <div class="progress-step active" id="prog-1"><div class="step-circle">1</div><div class="step-label" id="prog-lbl-1">Service</div></div>
+    <div class="progress-step" id="prog-2"><div class="step-circle">2</div><div class="step-label" id="prog-lbl-2">Payment</div></div>
+    <div class="progress-step" id="prog-3"><div class="step-circle">3</div><div class="step-label" id="prog-lbl-3">Receipt</div></div>
+    <div class="progress-step" id="prog-4"><div class="step-circle">4</div><div class="step-label" id="prog-lbl-4">Schedule</div></div>
+  </div>
+</div>
+
 <div class="booking-wrapper">
+
+  <!-- LEFT: service selection -->
   <div>
     <div class="panel">
       <p class="panel-title" id="lbl-type">Consultation type</p>
 
-      <div class="service-card selected" onclick="selectService(this)" id="svc-initial">
+      <div class="service-card selected" onclick="selectService(this, 'Strategic Consultation — Australia', 'AUD $150', 'en150')" id="svc-initial">
         <div class="service-name" id="svc-initial-name">Strategic Consultation — Australia</div>
         <div class="service-tagline" id="svc-initial-tagline">A personalised session to analyse your situation and build a clear plan for your next steps in Australia.</div>
         <div class="service-desc" id="svc-initial-desc">Based on your background, professional experience and goals, we conduct a personalised assessment to identify study opportunities, professional development and long-term planning. By the end of the consultation, you will have a clearer picture of your current situation and the paths available to make decisions with more confidence.</div>
@@ -108,7 +196,7 @@
         </div>
       </div>
 
-      <div class="service-card" onclick="selectService(this)" id="svc-return">
+      <div class="service-card" onclick="selectService(this, 'Follow-up Consultation', 'AUD $80', 'en80')" id="svc-return">
         <div class="service-name" id="svc-return-name">Follow-up Consultation</div>
         <div class="service-desc" id="svc-return-desc">For existing clients with process updates, document review, or follow-up questions throughout their journey.</div>
         <div class="service-meta">
@@ -123,20 +211,119 @@
     </div>
   </div>
 
-  <div class="right-col">
-    <div class="panel" style="padding:0;">
-      <div class="calendar-frame-wrap">
-        <iframe
-          src="https://calendar.app.google/CBezGLHFy382ZZS37"
-          title="Book a consultation — KMP Consulting Australia"
-          loading="lazy"
-        ></iframe>
+  <!-- RIGHT: step panels -->
+  <div>
+
+    <!-- STEP 1: CTA -->
+    <div class="right-step active" id="right-1">
+      <div class="panel" style="text-align:center; padding:2.5rem 2rem;">
+        <p style="font-family:var(--font-display); font-size:1.2rem; font-weight:500; color:var(--graphite); margin-bottom:0.75rem;" id="step1-title">Ready to get started?</p>
+        <p style="font-size:0.85rem; color:var(--graphite-light); line-height:1.7; margin-bottom:1.5rem;" id="step1-body">Select your consultation type on the left and proceed. Payment is completed before booking to secure your session.</p>
+        <button class="btn btn-primary" style="width:100%; justify-content:center;" onclick="goToStep(2)" id="step1-btn">Continue to payment</button>
+      </div>
+      <div class="authority-note">
+        <p id="authority-text">"Receive strategic guidance from someone who has lived in Australia for over 8 years and has personally supported hundreds of students and professionals throughout their international journeys."</p>
       </div>
     </div>
-    <div class="authority-note">
-      <p id="authority-text">"Receive strategic guidance from someone who has lived in Australia for over 8 years and has personally supported hundreds of students and professionals throughout their international journeys."</p>
+
+    <!-- STEP 2: Payment -->
+    <div class="right-step" id="right-2">
+      <div class="panel">
+        <p style="font-family:var(--font-display); font-size:1.2rem; font-weight:500; color:var(--graphite); margin-bottom:0.5rem;" id="step2-title">Complete your payment</p>
+        <p style="font-size:0.82rem; color:var(--graphite-light); line-height:1.6; margin-bottom:1.25rem;" id="step2-body">Transfer the amount below using PayID or direct bank transfer. Keep your receipt for the next step.</p>
+        <div class="selected-pill" id="pay-pill">Strategic Consultation · AUD $150</div>
+
+        <p class="section-sep" id="lbl-payid-section">PayID (Recommended)</p>
+        <div class="pay-block highlight">
+          <div class="pay-label">PayID</div>
+          <div class="pay-value">0451 051 806 <button class="copy-btn" onclick="copyText('0451051806', this)" id="copy-payid">copy</button></div>
+          <div class="pay-sub">Mobile · Keila Mayara Peixoto</div>
+        </div>
+
+        <p class="section-sep" id="lbl-bank-section">Direct Bank Transfer</p>
+        <div class="pay-grid">
+          <div class="pay-block">
+            <div class="pay-label" id="lbl-acctname">Account Name</div>
+            <div class="pay-value">Keila Mayara Peixoto</div>
+          </div>
+          <div class="pay-block">
+            <div class="pay-label" id="lbl-bank">Bank</div>
+            <div class="pay-value">Commonwealth Bank</div>
+          </div>
+          <div class="pay-block">
+            <div class="pay-label">BSB</div>
+            <div class="pay-value">062 028 <button class="copy-btn" onclick="copyText('062028', this)" id="copy-bsb">copy</button></div>
+          </div>
+          <div class="pay-block">
+            <div class="pay-label" id="lbl-acct">Account Number</div>
+            <div class="pay-value">11626299 <button class="copy-btn" onclick="copyText('11626299', this)" id="copy-acct">copy</button></div>
+          </div>
+        </div>
+
+        <div class="pay-block">
+          <div class="pay-label" id="lbl-amount">Amount</div>
+          <div class="pay-value" id="pay-valor">AUD $150</div>
+          <div class="pay-sub" id="pay-servico">Strategic Consultation</div>
+        </div>
+
+        <div class="info-box" style="margin-top:0.5rem;">
+          <p id="step2-note">Once payment is complete, proceed to the next step and upload your receipt. Your booking is confirmed only after payment is verified.</p>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-outline" onclick="goToStep(1)" id="btn-back2">Back</button>
+          <button class="btn btn-primary" onclick="goToStep(3)" id="btn-next2">I've paid — upload receipt</button>
+        </div>
+      </div>
     </div>
-    <p class="note" id="lbl-confirm-note">Select your preferred time above. After booking, complete payment via PayID · <strong>0451 051 806</strong> · BSB 062 028 · Acc 11626299 to confirm your session.</p>
+
+    <!-- STEP 3: Upload receipt -->
+    <div class="right-step" id="right-3">
+      <div class="panel">
+        <p style="font-family:var(--font-display); font-size:1.2rem; font-weight:500; color:var(--graphite); margin-bottom:0.5rem;" id="step3-title">Upload your payment receipt</p>
+        <p style="font-size:0.82rem; color:var(--graphite-light); line-height:1.6; margin-bottom:1.25rem;" id="step3-body">Please fill in your details and attach your receipt so we can confirm payment.</p>
+        <div class="field-row">
+          <div class="field"><label id="lbl-name">Full Name</label><input type="text" id="au-nome" placeholder="Your full name" /></div>
+          <div class="field"><label id="lbl-email">Email</label><input type="email" id="au-email" placeholder="you@email.com" /></div>
+        </div>
+        <div class="field"><label id="lbl-phone">Mobile</label><input type="tel" id="au-phone" placeholder="+61 4XX XXX XXX" /></div>
+        <div class="upload-area" id="au-upload-area" ondragover="handleDrag(event,'au')" ondragleave="handleDragLeave('au')" ondrop="handleDrop(event,'au')">
+          <input type="file" id="au-file-input" accept="image/*,.pdf" onchange="handleFile(this.files[0],'au')" />
+          <div class="upload-icon">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          </div>
+          <div class="upload-text" id="upload-text-au"><strong>Click to select</strong> or drag your file here<br>JPG, PNG or PDF · max 10 MB</div>
+        </div>
+        <div class="file-preview" id="au-file-preview">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <span id="au-file-name">file.jpg</span>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-outline" onclick="goToStep(2)" id="btn-back3">Back</button>
+          <button class="btn btn-primary" id="au-btn-enviar" onclick="submitForm()">Submit receipt</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4: Choose time -->
+    <div class="right-step" id="right-4">
+      <div class="panel">
+        <div class="success-block">
+          <div class="success-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="success-title" id="step4-title">Receipt received</div>
+          <p class="success-text" id="step4-body">We have received your receipt and will be in touch shortly to confirm payment. You can now choose a time for your consultation.</p>
+          <div class="divider-thin"></div>
+          <p style="font-size:0.82rem; color:var(--graphite-light); line-height:1.7; text-align:center;" id="step4-sub">Click below to open the calendar and select your preferred date and time. A Google Meet link will be sent to your email once the booking is confirmed.</p>
+          <a href="https://calendar.app.google/CBezGLHFy382ZZS37" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="margin-top:0.5rem; justify-content:center; width:100%;" id="step4-btn">
+            <svg style="width:16px;height:16px;fill:none;stroke:white;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Choose my time slot
+          </a>
+        </div>
+      </div>
+      <div class="authority-note">
+        <p id="authority-text-4">"Receive strategic guidance from someone who has lived in Australia for over 8 years and has personally supported hundreds of students and professionals throughout their international journeys."</p>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -145,68 +332,254 @@
 </footer>
 
 <script>
-const copy = {
-  en: {
-    heroEyebrow: 'Book a Consultation',
-    heroH1: 'Schedule your <em>consultation</em><br>with KMP Consulting',
-    heroP: 'Choose your service, then select an available time directly in our calendar. You will receive the Google Meet link by email after booking.',
-    lblType: 'Consultation type',
-    svcInitialName: 'Strategic Consultation — Australia',
-    svcInitialTagline: 'A personalised session to analyse your situation and build a clear plan for your next steps in Australia.',
-    svcInitialDesc: 'Based on your background, professional experience and goals, we conduct a personalised assessment to identify study opportunities, professional development and long-term planning. By the end of the consultation, you will have a clearer picture of your current situation and the paths available to make decisions with more confidence.',
-    svcInitialList: ['60 minutes of individual consultation','Assessment of your academic and professional profile','Evaluation of your personal and professional goals','Personalised course and institution recommendations','Identification of qualification and career development opportunities','Guidance on documents relevant to future specialist consultations','Preparation for registered migration agents — what to ask and what to gather','Personalised action plan with recommended next steps'],
-    svcReturnName: 'Follow-up Consultation',
-    svcReturnDesc: 'For existing clients with process updates, document review, or follow-up questions throughout their journey.',
-    meetNote: 'Consultations are held via Google Meet. You will receive the link by email after booking is confirmed.',
-    authority: '"Receive strategic guidance from someone who has lived in Australia for over 8 years and has personally supported hundreds of students and professionals throughout their international journeys."',
-    confirmNote: 'Select your preferred time above. After booking, complete payment via PayID · 0451 051 806 · BSB 062 028 · Acc 11626299 to confirm your session.'
-  },
-  pt: {
-    heroEyebrow: 'Agendamento Online',
-    heroH1: 'Agende sua <em>consulta</em><br>com a KMP Consulting',
-    heroP: 'Escolha o tipo de serviço e selecione um horário diretamente no calendário. Você receberá o link do Google Meet por email após o agendamento.',
-    lblType: 'Tipo de consulta',
-    svcInitialName: 'Consultoria Estratégica Austrália',
-    svcInitialTagline: 'Uma sessão individual para analisar seu cenário e construir um plano claro para seus próximos passos na Austrália.',
-    svcInitialDesc: 'Com base na sua formação, experiência profissional e objetivos, realizamos uma avaliação personalizada para identificar oportunidades de estudo, desenvolvimento profissional e planejamento de longo prazo. Ao final, você terá uma visão mais clara do seu cenário atual e dos caminhos disponíveis para tomar decisões com mais segurança e confiança.',
-    svcInitialList: ['60 minutos de consultoria individual','Análise do seu perfil acadêmico e profissional','Avaliação dos seus objetivos pessoais e profissionais','Recomendações personalizadas de cursos e instituições','Identificação de oportunidades de qualificação e desenvolvimento de carreira','Orientação sobre documentos relevantes para futuras consultas especializadas','Preparação para consultas com agentes de imigração registrados','Plano de ação personalizado com próximos passos recomendados'],
-    svcReturnName: 'Consulta de Retorno',
-    svcReturnDesc: 'Para clientes existentes com atualizações de processo, revisão de documentos ou dúvidas de acompanhamento ao longo da jornada.',
-    meetNote: 'As consultas são realizadas via Google Meet. O link será enviado por email após a confirmação do agendamento.',
-    authority: '"Receba orientação estratégica de quem vive na Austrália há mais de 8 anos e já acompanhou centenas de estudantes e profissionais em suas jornadas internacionais."',
-    confirmNote: 'Selecione seu horário acima. Após o agendamento, efetue o pagamento via PayID · 0451 051 806 · BSB 062 028 · Conta 11626299 para confirmar sua sessão.'
+  let selectedService = { name: 'Strategic Consultation — Australia', price: 'AUD $150' };
+  let selectedFile = null;
+  let currentStep = 1;
+  let currentLang = 'en';
+
+  const copy = {
+    en: {
+      heroEyebrow: 'Book a Consultation',
+      heroH1: 'Schedule your <em>consultation</em><br>with KMP Consulting',
+      heroP: 'Follow the steps below to confirm your session. Your booking is only secured once payment has been verified.',
+      lblType: 'Consultation type',
+      svcInitialName: 'Strategic Consultation — Australia',
+      svcInitialTagline: 'A personalised session to analyse your situation and build a clear plan for your next steps in Australia.',
+      svcInitialDesc: 'Based on your background, professional experience and goals, we conduct a personalised assessment to identify study opportunities, professional development and long-term planning. By the end of the consultation, you will have a clearer picture of your current situation and the paths available to make decisions with more confidence.',
+      svcInitialList: ['60 minutes of individual consultation','Assessment of your academic and professional profile','Evaluation of your personal and professional goals','Personalised course and institution recommendations','Identification of qualification and career development opportunities','Guidance on documents relevant to future specialist consultations','Preparation for registered migration agents — what to ask and what to gather','Personalised action plan with recommended next steps'],
+      svcReturnName: 'Follow-up Consultation',
+      svcReturnDesc: 'For existing clients with process updates, document review, or follow-up questions throughout their journey.',
+      meetNote: 'Consultations are held via Google Meet. You will receive the link by email after booking is confirmed.',
+      authority: '"Receive strategic guidance from someone who has lived in Australia for over 8 years and has personally supported hundreds of students and professionals throughout their international journeys."',
+      progLabels: ['Service','Payment','Receipt','Schedule'],
+      step1Title: 'Ready to get started?',
+      step1Body: 'Select your consultation type on the left and proceed. Payment is completed before booking to secure your session.',
+      step1Btn: 'Continue to payment',
+      step2Title: 'Complete your payment',
+      step2Body: 'Transfer the amount below using PayID or direct bank transfer. Keep your receipt for the next step.',
+      step2Note: 'Once payment is complete, proceed to the next step and upload your receipt. Your booking is confirmed only after payment is verified.',
+      lblPayidSection: 'PayID (Recommended)',
+      lblBankSection: 'Direct Bank Transfer',
+      lblAcctName: 'Account Name',
+      lblBank: 'Bank',
+      lblAcct: 'Account Number',
+      lblAmount: 'Amount',
+      btnBack2: 'Back',
+      btnNext2: "I've paid — upload receipt",
+      step3Title: 'Upload your payment receipt',
+      step3Body: 'Please fill in your details and attach your receipt so we can confirm payment.',
+      lblName: 'Full Name',
+      lblEmail: 'Email',
+      lblPhone: 'Mobile',
+      uploadText: '<strong>Click to select</strong> or drag your file here<br>JPG, PNG or PDF · max 10 MB',
+      btnBack3: 'Back',
+      btnSubmit: 'Submit receipt',
+      step4Title: 'Receipt received',
+      step4Body: 'We have received your receipt and will be in touch shortly to confirm payment. You can now choose a time for your consultation.',
+      step4Sub: 'Click below to open the calendar and select your preferred date and time. A Google Meet link will be sent to your email once the booking is confirmed.',
+      step4Btn: 'Choose my time slot',
+      copyBtn: 'copy',
+      copied: 'copied',
+      svcPrices: { en150: { name: 'Strategic Consultation — Australia', price: 'AUD $150' }, en80: { name: 'Follow-up Consultation', price: 'AUD $80' } }
+    },
+    pt: {
+      heroEyebrow: 'Agendamento Online',
+      heroH1: 'Agende sua <em>consulta</em><br>com a KMP Consulting',
+      heroP: 'Siga os passos abaixo para confirmar sua sessão. O agendamento só é garantido após o envio do comprovante de pagamento.',
+      lblType: 'Tipo de consulta',
+      svcInitialName: 'Consultoria Estratégica Austrália',
+      svcInitialTagline: 'Uma sessão individual para analisar seu cenário e construir um plano claro para seus próximos passos na Austrália.',
+      svcInitialDesc: 'Com base na sua formação, experiência profissional e objetivos, realizamos uma avaliação personalizada para identificar oportunidades de estudo, desenvolvimento profissional e planejamento de longo prazo. Ao final, você terá uma visão mais clara do seu cenário atual e dos caminhos disponíveis para tomar decisões com mais segurança e confiança.',
+      svcInitialList: ['60 minutos de consultoria individual','Análise do seu perfil acadêmico e profissional','Avaliação dos seus objetivos pessoais e profissionais','Recomendações personalizadas de cursos e instituições','Identificação de oportunidades de qualificação e desenvolvimento de carreira','Orientação sobre documentos relevantes para futuras consultas especializadas','Preparação para consultas com agentes de imigração registrados','Plano de ação personalizado com próximos passos recomendados'],
+      svcReturnName: 'Consulta de Retorno',
+      svcReturnDesc: 'Para clientes existentes com atualizações de processo, revisão de documentos ou dúvidas de acompanhamento ao longo da jornada.',
+      meetNote: 'As consultas são realizadas via Google Meet. O link será enviado por email após a confirmação do agendamento.',
+      authority: '"Receba orientação estratégica de quem vive na Austrália há mais de 8 anos e já acompanhou centenas de estudantes e profissionais em suas jornadas internacionais."',
+      progLabels: ['Serviço','Pagamento','Comprovante','Horário'],
+      step1Title: 'Pronto para começar?',
+      step1Body: 'Selecione o tipo de consulta ao lado e prossiga. O pagamento é feito antes do agendamento para garantir sua vaga.',
+      step1Btn: 'Continuar para pagamento',
+      step2Title: 'Realize o pagamento',
+      step2Body: 'Efetue a transferência via PayID ou depósito bancário. Guarde o comprovante para o próximo passo.',
+      step2Note: 'Após realizar o pagamento, avance para o próximo passo e envie o comprovante. O agendamento só será confirmado após a verificação.',
+      lblPayidSection: 'PayID (Recomendado)',
+      lblBankSection: 'Transferência Bancária',
+      lblAcctName: 'Nome da Conta',
+      lblBank: 'Banco',
+      lblAcct: 'Número da Conta',
+      lblAmount: 'Valor',
+      btnBack2: 'Voltar',
+      btnNext2: 'Já paguei, enviar comprovante',
+      step3Title: 'Anexe o comprovante de pagamento',
+      step3Body: 'Preencha seus dados e envie o comprovante para confirmarmos o pagamento.',
+      lblName: 'Nome completo',
+      lblEmail: 'Email',
+      lblPhone: 'WhatsApp / Telefone',
+      uploadText: '<strong>Clique para selecionar</strong> ou arraste o arquivo aqui<br>JPG, PNG ou PDF · máx. 10 MB',
+      btnBack3: 'Voltar',
+      btnSubmit: 'Enviar comprovante',
+      step4Title: 'Comprovante recebido',
+      step4Body: 'Recebemos seu comprovante e entraremos em contato para confirmar o pagamento. Agora, escolha o melhor horário para a sua consulta.',
+      step4Sub: 'Clique abaixo para acessar o calendário e reservar sua data. Você receberá o link do Google Meet por email após o agendamento.',
+      step4Btn: 'Escolher meu horário',
+      copyBtn: 'copiar',
+      copied: 'copiado',
+      svcPrices: { en150: { name: 'Consultoria Estratégica Austrália', price: 'AUD $150' }, en80: { name: 'Consulta de Retorno', price: 'AUD $80' } }
+    }
+  };
+
+  function setLang(l) {
+    currentLang = l;
+    document.getElementById('btn-en').classList.toggle('active', l === 'en');
+    document.getElementById('btn-pt').classList.toggle('active', l === 'pt');
+    const c = copy[l];
+    document.getElementById('hero-eyebrow').textContent = c.heroEyebrow;
+    document.getElementById('hero-h1').innerHTML = c.heroH1;
+    document.getElementById('hero-p').textContent = c.heroP;
+    document.getElementById('lbl-type').textContent = c.lblType;
+    document.getElementById('svc-initial-name').textContent = c.svcInitialName;
+    document.getElementById('svc-initial-tagline').textContent = c.svcInitialTagline;
+    document.getElementById('svc-initial-desc').textContent = c.svcInitialDesc;
+    document.getElementById('svc-initial-list').innerHTML = c.svcInitialList.map(i => `<li>${i}</li>`).join('');
+    document.getElementById('svc-return-name').textContent = c.svcReturnName;
+    document.getElementById('svc-return-desc').textContent = c.svcReturnDesc;
+    document.getElementById('lbl-meet-note').textContent = c.meetNote;
+    document.getElementById('authority-text').textContent = c.authority;
+    document.getElementById('authority-text-4').textContent = c.authority;
+    c.progLabels.forEach((lbl, i) => { document.getElementById('prog-lbl-' + (i+1)).textContent = lbl; });
+    document.getElementById('step1-title').textContent = c.step1Title;
+    document.getElementById('step1-body').textContent = c.step1Body;
+    document.getElementById('step1-btn').textContent = c.step1Btn;
+    document.getElementById('step2-title').textContent = c.step2Title;
+    document.getElementById('step2-body').textContent = c.step2Body;
+    document.getElementById('step2-note').textContent = c.step2Note;
+    document.getElementById('lbl-payid-section').textContent = c.lblPayidSection;
+    document.getElementById('lbl-bank-section').textContent = c.lblBankSection;
+    document.getElementById('lbl-acctname').textContent = c.lblAcctName;
+    document.getElementById('lbl-bank').textContent = c.lblBank;
+    document.getElementById('lbl-acct').textContent = c.lblAcct;
+    document.getElementById('lbl-amount').textContent = c.lblAmount;
+    document.getElementById('btn-back2').textContent = c.btnBack2;
+    document.getElementById('btn-next2').textContent = c.btnNext2;
+    document.getElementById('step3-title').textContent = c.step3Title;
+    document.getElementById('step3-body').textContent = c.step3Body;
+    document.getElementById('lbl-name').textContent = c.lblName;
+    document.getElementById('lbl-email').textContent = c.lblEmail;
+    document.getElementById('lbl-phone').textContent = c.lblPhone;
+    document.getElementById('upload-text-au').innerHTML = c.uploadText;
+    document.getElementById('btn-back3').textContent = c.btnBack3;
+    document.getElementById('au-btn-enviar').textContent = c.btnSubmit;
+    document.getElementById('step4-title').textContent = c.step4Title;
+    document.getElementById('step4-body').textContent = c.step4Body;
+    document.getElementById('step4-sub').textContent = c.step4Sub;
+    document.getElementById('step4-btn').childNodes[1].textContent = ' ' + c.step4Btn;
+    // Update copy button labels
+    ['copy-payid','copy-bsb','copy-acct'].forEach(id => {
+      const btn = document.getElementById(id);
+      if (btn && btn.textContent !== (l === 'en' ? 'copied' : 'copiado')) btn.textContent = c.copyBtn;
+    });
+    // Update service name based on current selection
+    if (selectedService.price === 'AUD $150') selectedService.name = c.svcPrices.en150.name;
+    else selectedService.name = c.svcPrices.en80.name;
   }
-};
 
-let lang = 'en';
+  let selectedServiceKey = 'en150';
 
-function setLang(l) {
-  lang = l;
-  document.getElementById('btn-en').classList.toggle('active', l==='en');
-  document.getElementById('btn-pt').classList.toggle('active', l==='pt');
-  const c = copy[l];
-  document.getElementById('hero-eyebrow').textContent = c.heroEyebrow;
-  document.getElementById('hero-h1').innerHTML = c.heroH1;
-  document.getElementById('hero-p').textContent = c.heroP;
-  document.getElementById('lbl-type').textContent = c.lblType;
-  document.getElementById('svc-initial-name').textContent = c.svcInitialName;
-  document.getElementById('svc-initial-tagline').textContent = c.svcInitialTagline;
-  document.getElementById('svc-initial-desc').textContent = c.svcInitialDesc;
-  const list = document.getElementById('svc-initial-list');
-  list.innerHTML = c.svcInitialList.map(i => `<li>${i}</li>`).join('');
-  document.getElementById('svc-return-name').textContent = c.svcReturnName;
-  document.getElementById('svc-return-desc').textContent = c.svcReturnDesc;
-  document.getElementById('lbl-meet-note').textContent = c.meetNote;
-  document.getElementById('authority-text').textContent = c.authority;
-  document.getElementById('lbl-confirm-note').textContent = c.confirmNote;
-}
+  function selectService(card, nameEn, price, key) {
+    document.querySelectorAll('.service-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    selectedServiceKey = key;
+    const c = copy[currentLang];
+    selectedService = { name: c.svcPrices[key].name, price };
+  }
 
-function selectService(card) {
-  document.querySelectorAll('.service-card').forEach(c => c.classList.remove('selected'));
-  card.classList.add('selected');
-}
+  function goToStep(n) {
+    document.getElementById('right-' + currentStep).classList.remove('active');
+    currentStep = n;
+    document.getElementById('right-' + n).classList.add('active');
+    for (let i = 1; i <= 4; i++) {
+      const el = document.getElementById('prog-' + i);
+      el.classList.remove('active', 'done');
+      if (i < n) el.classList.add('done');
+      if (i === n) el.classList.add('active');
+    }
+    if (n === 2) {
+      const c = copy[currentLang];
+      const svc = c.svcPrices[selectedServiceKey];
+      document.getElementById('pay-pill').textContent = svc.name + ' · ' + svc.price;
+      document.getElementById('pay-valor').textContent = svc.price;
+      document.getElementById('pay-servico').textContent = svc.name;
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
-setLang('en');
+  function copyText(text, btn) {
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = btn.textContent;
+      const copiedLabel = currentLang === 'en' ? 'copied' : 'copiado';
+      btn.textContent = copiedLabel;
+      setTimeout(() => btn.textContent = orig, 2000);
+    });
+  }
+
+  function handleFile(file, prefix) {
+    if (!file) return;
+    selectedFile = file;
+    document.getElementById(prefix + '-file-preview').classList.add('visible');
+    document.getElementById(prefix + '-file-name').textContent = file.name;
+    const area = document.getElementById(prefix + '-upload-area');
+    area.style.borderColor = 'var(--green)';
+    area.style.background = 'var(--green-light)';
+  }
+
+  function handleDrag(e, prefix) { e.preventDefault(); document.getElementById(prefix + '-upload-area').classList.add('dragover'); }
+  function handleDragLeave(prefix) { document.getElementById(prefix + '-upload-area').classList.remove('dragover'); }
+  function handleDrop(e, prefix) {
+    e.preventDefault();
+    document.getElementById(prefix + '-upload-area').classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if (file) handleFile(file, prefix);
+  }
+
+  async function submitForm() {
+    const nome = document.getElementById('au-nome').value.trim();
+    const email = document.getElementById('au-email').value.trim();
+    const phone = document.getElementById('au-phone').value.trim();
+    const c = copy[currentLang];
+    if (!nome || !email) {
+      alert(currentLang === 'en' ? 'Please fill in your name and email before continuing.' : 'Por favor, preencha seu nome e email antes de continuar.');
+      return;
+    }
+    if (!selectedFile) {
+      alert(currentLang === 'en' ? 'Please attach your payment receipt.' : 'Por favor, anexe o comprovante de pagamento.');
+      return;
+    }
+    const btn = document.getElementById('au-btn-enviar');
+    btn.disabled = true;
+    btn.textContent = currentLang === 'en' ? 'Sending...' : 'Enviando...';
+    const svc = copy[currentLang].svcPrices[selectedServiceKey];
+    try {
+      const formData = new FormData();
+      formData.append('access_key', 'eb911200-f515-4a77-afbf-61c4f99be8cf');
+      formData.append('subject', 'New booking KMP Australia — ' + svc.name);
+      formData.append('from_name', 'KMP Booking Australia');
+      formData.append('name', nome);
+      formData.append('email', email);
+      formData.append('phone', phone || 'Not provided');
+      formData.append('service', svc.name + ' · ' + svc.price);
+      formData.append('file', selectedFile, selectedFile.name);
+      const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: formData });
+      const data = await res.json();
+      if (data.success) { goToStep(4); }
+      else { throw new Error(data.message || 'Submission error'); }
+    } catch (err) {
+      btn.disabled = false;
+      btn.textContent = c.btnSubmit;
+      alert(currentLang === 'en' ? 'Something went wrong. Please try again or contact us directly.' : 'Ocorreu um erro. Por favor, tente novamente ou entre em contato.');
+    }
+  }
+
+  setLang('en');
 </script>
 </body>
 </html>
