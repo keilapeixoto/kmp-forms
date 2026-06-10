@@ -36,93 +36,34 @@
   .service-card { border: 1.5px solid var(--stone-mid); border-radius: var(--radius-sm); padding: 1.25rem; cursor: pointer; transition: all 0.2s; margin-bottom: 0.75rem; position: relative; }
   .service-card:hover, .service-card.selected { border-color: var(--orange); background: var(--orange-light); }
   .service-card.selected::after { content: '✓'; position: absolute; top: 1rem; right: 1rem; width: 22px; height: 22px; background: var(--orange); color: white; border-radius: 50%; font-size: 12px; display: flex; align-items: center; justify-content: center; font-weight: 600; }
-  .service-name { font-size: 0.95rem; font-weight: 500; color: var(--graphite); margin-bottom: 4px; }
-  .service-desc { font-size: 0.82rem; color: var(--graphite-light); line-height: 1.5; margin-bottom: 8px; }
-  .service-meta { display: flex; gap: 12px; flex-wrap: wrap; }
+  .service-name { font-size: 0.95rem; font-weight: 600; color: var(--graphite); margin-bottom: 6px; }
+  .service-tagline { font-size: 0.82rem; color: var(--orange-dark); font-weight: 500; margin-bottom: 8px; line-height: 1.45; }
+  .service-desc { font-size: 0.82rem; color: var(--graphite-light); line-height: 1.6; margin-bottom: 10px; }
+  .includes-list { list-style: none; margin-bottom: 10px; display: flex; flex-direction: column; gap: 4px; }
+  .includes-list li { font-size: 0.78rem; color: var(--graphite-mid); line-height: 1.5; padding-left: 1.1rem; position: relative; }
+  .includes-list li::before { content: '✓'; position: absolute; left: 0; color: var(--green); font-weight: 600; }
+  .service-meta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 6px; }
   .service-tag { font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; letter-spacing: 0.03em; }
   .tag-price { background: #FDF0E6; color: var(--orange-dark); }
   .tag-time { background: var(--stone); color: var(--graphite-light); }
   .right-col { display: flex; flex-direction: column; gap: 24px; }
-  .steps { display: flex; background: var(--white); border: 1px solid var(--stone-mid); border-radius: var(--radius-sm); overflow: hidden; }
-  .step { flex: 1; padding: 12px; text-align: center; font-size: 12px; font-weight: 500; color: var(--graphite-light); letter-spacing: 0.04em; border-right: 1px solid var(--stone-mid); transition: all 0.3s; }
-  .step:last-child { border-right: none; }
-  .step.active { background: var(--orange); color: white; }
-  .step.done { background: var(--orange-light); color: var(--orange-dark); }
-  .step-panel { display: none; }
-  .step-panel.active { display: block; }
-  .calendar-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
-  .cal-nav { background: none; border: 1px solid var(--stone-mid); border-radius: 6px; width: 32px; height: 32px; cursor: pointer; font-size: 16px; color: var(--graphite-mid); display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
-  .cal-nav:hover { border-color: var(--orange); color: var(--orange); }
-  .cal-month { font-family: var(--font-display); font-size: 1.2rem; font-weight: 500; color: var(--graphite); }
-  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
-  .cal-weekday { text-align: center; font-size: 11px; font-weight: 500; color: var(--graphite-light); letter-spacing: 0.06em; padding: 6px 0; text-transform: uppercase; }
-  .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 13px; cursor: pointer; color: var(--graphite); transition: all 0.15s; border: 1.5px solid transparent; }
-  .cal-day:hover:not(.disabled):not(.empty) { background: var(--orange-light); color: var(--orange-dark); border-color: var(--orange); }
-  .cal-day.selected { background: var(--orange); color: white; border-color: var(--orange); }
-  .cal-day.today { font-weight: 600; border-color: var(--stone-mid); }
-  .cal-day.disabled { color: var(--stone-mid); cursor: default; }
-  .cal-day.empty { cursor: default; }
-  .slots-label { font-size: 12px; font-weight: 500; color: var(--graphite-light); letter-spacing: 0.05em; text-transform: uppercase; margin-top: 1.25rem; margin-bottom: 0.5rem; }
-  .time-slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 1rem; }
-  .time-slot { padding: 10px 6px; text-align: center; border: 1.5px solid var(--stone-mid); border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s; color: var(--graphite); }
-  .time-slot:hover { border-color: var(--orange); color: var(--orange); background: var(--orange-light); }
-  .time-slot.selected { background: var(--orange); color: white; border-color: var(--orange); }
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
-  label { font-size: 12px; font-weight: 500; color: var(--graphite-mid); letter-spacing: 0.04em; text-transform: uppercase; }
-  input, select, textarea { font-family: var(--font-body); font-size: 14px; color: var(--graphite); background: var(--white); border: 1.5px solid var(--stone-mid); border-radius: var(--radius-sm); padding: 11px 14px; transition: border-color 0.2s; outline: none; width: 100%; }
-  input:focus, select:focus, textarea:focus { border-color: var(--orange); }
-  textarea { resize: vertical; min-height: 90px; }
-  select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B6B6B' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
-  .payment-box { background: var(--stone); border-radius: var(--radius-sm); padding: 1rem 1.25rem; border: 1px solid var(--stone-mid); margin-bottom: 1.25rem; }
-  .payment-row { display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: var(--graphite-mid); padding: 5px 0; }
-  .payment-row.total { border-top: 1px solid var(--stone-mid); margin-top: 8px; padding-top: 12px; font-weight: 600; font-size: 15px; color: var(--graphite); }
-  .payment-row.total span:last-child { color: var(--orange); }
-  .btn-submit { width: 100%; padding: 16px; background: var(--orange); color: white; border: none; border-radius: var(--radius-sm); font-family: var(--font-body); font-size: 15px; font-weight: 500; cursor: pointer; letter-spacing: 0.02em; transition: all 0.2s; }
-  .btn-submit:hover { background: var(--orange-dark); transform: translateY(-1px); }
-  .btn-submit:active { transform: translateY(0); }
-  .btn-submit:disabled { opacity: 0.45; cursor: default; transform: none; }
-  .btn-back { background: none; border: 1.5px solid var(--stone-mid); border-radius: var(--radius-sm); padding: 11px 20px; font-family: var(--font-body); font-size: 13px; color: var(--graphite-mid); cursor: pointer; transition: all 0.2s; }
-  .btn-back:hover { border-color: var(--graphite-mid); }
-  .form-actions { display: flex; gap: 10px; margin-top: 8px; }
-  .form-actions .btn-submit { flex: 1; }
-  .note { font-size: 11.5px; color: var(--graphite-light); line-height: 1.6; text-align: center; }
   .info-box { padding: 1rem; background: var(--orange-light); border-radius: var(--radius-sm); border-left: 3px solid var(--orange); }
   .info-box p { font-size: 12.5px; color: var(--orange-dark); line-height: 1.65; }
-  .payid-row { background: var(--white); border-radius: var(--radius-sm); padding: 10px 14px; border: 1px solid var(--stone-mid); display: flex; justify-content: space-between; align-items: center; }
-  .payid-label { font-size: 11px; color: var(--graphite-light); margin-bottom: 2px; }
-  .payid-value { font-size: 15px; font-weight: 600; color: var(--graphite); letter-spacing: 0.03em; }
-  .copy-btn { background: none; border: 1px solid var(--stone-mid); border-radius: 6px; padding: 5px 12px; font-size: 12px; color: var(--graphite-light); cursor: pointer; white-space: nowrap; transition: all 0.2s; font-family: var(--font-body); }
-  .copy-btn:hover { border-color: var(--orange); color: var(--orange); }
-  .upload-area { border: 2px dashed var(--stone-mid); border-radius: var(--radius-sm); padding: 2rem 1rem; text-align: center; cursor: pointer; transition: border-color 0.2s; }
-  .upload-area:hover { border-color: var(--orange); }
-  .success-screen { text-align: center; padding: 3rem 2rem; }
-  .success-icon { width: 64px; height: 64px; background: #EAF5EE; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 28px; color: var(--green); }
-  .success-screen h2 { font-family: var(--font-display); font-size: 1.8rem; font-weight: 500; color: var(--graphite); margin-bottom: 0.75rem; }
-  .success-screen > p { font-size: 14px; color: var(--graphite-light); line-height: 1.7; }
-  .success-detail { background: var(--stone); border-radius: var(--radius-sm); padding: 1rem 1.25rem; margin: 1.5rem 0; text-align: left; }
-  .success-detail-row { display: flex; gap: 8px; font-size: 13px; color: var(--graphite-mid); padding: 5px 0; border-bottom: 0.5px solid var(--stone-mid); }
-  .success-detail-row:last-child { border-bottom: none; }
-  .success-detail-row strong { color: var(--graphite); min-width: 110px; flex-shrink: 0; }
+  .calendar-frame-wrap { background: var(--white); border-radius: var(--radius); border: 1px solid var(--stone-mid); overflow: hidden; }
+  .calendar-frame-wrap iframe { display: block; width: 100%; min-height: 600px; border: none; }
+  .authority-note { padding: 1rem 1.25rem; background: var(--stone); border-radius: var(--radius-sm); border: 1px solid var(--stone-mid); }
+  .authority-note p { font-size: 12px; color: var(--graphite-light); line-height: 1.7; font-style: italic; }
+  .note { font-size: 11.5px; color: var(--graphite-light); line-height: 1.6; text-align: center; }
   footer { text-align: center; padding: 2rem; font-size: 12px; color: var(--graphite-light); border-top: 1px solid var(--stone-mid); }
   footer a { color: var(--orange); text-decoration: none; }
-  .sending-overlay { display: none; position: fixed; inset: 0; background: rgba(247,245,242,0.85); z-index: 200; align-items: center; justify-content: center; flex-direction: column; gap: 16px; }
-  .sending-overlay.visible { display: flex; }
-  .spinner { width: 36px; height: 36px; border: 3px solid var(--stone-mid); border-top-color: var(--orange); border-radius: 50%; animation: spin 0.8s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
   @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
   .panel, .right-col > * { animation: fadeUp 0.4s ease both; }
   .right-col > *:nth-child(1) { animation-delay: 0.05s; }
   .right-col > *:nth-child(2) { animation-delay: 0.12s; }
-  @media (max-width: 768px) { .booking-wrapper { grid-template-columns: 1fr; padding: 0 1rem 60px; } .hero { padding: 100px 1rem 40px; } nav { padding: 0 1rem; } .form-row { grid-template-columns: 1fr; } .time-slots { grid-template-columns: repeat(4, 1fr); } }
+  @media (max-width: 768px) { .booking-wrapper { grid-template-columns: 1fr; padding: 0 1rem 60px; } .hero { padding: 100px 1rem 40px; } nav { padding: 0 1rem; } }
 </style>
 </head>
 <body>
-
-<div class="sending-overlay" id="sending-overlay">
-  <div class="spinner"></div>
-  <p style="font-size:14px; color:var(--graphite-mid);" id="sending-msg">Sending...</p>
-</div>
 
 <nav>
   <a href="https://kmp-forms.vercel.app" class="nav-logo">KMP <span>Consulting</span></a>
@@ -139,7 +80,7 @@
   <p class="hero-eyebrow" id="hero-eyebrow">Book a Consultation</p>
   <h1 id="hero-h1">Schedule your <em>consultation</em><br>with KMP Consulting</h1>
   <div class="divider"></div>
-  <p id="hero-p">Choose your service, select an available time slot, and fill in your details. Payment is made via PayID — simple and instant.</p>
+  <p id="hero-p">Choose your service, then select an available time directly in our calendar. You will receive the Google Meet link by email after booking.</p>
 </section>
 
 <div class="booking-wrapper">
@@ -147,14 +88,19 @@
     <div class="panel">
       <p class="panel-title" id="lbl-type">Consultation type</p>
 
-      <div class="service-card selected" onclick="selectService(this,'initial')" id="svc-initial">
-        <div class="service-name" id="svc-initial-name">Initial Consultation</div>
-        <ul id="svc-initial-desc" style="font-size:0.82rem; color:var(--graphite-light); line-height:1.6; margin-bottom:10px; padding-left:1.1rem; display:flex; flex-direction:column; gap:3px;">
-          <li>Revisão de casos e análise de perfil</li>
-          <li>Caminhos acadêmicos / Academic pathway analysis</li>
-          <li>Análise de <em>Request for More Information</em> recebido pela imigração</li>
-          <li>Auxílio com GS Letter (<em>Genuine Student Statement</em>)</li>
-          <li>Suporte geral para quem já está na Austrália</li>
+      <div class="service-card selected" onclick="selectService(this)" id="svc-initial">
+        <div class="service-name" id="svc-initial-name">Strategic Consultation — Australia</div>
+        <div class="service-tagline" id="svc-initial-tagline">A personalised session to analyse your situation and build a clear plan for your next steps in Australia.</div>
+        <div class="service-desc" id="svc-initial-desc">Based on your background, professional experience and goals, we conduct a personalised assessment to identify study opportunities, professional development and long-term planning. By the end of the consultation, you will have a clearer picture of your current situation and the paths available to make decisions with more confidence.</div>
+        <ul class="includes-list" id="svc-initial-list">
+          <li>60 minutes of individual consultation</li>
+          <li>Assessment of your academic and professional profile</li>
+          <li>Evaluation of your personal and professional goals</li>
+          <li>Personalised course and institution recommendations</li>
+          <li>Identification of qualification and career development opportunities</li>
+          <li>Guidance on documents relevant to future specialist consultations</li>
+          <li>Preparation for registered migration agents — what to ask and what to gather</li>
+          <li>Personalised action plan with recommended next steps</li>
         </ul>
         <div class="service-meta">
           <span class="service-tag tag-price">AUD $150</span>
@@ -162,9 +108,9 @@
         </div>
       </div>
 
-      <div class="service-card" onclick="selectService(this,'return')" id="svc-return">
+      <div class="service-card" onclick="selectService(this)" id="svc-return">
         <div class="service-name" id="svc-return-name">Follow-up Consultation</div>
-        <div class="service-desc" id="svc-return-desc">Para clientes existentes com atualizações de processo, revisão de documentos ou dúvidas de acompanhamento. / For existing clients with process updates, document review, or follow-up questions.</div>
+        <div class="service-desc" id="svc-return-desc">For existing clients with process updates, document review, or follow-up questions throughout their journey.</div>
         <div class="service-meta">
           <span class="service-tag tag-price">AUD $80</span>
           <span class="service-tag tag-time">30 min</span>
@@ -172,168 +118,25 @@
       </div>
 
       <div class="info-box" style="margin-top:1.5rem;">
-        <p id="lbl-meet-note">Consultations are held via Google Meet. You will receive the link by email after payment is confirmed.</p>
+        <p id="lbl-meet-note">Consultations are held via Google Meet. You will receive the link by email after booking is confirmed.</p>
       </div>
     </div>
   </div>
 
   <div class="right-col">
-    <div class="steps">
-      <div class="step active" id="step-ind-1">1. Time slot</div>
-      <div class="step" id="step-ind-2">2. Your details</div>
-      <div class="step" id="step-ind-3">3. Payment</div>
-    </div>
-
-    <!-- STEP 1 -->
-    <div class="panel step-panel active" id="step1">
-      <div class="calendar-header">
-        <button class="cal-nav" onclick="prevMonth()">&#8592;</button>
-        <span class="cal-month" id="cal-month-label"></span>
-        <button class="cal-nav" onclick="nextMonth()">&#8594;</button>
-      </div>
-      <div class="cal-grid" id="cal-grid"></div>
-      <div id="slots-container" style="display:none;">
-        <p class="slots-label" id="lbl-slots">Available time slots (AEST)</p>
-        <div class="time-slots" id="time-slots"></div>
-      </div>
-      <div style="margin-top:1.5rem;">
-        <button class="btn-submit" id="btn-step1" onclick="goToStep(2)" disabled id="btn-continue-1">Continue</button>
+    <div class="panel" style="padding:0;">
+      <div class="calendar-frame-wrap">
+        <iframe
+          src="https://calendar.app.google/CBezGLHFy382ZZS37"
+          title="Book a consultation — KMP Consulting Australia"
+          loading="lazy"
+        ></iframe>
       </div>
     </div>
-
-    <!-- STEP 2 -->
-    <div class="panel step-panel" id="step2">
-      <p class="panel-title" id="lbl-details">Your details</p>
-      <div class="form-row">
-        <div class="form-group">
-          <label id="lbl-name">Full name</label>
-          <input type="text" id="f-name" placeholder="Jane Smith">
-        </div>
-        <div class="form-group">
-          <label>Email</label>
-          <input type="email" id="f-email" placeholder="you@email.com">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label id="lbl-phone">Mobile / WhatsApp</label>
-          <input type="tel" id="f-phone" placeholder="+61 4XX XXX XXX">
-        </div>
-        <div class="form-group">
-          <label id="lbl-nat">Nationality</label>
-          <input type="text" id="f-nationality" placeholder="e.g. Brazilian">
-        </div>
-      </div>
-      <div class="form-group">
-        <label id="lbl-status">Current status in Australia</label>
-        <select id="f-status">
-          <option value="" id="opt-select">Select...</option>
-          <option id="opt-citizen">Australian citizen</option>
-          <option id="opt-pr">Permanent resident</option>
-          <option id="opt-student">Student visa (500)</option>
-          <option id="opt-work">Work visa (482 / 186)</option>
-          <option id="opt-tourist">Tourist / visitor visa (600)</option>
-          <option id="opt-bridging">Bridging Visa</option>
-          <option id="opt-other">Other / Not sure</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label id="lbl-topic">Main topic for this consultation</label>
-        <select id="f-topic">
-          <option value="" id="opt-topic-sel">Select...</option>
-          <option id="opt-topic-1">Academic pathway and course analysis</option>
-          <option id="opt-topic-2">Profile assessment and options overview</option>
-          <option id="opt-topic-3">Process review and next steps</option>
-          <option id="opt-topic-4">Response to request for more information (RFI)</option>
-          <option id="opt-topic-5">Document review and preparation</option>
-          <option id="opt-topic-6">General questions and guidance</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label id="lbl-notes">Briefly describe your situation (optional)</label>
-        <textarea id="f-notes" placeholder="e.g. I received a request for more information and need help understanding what to provide..."></textarea>
-      </div>
-      <div class="form-actions">
-        <button class="btn-back" onclick="goToStep(1)" id="btn-back-2">&#8592; Back</button>
-        <button class="btn-submit" onclick="goToStep(3)" id="btn-continue-2">Continue</button>
-      </div>
+    <div class="authority-note">
+      <p id="authority-text">"Receive strategic guidance from someone who has lived in Australia for over 8 years and has personally supported hundreds of students and professionals throughout their international journeys."</p>
     </div>
-
-    <!-- STEP 3 -->
-    <div class="panel step-panel" id="step3">
-      <p class="panel-title" id="lbl-payment">Payment via PayID</p>
-
-      <div class="payment-box">
-        <div class="payment-row"><span id="lbl-svc">Service</span><span id="summary-service"></span></div>
-        <div class="payment-row"><span id="lbl-dt">Date &amp; time</span><span id="summary-datetime"></span></div>
-        <div class="payment-row"><span id="lbl-fmt">Format</span><span id="lbl-meet">Google Meet (online)</span></div>
-        <div class="payment-row total"><span id="lbl-total">Total</span><span id="summary-total"></span></div>
-      </div>
-
-      <div class="info-box" style="margin-bottom:1.25rem;">
-        <p style="font-size:12px; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; color:var(--orange-dark); margin-bottom:0.75rem;" id="lbl-payid-title">Payment details</p>
-        <div style="display:flex; flex-direction:column; gap:10px;">
-          <div class="payid-row">
-            <div>
-              <p class="payid-label" id="lbl-payid-phone">PayID (phone number)</p>
-              <p class="payid-value">0451 051 806</p>
-            </div>
-            <button class="copy-btn" onclick="copyText('0451051806', this)" id="btn-copy-payid">Copy</button>
-          </div>
-          <div style="background:var(--white); border-radius:var(--radius-sm); padding:10px 14px; border:1px solid var(--stone-mid);">
-            <p class="payid-label" id="lbl-or-transfer">Or transfer directly to</p>
-            <div style="display:flex; justify-content:space-between; font-size:13px; color:var(--graphite-mid); margin-top:6px; margin-bottom:4px;"><span>BSB</span><strong style="color:var(--graphite);">062 028</strong></div>
-            <div style="display:flex; justify-content:space-between; font-size:13px; color:var(--graphite-mid); margin-bottom:4px;"><span id="lbl-acct">Account</span><strong style="color:var(--graphite);">11626299</strong></div>
-            <div style="display:flex; justify-content:space-between; font-size:13px; color:var(--graphite-mid);"><span id="lbl-acct-name">Account name</span><strong style="color:var(--graphite);">Keila Mayara Peixoto</strong></div>
-          </div>
-          <div class="payid-row">
-            <div>
-              <p class="payid-label" id="lbl-exact">Exact amount</p>
-              <p style="font-size:22px; font-weight:600; color:var(--orange);" id="payid-amount"></p>
-            </div>
-            <button class="copy-btn" onclick="copyAmount(this)" id="btn-copy-amt">Copy</button>
-          </div>
-        </div>
-        <p style="font-size:12px; color:var(--orange-dark); margin-top:0.75rem; line-height:1.6;" id="lbl-payid-inst">Transfer the exact amount via your banking app, then upload your receipt below to complete the booking.</p>
-      </div>
-
-      <div class="form-group">
-        <label id="lbl-receipt">Transfer receipt</label>
-        <div class="upload-area" id="upload-area" onclick="document.getElementById('f-receipt').click()">
-          <div id="upload-placeholder">
-            <p style="font-size:13px; color:var(--graphite-light); margin-bottom:4px;" id="lbl-click-file">Click to select file</p>
-            <p style="font-size:11px; color:var(--stone-mid);">JPG, PNG or PDF · max 10MB</p>
-          </div>
-          <div id="upload-preview" style="display:none;">
-            <p style="font-size:13px; color:var(--green); font-weight:500;" id="upload-filename"></p>
-            <p style="font-size:11px; color:var(--graphite-light); margin-top:4px;" id="lbl-click-change">Click to change</p>
-          </div>
-        </div>
-        <input type="file" id="f-receipt" accept="image/*,.pdf" style="display:none;" onchange="handleUpload(this)">
-      </div>
-
-      <div style="margin-bottom:1rem;">
-        <p class="note" id="lbl-confirm-note">Your booking will be confirmed after receipt verification. You will receive the Google Meet link by email within 24 hours.</p>
-      </div>
-
-      <div class="form-actions">
-        <button class="btn-back" onclick="goToStep(2)" id="btn-back-3">&#8592; Back</button>
-        <button class="btn-submit" id="btn-submit-final" onclick="submitBooking()" disabled>Complete booking</button>
-      </div>
-    </div>
-
-    <!-- SUCCESS -->
-    <div class="panel step-panel" id="step4">
-      <div class="success-screen">
-        <div class="success-icon">✓</div>
-        <h2 id="lbl-success-h">Booking received!</h2>
-        <p id="lbl-success-p">We received your receipt. Once payment is confirmed, you will receive the Google Meet link by email within 24 hours.</p>
-        <div class="success-detail" id="success-detail"></div>
-        <div class="info-box">
-          <p id="lbl-success-contact">Questions? Reach out via WhatsApp or email: keila.peixoto@kmpconsulting.com.au</p>
-        </div>
-      </div>
-    </div>
+    <p class="note" id="lbl-confirm-note">Select your preferred time above. After booking, complete payment via PayID · <strong>0451 051 806</strong> · BSB 062 028 · Acc 11626299 to confirm your session.</p>
   </div>
 </div>
 
@@ -342,92 +145,40 @@
 </footer>
 
 <script>
-const WEB3FORMS_KEY = 'eb911200-f515-4a77-afbf-61c4f99be8cf';
-
 const copy = {
   en: {
-    heroEyebrow:'Book a Consultation', heroH1:'Schedule your <em>consultation</em><br>with KMP Consulting',
-    heroP:'Choose your service, select an available time slot, and fill in your details. Payment is made via PayID — simple and instant.',
-    lblType:'Consultation type', svcInitialName:'Initial Consultation',
-    svcInitialDesc:'Case review, profile assessment, academic pathway analysis, response to requests for more information, and general support.',
-    svcReturnName:'Follow-up Consultation', svcReturnDesc:'For existing clients with process updates, document review, or follow-up questions.',
-    meetNote:'Consultations are held via Google Meet. You will receive the link by email after payment is confirmed.',
-    stepLabels:['1. Time slot','2. Your details','3. Payment'],
-    lblSlots:'Available time slots (AEST)', lblDetails:'Your details', lblName:'Full name',
-    lblPhone:'Mobile / WhatsApp', lblNat:'Nationality', lblStatus:'Current status in Australia',
-    optSelect:'Select...', optCitizen:'Australian citizen', optPR:'Permanent resident',
-    optStudent:'Student visa (500)', optWork:'Work visa (482 / 186)',
-    optTourist:'Tourist / visitor visa (600)', optBridging:'Bridging Visa', optOther:'Other / Not sure',
-    lblTopic:'Main topic for this consultation', optTopicSel:'Select...',
-    optTopic1:'Academic pathway and course analysis', optTopic2:'Profile assessment and options overview',
-    optTopic3:'Process review and next steps', optTopic4:'Response to request for more information (RFI)',
-    optTopic5:'Document review and preparation', optTopic6:'General questions and guidance',
-    lblNotes:'Briefly describe your situation (optional)',
-    notesPH:'e.g. I received a request for more information and need help understanding what to provide...',
-    btnBack:'← Back', btnContinue:'Continue',
-    lblPayment:'Payment via PayID', lblSvc:'Service', lblDt:'Date & time',
-    lblFmt:'Format', lblMeet:'Google Meet (online)', lblTotal:'Total',
-    lblPayidTitle:'Payment details', lblPayidPhone:'PayID (phone number)',
-    lblOrTransfer:'Or transfer directly to', lblAcct:'Account', lblAcctName:'Account name',
-    lblExact:'Exact amount', lblPayidInst:'Transfer the exact amount via your banking app, then upload your receipt below to complete the booking.',
-    lblReceipt:'Transfer receipt', lblClickFile:'Click to select file', lblClickChange:'Click to change',
-    btnCopy:'Copy', btnCopied:'Copied!',
-    lblConfirmNote:'Your booking will be confirmed after receipt verification. You will receive the Google Meet link by email within 24 hours.',
-    btnComplete:'Complete booking', sending:'Sending...',
-    successH:'Booking received!', successP:'We received your receipt. Once payment is confirmed, you will receive the Google Meet link by email within 24 hours.',
-    successContact:'Questions? Reach out via WhatsApp or email: keila.peixoto@kmpconsulting.com.au',
-    detailName:'Name', detailEmail:'Email', detailService:'Service', detailDate:'Date', detailTime:'Time (AEST)', detailTotal:'Total', detailReceipt:'Receipt',
-    months:['January','February','March','April','May','June','July','August','September','October','November','December'],
-    days:['Su','Mo','Tu','We','Th','Fr','Sa'], locale:'en-AU'
+    heroEyebrow: 'Book a Consultation',
+    heroH1: 'Schedule your <em>consultation</em><br>with KMP Consulting',
+    heroP: 'Choose your service, then select an available time directly in our calendar. You will receive the Google Meet link by email after booking.',
+    lblType: 'Consultation type',
+    svcInitialName: 'Strategic Consultation — Australia',
+    svcInitialTagline: 'A personalised session to analyse your situation and build a clear plan for your next steps in Australia.',
+    svcInitialDesc: 'Based on your background, professional experience and goals, we conduct a personalised assessment to identify study opportunities, professional development and long-term planning. By the end of the consultation, you will have a clearer picture of your current situation and the paths available to make decisions with more confidence.',
+    svcInitialList: ['60 minutes of individual consultation','Assessment of your academic and professional profile','Evaluation of your personal and professional goals','Personalised course and institution recommendations','Identification of qualification and career development opportunities','Guidance on documents relevant to future specialist consultations','Preparation for registered migration agents — what to ask and what to gather','Personalised action plan with recommended next steps'],
+    svcReturnName: 'Follow-up Consultation',
+    svcReturnDesc: 'For existing clients with process updates, document review, or follow-up questions throughout their journey.',
+    meetNote: 'Consultations are held via Google Meet. You will receive the link by email after booking is confirmed.',
+    authority: '"Receive strategic guidance from someone who has lived in Australia for over 8 years and has personally supported hundreds of students and professionals throughout their international journeys."',
+    confirmNote: 'Select your preferred time above. After booking, complete payment via PayID · 0451 051 806 · BSB 062 028 · Acc 11626299 to confirm your session.'
   },
   pt: {
-    heroEyebrow:'Agendamento Online', heroH1:'Agende sua <em>consulta</em><br>com a KMP Consulting',
-    heroP:'Escolha o tipo de serviço, selecione um horário disponível e preencha seus dados. Pagamento via PayID — simples e instantâneo.',
-    lblType:'Tipo de consulta', svcInitialName:'Consultoria Inicial',
-    svcInitialDesc:'Revisão de caso, análise de perfil, análise de percurso acadêmico, resposta a pedidos de mais informação e suporte geral.',
-    svcReturnName:'Consulta de Retorno', svcReturnDesc:'Para clientes existentes com atualizações de processo, revisão de documentos ou dúvidas de acompanhamento.',
-    meetNote:'As consultas são realizadas via Google Meet. O link será enviado por email após a confirmação do pagamento.',
-    stepLabels:['1. Horário','2. Seus dados','3. Pagamento'],
-    lblSlots:'Horários disponíveis (AEST)', lblDetails:'Seus dados', lblName:'Nome completo',
-    lblPhone:'Celular / WhatsApp', lblNat:'Nacionalidade', lblStatus:'Situação atual na Austrália',
-    optSelect:'Selecione...', optCitizen:'Cidadão australiano', optPR:'Residente permanente',
-    optStudent:'Visto de estudante (500)', optWork:'Visto de trabalho (482 / 186)',
-    optTourist:'Visto turista / visitante (600)', optBridging:'Bridging Visa', optOther:'Outro / Não sei',
-    lblTopic:'Assunto principal da consulta', optTopicSel:'Selecione...',
-    optTopic1:'Análise de percurso acadêmico e cursos', optTopic2:'Análise de perfil e opções disponíveis',
-    optTopic3:'Revisão de processo e próximos passos', optTopic4:'Resposta a pedido de mais informação (RFI)',
-    optTopic5:'Revisão e preparação de documentos', optTopic6:'Dúvidas gerais e orientação',
-    lblNotes:'Descreva brevemente sua situação (opcional)',
-    notesPH:'Ex.: Recebi um pedido de mais informação e preciso de ajuda para entender o que enviar...',
-    btnBack:'← Voltar', btnContinue:'Continuar',
-    lblPayment:'Pagamento via PayID', lblSvc:'Serviço', lblDt:'Data e horário',
-    lblFmt:'Modalidade', lblMeet:'Google Meet (online)', lblTotal:'Total',
-    lblPayidTitle:'Dados de pagamento', lblPayidPhone:'PayID (número de celular)',
-    lblOrTransfer:'Ou transferência direta', lblAcct:'Conta', lblAcctName:'Nome da conta',
-    lblExact:'Valor exato a transferir', lblPayidInst:'Faça a transferência via app do seu banco e depois envie o comprovante abaixo para finalizar o agendamento.',
-    lblReceipt:'Comprovante de transferência', lblClickFile:'Clique para selecionar o arquivo', lblClickChange:'Clique para trocar',
-    btnCopy:'Copiar', btnCopied:'Copiado!',
-    lblConfirmNote:'Seu agendamento será confirmado após a verificação do comprovante. Você receberá o link do Google Meet por email em até 24h.',
-    btnComplete:'Finalizar agendamento', sending:'Enviando...',
-    successH:'Agendamento recebido!', successP:'Recebemos seu comprovante. Assim que confirmarmos o pagamento, você receberá o link do Google Meet por email em até 24h.',
-    successContact:'Dúvidas? Entre em contato via WhatsApp ou email: keila.peixoto@kmpconsulting.com.au',
-    detailName:'Nome', detailEmail:'Email', detailService:'Serviço', detailDate:'Data', detailTime:'Horário (AEST)', detailTotal:'Total', detailReceipt:'Comprovante',
-    months:['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
-    days:['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'], locale:'pt-BR'
+    heroEyebrow: 'Agendamento Online',
+    heroH1: 'Agende sua <em>consulta</em><br>com a KMP Consulting',
+    heroP: 'Escolha o tipo de serviço e selecione um horário diretamente no calendário. Você receberá o link do Google Meet por email após o agendamento.',
+    lblType: 'Tipo de consulta',
+    svcInitialName: 'Consultoria Estratégica Austrália',
+    svcInitialTagline: 'Uma sessão individual para analisar seu cenário e construir um plano claro para seus próximos passos na Austrália.',
+    svcInitialDesc: 'Com base na sua formação, experiência profissional e objetivos, realizamos uma avaliação personalizada para identificar oportunidades de estudo, desenvolvimento profissional e planejamento de longo prazo. Ao final, você terá uma visão mais clara do seu cenário atual e dos caminhos disponíveis para tomar decisões com mais segurança e confiança.',
+    svcInitialList: ['60 minutos de consultoria individual','Análise do seu perfil acadêmico e profissional','Avaliação dos seus objetivos pessoais e profissionais','Recomendações personalizadas de cursos e instituições','Identificação de oportunidades de qualificação e desenvolvimento de carreira','Orientação sobre documentos relevantes para futuras consultas especializadas','Preparação para consultas com agentes de imigração registrados','Plano de ação personalizado com próximos passos recomendados'],
+    svcReturnName: 'Consulta de Retorno',
+    svcReturnDesc: 'Para clientes existentes com atualizações de processo, revisão de documentos ou dúvidas de acompanhamento ao longo da jornada.',
+    meetNote: 'As consultas são realizadas via Google Meet. O link será enviado por email após a confirmação do agendamento.',
+    authority: '"Receba orientação estratégica de quem vive na Austrália há mais de 8 anos e já acompanhou centenas de estudantes e profissionais em suas jornadas internacionais."',
+    confirmNote: 'Selecione seu horário acima. Após o agendamento, efetue o pagamento via PayID · 0451 051 806 · BSB 062 028 · Conta 11626299 para confirmar sua sessão.'
   }
 };
 
-const services = {
-  initial: { price: 'AUD $150', amount: '150' },
-  return:  { price: 'AUD $80', amount: '80' }
-};
-
 let lang = 'en';
-let selectedService = 'initial';
-let today = new Date(), viewYear = today.getFullYear(), viewMonth = today.getMonth();
-let selectedDate = null, selectedTime = null, uploadedFile = null;
-const slotsByDay = { 1:['09:00','10:00','11:00','14:00','15:00','16:00'], 2:['09:00','10:00','11:00','14:00','15:00'], 3:['09:00','10:00','14:00','15:00','16:00'], 4:['09:00','10:00','11:00','14:00','15:00','16:00'], 5:['09:00','10:00','11:00'] };
-const blockedDates = new Set(['2025-6-25','2025-6-26','2025-7-4']);
 
 function setLang(l) {
   lang = l;
@@ -439,205 +190,20 @@ function setLang(l) {
   document.getElementById('hero-p').textContent = c.heroP;
   document.getElementById('lbl-type').textContent = c.lblType;
   document.getElementById('svc-initial-name').textContent = c.svcInitialName;
+  document.getElementById('svc-initial-tagline').textContent = c.svcInitialTagline;
   document.getElementById('svc-initial-desc').textContent = c.svcInitialDesc;
+  const list = document.getElementById('svc-initial-list');
+  list.innerHTML = c.svcInitialList.map(i => `<li>${i}</li>`).join('');
   document.getElementById('svc-return-name').textContent = c.svcReturnName;
   document.getElementById('svc-return-desc').textContent = c.svcReturnDesc;
   document.getElementById('lbl-meet-note').textContent = c.meetNote;
-  ['step-ind-1','step-ind-2','step-ind-3'].forEach((id,i) => document.getElementById(id).textContent = c.stepLabels[i]);
-  document.getElementById('lbl-slots').textContent = c.lblSlots;
-  document.getElementById('lbl-details').textContent = c.lblDetails;
-  document.getElementById('lbl-name').textContent = c.lblName;
-  document.getElementById('lbl-phone').textContent = c.lblPhone;
-  document.getElementById('lbl-nat').textContent = c.lblNat;
-  document.getElementById('lbl-status').textContent = c.lblStatus;
-  document.getElementById('opt-select').textContent = c.optSelect;
-  document.getElementById('opt-citizen').textContent = c.optCitizen;
-  document.getElementById('opt-pr').textContent = c.optPR;
-  document.getElementById('opt-student').textContent = c.optStudent;
-  document.getElementById('opt-work').textContent = c.optWork;
-  document.getElementById('opt-tourist').textContent = c.optTourist;
-  document.getElementById('opt-bridging').textContent = c.optBridging;
-  document.getElementById('opt-other').textContent = c.optOther;
-  document.getElementById('lbl-topic').textContent = c.lblTopic;
-  document.getElementById('opt-topic-sel').textContent = c.optTopicSel;
-  document.getElementById('opt-topic-1').textContent = c.optTopic1;
-  document.getElementById('opt-topic-2').textContent = c.optTopic2;
-  document.getElementById('opt-topic-3').textContent = c.optTopic3;
-  document.getElementById('opt-topic-4').textContent = c.optTopic4;
-  document.getElementById('opt-topic-5').textContent = c.optTopic5;
-  document.getElementById('opt-topic-6').textContent = c.optTopic6;
-  document.getElementById('lbl-notes').textContent = c.lblNotes;
-  document.getElementById('f-notes').placeholder = c.notesPH;
-  document.getElementById('btn-back-2').textContent = c.btnBack;
-  document.getElementById('btn-continue-2').textContent = c.btnContinue;
-  document.getElementById('btn-step1').textContent = c.btnContinue;
-  document.getElementById('lbl-payment').textContent = c.lblPayment;
-  document.getElementById('lbl-svc').textContent = c.lblSvc;
-  document.getElementById('lbl-dt').textContent = c.lblDt;
-  document.getElementById('lbl-fmt').textContent = c.lblFmt;
-  document.getElementById('lbl-meet').textContent = c.lblMeet;
-  document.getElementById('lbl-total').textContent = c.lblTotal;
-  document.getElementById('lbl-payid-title').textContent = c.lblPayidTitle;
-  document.getElementById('lbl-payid-phone').textContent = c.lblPayidPhone;
-  document.getElementById('lbl-or-transfer').textContent = c.lblOrTransfer;
-  document.getElementById('lbl-acct').textContent = c.lblAcct;
-  document.getElementById('lbl-acct-name').textContent = c.lblAcctName;
-  document.getElementById('lbl-exact').textContent = c.lblExact;
-  document.getElementById('lbl-payid-inst').textContent = c.lblPayidInst;
-  document.getElementById('lbl-receipt').textContent = c.lblReceipt;
-  document.getElementById('lbl-click-file').textContent = c.lblClickFile;
-  document.getElementById('lbl-click-change').textContent = c.lblClickChange;
-  document.getElementById('btn-copy-payid').textContent = c.btnCopy;
-  document.getElementById('btn-copy-amt').textContent = c.btnCopy;
-  document.getElementById('lbl-confirm-note').textContent = c.lblConfirmNote;
-  document.getElementById('btn-submit-final').textContent = c.btnComplete;
-  document.getElementById('btn-back-3').textContent = c.btnBack;
-  document.getElementById('lbl-success-h').textContent = c.successH;
-  document.getElementById('lbl-success-p').textContent = c.successP;
-  document.getElementById('lbl-success-contact').textContent = c.successContact;
-  renderCalendar();
-  updateSummary();
+  document.getElementById('authority-text').textContent = c.authority;
+  document.getElementById('lbl-confirm-note').textContent = c.confirmNote;
 }
 
-function selectService(card, id) {
+function selectService(card) {
   document.querySelectorAll('.service-card').forEach(c => c.classList.remove('selected'));
-  card.classList.add('selected'); selectedService = id; updateSummary();
-}
-
-function prevMonth() { viewMonth--; if(viewMonth<0){viewMonth=11;viewYear--;} selectedDate=null; selectedTime=null; renderCalendar(); }
-function nextMonth() { viewMonth++; if(viewMonth>11){viewMonth=0;viewYear++;} selectedDate=null; selectedTime=null; renderCalendar(); }
-
-function renderCalendar() {
-  const c = copy[lang];
-  document.getElementById('cal-month-label').textContent = c.months[viewMonth] + ' ' + viewYear;
-  const grid = document.getElementById('cal-grid');
-  grid.innerHTML = '';
-  c.days.forEach(d => { const el = document.createElement('div'); el.className='cal-weekday'; el.textContent=d; grid.appendChild(el); });
-  const firstDay = new Date(viewYear, viewMonth, 1).getDay();
-  const daysInMonth = new Date(viewYear, viewMonth+1, 0).getDate();
-  for(let i=0;i<firstDay;i++){ const el=document.createElement('div'); el.className='cal-day empty'; grid.appendChild(el); }
-  for(let d=1;d<=daysInMonth;d++){
-    const el=document.createElement('div'); const date=new Date(viewYear,viewMonth,d); const dow=date.getDay();
-    const key=viewYear+'-'+viewMonth+'-'+d;
-    const isPast=date<new Date(today.getFullYear(),today.getMonth(),today.getDate());
-    const isBlocked=blockedDates.has(key); const hasSlots=slotsByDay[dow]&&slotsByDay[dow].length>0;
-    el.className='cal-day'; el.textContent=d;
-    if(isPast||isBlocked||!hasSlots){ el.classList.add('disabled'); }
-    else {
-      if(today.getFullYear()===viewYear&&today.getMonth()===viewMonth&&today.getDate()===d) el.classList.add('today');
-      if(selectedDate&&selectedDate.getDate()===d&&selectedDate.getMonth()===viewMonth&&selectedDate.getFullYear()===viewYear) el.classList.add('selected');
-      el.onclick=()=>{ selectedDate=date; selectedTime=null; renderCalendar(); renderSlots(); };
-    }
-    grid.appendChild(el);
-  }
-  renderSlots();
-}
-
-function renderSlots() {
-  const container=document.getElementById('slots-container'); const slotsDiv=document.getElementById('time-slots');
-  slotsDiv.innerHTML='';
-  if(!selectedDate){ container.style.display='none'; return; }
-  const slots=slotsByDay[selectedDate.getDay()]||[]; container.style.display='block';
-  slots.forEach(t=>{ const el=document.createElement('div'); el.className='time-slot'; el.textContent=t;
-    if(selectedTime===t) el.classList.add('selected');
-    el.onclick=()=>{ selectedTime=t; document.getElementById('btn-step1').disabled=false; renderSlots(); updateSummary(); };
-    slotsDiv.appendChild(el);
-  });
-}
-
-function goToStep(n) {
-  document.querySelectorAll('.step-panel').forEach((p,i)=>p.classList.toggle('active',i+1===n));
-  document.querySelectorAll('.step').forEach((s,i)=>{ s.classList.remove('active','done'); if(i+1===n)s.classList.add('active'); if(i+1<n)s.classList.add('done'); });
-  if(n===3) updateSummary();
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-function updateSummary() {
-  const svc=services[selectedService]; const c=copy[lang];
-  document.getElementById('summary-service').textContent = selectedService==='initial' ? c.svcInitialName : c.svcReturnName;
-  document.getElementById('summary-total').textContent = svc.price;
-  const amEl=document.getElementById('payid-amount'); if(amEl) amEl.textContent=svc.price;
-  if(selectedDate&&selectedTime){
-    const opts={day:'2-digit',month:'long',year:'numeric'};
-    document.getElementById('summary-datetime').textContent=selectedDate.toLocaleDateString(c.locale,opts)+' · '+selectedTime;
-  }
-}
-
-function copyText(text, btn) {
-  navigator.clipboard.writeText(text).then(()=>{
-    const orig=btn.textContent; btn.textContent=copy[lang].btnCopied; btn.style.color='var(--green)'; btn.style.borderColor='var(--green)';
-    setTimeout(()=>{ btn.textContent=copy[lang].btnCopy; btn.style.color=''; btn.style.borderColor=''; },2000);
-  });
-}
-
-function copyAmount(btn) { copyText(services[selectedService].amount, btn); }
-
-function handleUpload(input) {
-  const file=input.files[0]; if(!file) return; uploadedFile=file;
-  document.getElementById('upload-placeholder').style.display='none';
-  document.getElementById('upload-preview').style.display='block';
-  document.getElementById('upload-filename').textContent=file.name;
-  document.getElementById('upload-area').style.borderColor='var(--orange)';
-  document.getElementById('upload-area').style.borderStyle='solid';
-  document.getElementById('btn-submit-final').disabled=false;
-}
-
-async function submitBooking() {
-  const btn=document.getElementById('btn-submit-final');
-  btn.disabled=true;
-  const overlay=document.getElementById('sending-overlay');
-  document.getElementById('sending-msg').textContent=copy[lang].sending;
-  overlay.classList.add('visible');
-
-  const c=copy[lang]; const svc=services[selectedService];
-  const opts={weekday:'long',day:'2-digit',month:'long',year:'numeric'};
-  const name=document.getElementById('f-name').value||'—';
-  const email=document.getElementById('f-email').value||'—';
-  const phone=document.getElementById('f-phone').value||'—';
-  const status=document.getElementById('f-status').value||'—';
-  const topic=document.getElementById('f-topic').value||'—';
-  const notes=document.getElementById('f-notes').value||'—';
-  const svcLabel=selectedService==='initial'?c.svcInitialName:c.svcReturnName;
-  const dateStr=selectedDate?selectedDate.toLocaleDateString(c.locale,opts):'—';
-
-  const formData = new FormData();
-  formData.append('access_key', WEB3FORMS_KEY);
-  formData.append('subject', 'New Booking Request — KMP Consulting (AU)');
-  formData.append('to', 'keila.peixoto@kmpconsulting.com.au');
-  formData.append('name', name);
-  formData.append('email', email);
-  formData.append('message',
-    `NEW BOOKING — AUSTRALIA\n\n` +
-    `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\n` +
-    `Status in Australia: ${status}\nService: ${svcLabel}\n` +
-    `Topic: ${topic}\nDate: ${dateStr}\nTime: ${selectedTime} (AEST)\n` +
-    `Total: ${svc.price}\n\nNotes:\n${notes}`
-  );
-  if(uploadedFile) formData.append('attachment', uploadedFile, uploadedFile.name);
-
-  try {
-    const res = await fetch('https://api.web3forms.com/submit', { method:'POST', body: formData });
-    const data = await res.json();
-    overlay.classList.remove('visible');
-    if(data.success) {
-      document.getElementById('success-detail').innerHTML=`
-        <div class="success-detail-row"><strong>${c.detailName}</strong>${name}</div>
-        <div class="success-detail-row"><strong>${c.detailEmail}</strong>${email}</div>
-        <div class="success-detail-row"><strong>${c.detailService}</strong>${svcLabel}</div>
-        <div class="success-detail-row"><strong>${c.detailDate}</strong>${dateStr}</div>
-        <div class="success-detail-row"><strong>${c.detailTime}</strong>${selectedTime}</div>
-        <div class="success-detail-row"><strong>${c.detailTotal}</strong>${svc.price}</div>
-        <div class="success-detail-row"><strong>${c.detailReceipt}</strong>${uploadedFile?uploadedFile.name:'—'}</div>`;
-      goToStep(4);
-    } else {
-      alert('Something went wrong. Please try again or contact us directly.');
-      btn.disabled=false;
-    }
-  } catch(e) {
-    overlay.classList.remove('visible');
-    alert('Connection error. Please try again.');
-    btn.disabled=false;
-  }
+  card.classList.add('selected');
 }
 
 setLang('en');
