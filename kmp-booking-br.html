@@ -11,7 +11,7 @@
     --orange: #F27B20; --orange-light: #FDF0E6; --orange-dark: #C45E08;
     --graphite: #1E1E1E; --graphite-mid: #3A3A3A; --graphite-light: #6B6B6B;
     --stone: #F7F5F2; --stone-mid: #EAE6E0; --white: #FFFFFF;
-    --green: #2D6A4F; --font-display: 'Cormorant Garamond', serif;
+    --green: #2D6A4F; --green-light: #EAF4EE; --font-display: 'Cormorant Garamond', serif;
     --font-body: 'Outfit', sans-serif; --radius: 12px; --radius-sm: 8px;
   }
   html { scroll-behavior: smooth; }
@@ -26,9 +26,25 @@
   .hero h1 em { font-style: italic; color: var(--orange); }
   .hero p { font-size: 1rem; color: var(--graphite-light); line-height: 1.75; max-width: 520px; margin: 0 auto; }
   .divider { width: 48px; height: 2px; background: var(--orange); margin: 2rem auto; border-radius: 2px; }
+
+  /* Progress */
+  .progress-wrap { max-width: 860px; margin: 0 auto 48px; padding: 0 2rem; }
+  .progress-steps { display: flex; align-items: center; }
+  .progress-step { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; position: relative; }
+  .progress-step:not(:last-child)::after { content: ''; position: absolute; top: 16px; left: calc(50% + 16px); right: calc(-50% + 16px); height: 2px; background: var(--stone-mid); z-index: 0; transition: background 0.3s; }
+  .progress-step.done:not(:last-child)::after { background: var(--orange); }
+  .step-circle { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--stone-mid); background: var(--white); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: var(--graphite-light); z-index: 1; transition: all 0.3s; }
+  .progress-step.active .step-circle { border-color: var(--orange); background: var(--orange); color: white; }
+  .progress-step.done .step-circle { border-color: var(--orange); background: var(--orange); color: white; }
+  .step-label { font-size: 10px; font-weight: 500; color: var(--graphite-light); text-align: center; line-height: 1.3; letter-spacing: 0.04em; text-transform: uppercase; transition: color 0.3s; }
+  .progress-step.active .step-label, .progress-step.done .step-label { color: var(--orange-dark); }
+
+  /* Layout */
   .booking-wrapper { max-width: 1100px; margin: 0 auto; padding: 0 2rem 80px; display: grid; grid-template-columns: 1fr 1.4fr; gap: 40px; align-items: start; }
   .panel { background: var(--white); border-radius: var(--radius); border: 1px solid var(--stone-mid); padding: 2rem; }
   .panel-title { font-family: var(--font-display); font-size: 1.3rem; font-weight: 500; color: var(--graphite); margin-bottom: 1.5rem; }
+
+  /* Service cards */
   .service-card { border: 1.5px solid var(--stone-mid); border-radius: var(--radius-sm); padding: 1.25rem; cursor: pointer; transition: all 0.2s; margin-bottom: 0.75rem; position: relative; }
   .service-card:hover, .service-card.selected { border-color: var(--orange); background: var(--orange-light); }
   .service-card.selected::after { content: '✓'; position: absolute; top: 1rem; right: 1rem; width: 22px; height: 22px; background: var(--orange); color: white; border-radius: 50%; font-size: 12px; display: flex; align-items: center; justify-content: center; font-weight: 600; }
@@ -42,43 +58,114 @@
   .service-tag { font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
   .tag-price { background: #FDF0E6; color: var(--orange-dark); }
   .tag-time { background: var(--stone); color: var(--graphite-light); }
+
+  /* Right column panels */
   .right-col { display: flex; flex-direction: column; gap: 24px; }
   .info-box { padding: 1rem; background: var(--orange-light); border-radius: var(--radius-sm); border-left: 3px solid var(--orange); }
   .info-box p { font-size: 12.5px; color: var(--orange-dark); line-height: 1.65; }
-  .calendar-frame-wrap { background: var(--white); border-radius: var(--radius); border: 1px solid var(--stone-mid); overflow: hidden; }
-  .calendar-frame-wrap iframe { display: block; width: 100%; min-height: 600px; border: none; }
   .authority-note { padding: 1rem 1.25rem; background: var(--stone); border-radius: var(--radius-sm); border: 1px solid var(--stone-mid); }
   .authority-note p { font-size: 12px; color: var(--graphite-light); line-height: 1.7; font-style: italic; }
   .note { font-size: 11.5px; color: var(--graphite-light); line-height: 1.6; text-align: center; }
+
+  /* Right col step panels */
+  .right-step { display: none; flex-direction: column; gap: 24px; }
+  .right-step.active { display: flex; animation: fadeUp 0.35s ease both; }
+
+  /* PIX */
+  .pix-block { background: var(--stone); border-radius: var(--radius-sm); border: 1px solid var(--stone-mid); padding: 1.25rem; margin-bottom: 12px; }
+  .pix-label { font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--graphite-light); margin-bottom: 0.4rem; }
+  .pix-value { font-size: 1.05rem; font-weight: 600; color: var(--graphite); }
+  .pix-sub { font-size: 0.81rem; color: var(--graphite-light); margin-top: 3px; }
+  .copy-btn { background: none; border: none; cursor: pointer; color: var(--orange); font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; transition: background 0.15s; margin-left: 6px; }
+  .copy-btn:hover { background: var(--orange-light); }
+  .selected-pill { display: inline-flex; align-items: center; background: var(--orange-light); border: 1px solid var(--orange); border-radius: 20px; padding: 5px 14px; font-size: 12px; font-weight: 500; color: var(--orange-dark); margin-bottom: 1.25rem; }
+
+  /* Upload */
+  .upload-area { border: 2px dashed var(--stone-mid); border-radius: var(--radius-sm); padding: 1.75rem; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--stone); position: relative; }
+  .upload-area:hover, .upload-area.dragover { border-color: var(--orange); background: var(--orange-light); }
+  .upload-area input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+  .upload-icon { width: 38px; height: 38px; margin: 0 auto 0.65rem; background: var(--orange-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+  .upload-icon svg { width: 18px; height: 18px; fill: none; stroke: var(--orange); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .upload-text { font-size: 0.82rem; color: var(--graphite-light); line-height: 1.6; }
+  .upload-text strong { color: var(--graphite); }
+  .file-preview { display: none; align-items: center; gap: 10px; background: var(--green-light); border: 1px solid var(--green); border-radius: var(--radius-sm); padding: 0.75rem 1rem; margin-top: 0.75rem; }
+  .file-preview.visible { display: flex; }
+  .file-preview svg { width: 16px; height: 16px; fill: none; stroke: var(--green); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+  .file-preview span { font-size: 0.81rem; color: var(--green); font-weight: 500; }
+
+  /* Form fields */
+  .field { margin-bottom: 0.85rem; }
+  .field label { display: block; font-size: 11px; font-weight: 600; color: var(--graphite-mid); margin-bottom: 5px; letter-spacing: 0.05em; text-transform: uppercase; }
+  .field input { width: 100%; padding: 0.7rem 0.9rem; border: 1.5px solid var(--stone-mid); border-radius: var(--radius-sm); font-family: var(--font-body); font-size: 0.88rem; color: var(--graphite); background: var(--white); transition: border-color 0.2s; outline: none; }
+  .field input:focus { border-color: var(--orange); }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  /* Buttons */
+  .btn { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-body); font-size: 0.88rem; font-weight: 600; padding: 0.75rem 1.5rem; border-radius: var(--radius-sm); cursor: pointer; transition: all 0.2s; border: none; text-decoration: none; }
+  .btn-primary { background: var(--orange); color: white; }
+  .btn-primary:hover { background: var(--orange-dark); transform: translateY(-1px); }
+  .btn-primary:disabled { background: var(--stone-mid); color: var(--graphite-light); cursor: not-allowed; transform: none; }
+  .btn-outline { background: transparent; color: var(--orange); border: 1.5px solid var(--orange); }
+  .btn-outline:hover { background: var(--orange-light); }
+  .btn-row { display: flex; gap: 10px; margin-top: 1.25rem; flex-wrap: wrap; }
+
+  /* Success */
+  .success-block { text-align: center; padding: 2rem; display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+  .success-icon { width: 56px; height: 56px; background: var(--green-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+  .success-icon svg { width: 24px; height: 24px; fill: none; stroke: var(--green); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  .success-title { font-family: var(--font-display); font-size: 1.5rem; font-weight: 500; color: var(--graphite); }
+  .success-text { font-size: 0.85rem; color: var(--graphite-light); line-height: 1.75; max-width: 380px; }
+  .divider-thin { width: 100%; height: 1px; background: var(--stone-mid); }
+
+  /* Animations */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+  .panel { animation: fadeUp 0.4s ease both; }
+
   footer { text-align: center; padding: 2rem; font-size: 12px; color: var(--graphite-light); border-top: 1px solid var(--stone-mid); }
   footer a { color: var(--orange); text-decoration: none; }
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-  .panel, .right-col > * { animation: fadeUp 0.4s ease both; }
-  .right-col > *:nth-child(1) { animation-delay: 0.05s; }
-  .right-col > *:nth-child(2) { animation-delay: 0.12s; }
-  @media (max-width: 768px) { .booking-wrapper { grid-template-columns: 1fr; padding: 0 1rem 60px; } .hero { padding: 100px 1rem 40px; } nav { padding: 0 1rem; } }
+
+  @media (max-width: 768px) {
+    .booking-wrapper { grid-template-columns: 1fr; padding: 0 1rem 60px; }
+    .hero { padding: 100px 1rem 40px; }
+    nav { padding: 0 1rem; }
+    .progress-wrap { padding: 0 1rem; }
+    .progress-step .step-label { display: none; }
+    .field-row { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body>
 
 <nav>
   <a href="https://kmp-forms.vercel.app" class="nav-logo">KMP <span>Consulting</span></a>
-  <div class="nav-flag">🇧🇷 Brasil · PIX</div>
+  <div class="nav-flag">Brasil · PIX</div>
 </nav>
 
 <section class="hero">
   <p class="hero-eyebrow">Agendamento Online</p>
   <h1>Agende sua <em>consulta</em><br>com a KMP Consulting</h1>
   <div class="divider"></div>
-  <p>Escolha o tipo de serviço e selecione um horário diretamente no calendário. Você receberá o link do Google Meet por email após o agendamento.</p>
+  <p>Siga os passos abaixo para confirmar sua sessão. O agendamento só é garantido após o envio do comprovante de pagamento.</p>
 </section>
 
+<!-- Progress Bar -->
+<div class="progress-wrap">
+  <div class="progress-steps">
+    <div class="progress-step active" id="prog-1"><div class="step-circle">1</div><div class="step-label">Consulta</div></div>
+    <div class="progress-step" id="prog-2"><div class="step-circle">2</div><div class="step-label">Pagamento</div></div>
+    <div class="progress-step" id="prog-3"><div class="step-circle">3</div><div class="step-label">Comprovante</div></div>
+    <div class="progress-step" id="prog-4"><div class="step-circle">4</div><div class="step-label">Horário</div></div>
+  </div>
+</div>
+
 <div class="booking-wrapper">
+
+  <!-- LEFT: service selection (always visible) -->
   <div>
     <div class="panel">
       <p class="panel-title">Tipo de consulta</p>
 
-      <div class="service-card selected" onclick="selectService(this)">
+      <div class="service-card selected" onclick="selectService(this, 'Consultoria Estratégica Austrália', 'R$ 449,98')">
         <div class="service-name">Consultoria Estratégica Austrália — Ainda no Brasil</div>
         <div class="service-tagline">Uma sessão personalizada para analisar seu perfil, entender seus objetivos e construir um plano claro para estudar, trabalhar e se preparar para a vida na Austrália.</div>
         <div class="service-desc">Receba orientações sobre cursos, investimento necessário, mercado de trabalho, oportunidades para o seu perfil e os próximos passos para transformar seu projeto em realidade.</div>
@@ -98,7 +185,7 @@
         </div>
       </div>
 
-      <div class="service-card" onclick="selectService(this)">
+      <div class="service-card" onclick="selectService(this, 'Consulta de Retorno', 'R$ 249,98')">
         <div class="service-name">Consulta de Retorno</div>
         <div class="service-desc">Para clientes existentes com atualizações de processo, revisão de documentos ou dúvidas de acompanhamento ao longo da jornada.</div>
         <div class="service-meta">
@@ -113,20 +200,95 @@
     </div>
   </div>
 
-  <div class="right-col">
-    <div class="panel" style="padding:0;">
-      <div class="calendar-frame-wrap">
-        <iframe
-          src="https://calendar.app.google/d7Eg5cg6PK6QiWL27"
-          title="Agendar consulta — KMP Consulting Brasil"
-          loading="lazy"
-        ></iframe>
+  <!-- RIGHT: step panels -->
+  <div>
+
+    <!-- STEP 1: CTA to proceed -->
+    <div class="right-step active" id="right-1">
+      <div class="panel" style="text-align:center; padding: 2.5rem 2rem;">
+        <p style="font-family:var(--font-display); font-size:1.2rem; font-weight:500; color:var(--graphite); margin-bottom:0.75rem;">Pronto para começar?</p>
+        <p style="font-size:0.85rem; color:var(--graphite-light); line-height:1.7; margin-bottom:1.5rem;">Selecione o tipo de consulta ao lado e clique para continuar. O pagamento é feito antes do agendamento para garantir sua vaga.</p>
+        <button class="btn btn-primary" style="width:100%; justify-content:center;" onclick="goToStep(2)">Continuar para pagamento</button>
+      </div>
+      <div class="authority-note">
+        <p>"Receba orientação estratégica de quem saiu do Brasil, começou do zero na Austrália e construiu uma trajetória até a cidadania australiana — com mais de 8 anos de experiência e centenas de estudantes acompanhados ao longo do caminho."</p>
       </div>
     </div>
-    <div class="authority-note">
-      <p>"Receba orientação estratégica de quem saiu do Brasil, começou do zero na Austrália e construiu uma trajetória até a cidadania australiana — com mais de 8 anos de experiência e centenas de estudantes acompanhados ao longo do caminho."</p>
+
+    <!-- STEP 2: PIX -->
+    <div class="right-step" id="right-2">
+      <div class="panel">
+        <p style="font-family:var(--font-display); font-size:1.2rem; font-weight:500; color:var(--graphite); margin-bottom:0.5rem;">Realize o pagamento via PIX</p>
+        <p style="font-size:0.82rem; color:var(--graphite-light); line-height:1.6; margin-bottom:1.25rem;">Efetue a transferência para a chave abaixo e guarde o comprovante para o próximo passo.</p>
+        <div class="selected-pill" id="pix-pill">Consultoria Estratégica Austrália · R$ 449,98</div>
+        <div class="pix-block">
+          <div class="pix-label">Chave PIX</div>
+          <div class="pix-value">385.712.558-65 <button class="copy-btn" onclick="copyText('385.712.558-65', this)">copiar</button></div>
+          <div class="pix-sub">CPF · Keila Mayara Peixoto</div>
+        </div>
+        <div class="pix-block">
+          <div class="pix-label">Valor</div>
+          <div class="pix-value" id="pix-valor">R$ 449,98</div>
+          <div class="pix-sub" id="pix-servico">Consultoria Estratégica Austrália</div>
+        </div>
+        <div class="info-box" style="margin-top:0.5rem;">
+          <p>Após realizar o pagamento, avance para o próximo passo e envie o comprovante. O agendamento só será confirmado após a verificação.</p>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-outline" onclick="goToStep(1)">Voltar</button>
+          <button class="btn btn-primary" onclick="goToStep(3)">Já paguei, enviar comprovante</button>
+        </div>
+      </div>
     </div>
-    <p class="note">Selecione seu horário acima. Após o agendamento, efetue o pagamento via PIX · Chave CPF <strong>385.712.558-65</strong> · Keila Mayara Peixoto para confirmar sua sessão.</p>
+
+    <!-- STEP 3: Upload comprovante -->
+    <div class="right-step" id="right-3">
+      <div class="panel">
+        <p style="font-family:var(--font-display); font-size:1.2rem; font-weight:500; color:var(--graphite); margin-bottom:0.5rem;">Anexe o comprovante de pagamento</p>
+        <p style="font-size:0.82rem; color:var(--graphite-light); line-height:1.6; margin-bottom:1.25rem;">Preencha seus dados e envie o comprovante para confirmarmos o pagamento.</p>
+        <div class="field-row">
+          <div class="field"><label>Nome completo</label><input type="text" id="br-nome" placeholder="Seu nome completo" /></div>
+          <div class="field"><label>Email</label><input type="email" id="br-email" placeholder="seu@email.com" /></div>
+        </div>
+        <div class="field"><label>WhatsApp</label><input type="tel" id="br-whatsapp" placeholder="+55 (11) 99999-9999" /></div>
+        <div class="upload-area" id="br-upload-area" ondragover="handleDrag(event,'br')" ondragleave="handleDragLeave('br')" ondrop="handleDrop(event,'br')">
+          <input type="file" id="br-file-input" accept="image/*,.pdf" onchange="handleFile(this.files[0],'br')" />
+          <div class="upload-icon">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          </div>
+          <div class="upload-text"><strong>Clique para selecionar</strong> ou arraste o arquivo aqui<br>JPG, PNG ou PDF · máx. 10 MB</div>
+        </div>
+        <div class="file-preview" id="br-file-preview">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <span id="br-file-name">arquivo.jpg</span>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-outline" onclick="goToStep(2)">Voltar</button>
+          <button class="btn btn-primary" id="br-btn-enviar" onclick="submitForm()">Enviar comprovante</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4: Choose time -->
+    <div class="right-step" id="right-4">
+      <div class="panel">
+        <div class="success-block">
+          <div class="success-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="success-title">Comprovante recebido</div>
+          <p class="success-text">Recebemos seu comprovante e entraremos em contato para confirmar o pagamento. Agora, escolha o melhor horário para a sua consulta.</p>
+          <div class="divider-thin"></div>
+          <p style="font-size:0.82rem; color:var(--graphite-light); line-height:1.7; text-align:center;">Clique abaixo para acessar o calendário e reservar sua data. Você receberá o link do Google Meet por email após o agendamento.</p>
+          <a href="https://calendar.app.google/d7Eg5cg6PK6QiWL27" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="margin-top:0.5rem; justify-content:center; width:100%;">
+            <svg style="width:16px;height:16px;fill:none;stroke:white;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Escolher meu horário
+          </a>
+        </div>
+      </div>
+      <div class="authority-note">
+        <p>"Receba orientação estratégica de quem saiu do Brasil, começou do zero na Austrália e construiu uma trajetória até a cidadania australiana — com mais de 8 anos de experiência e centenas de estudantes acompanhados ao longo do caminho."</p>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -135,10 +297,90 @@
 </footer>
 
 <script>
-function selectService(card) {
-  document.querySelectorAll('.service-card').forEach(c => c.classList.remove('selected'));
-  card.classList.add('selected');
-}
+  let selectedService = { name: 'Consultoria Estratégica Austrália', price: 'R$ 449,98' };
+  let selectedFile = null;
+  let currentStep = 1;
+
+  function selectService(card, name, price) {
+    document.querySelectorAll('.service-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    selectedService = { name, price };
+  }
+
+  function goToStep(n) {
+    document.getElementById('right-' + currentStep).classList.remove('active');
+    currentStep = n;
+    document.getElementById('right-' + n).classList.add('active');
+    for (let i = 1; i <= 4; i++) {
+      const el = document.getElementById('prog-' + i);
+      el.classList.remove('active', 'done');
+      if (i < n) el.classList.add('done');
+      if (i === n) el.classList.add('active');
+    }
+    if (n === 2) {
+      document.getElementById('pix-pill').textContent = selectedService.name + ' · ' + selectedService.price;
+      document.getElementById('pix-valor').textContent = selectedService.price;
+      document.getElementById('pix-servico').textContent = selectedService.name;
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function copyText(text, btn) {
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = btn.textContent;
+      btn.textContent = 'copiado';
+      setTimeout(() => btn.textContent = orig, 2000);
+    });
+  }
+
+  function handleFile(file, prefix) {
+    if (!file) return;
+    selectedFile = file;
+    document.getElementById(prefix + '-file-preview').classList.add('visible');
+    document.getElementById(prefix + '-file-name').textContent = file.name;
+    const area = document.getElementById(prefix + '-upload-area');
+    area.style.borderColor = 'var(--green)';
+    area.style.background = 'var(--green-light)';
+  }
+
+  function handleDrag(e, prefix) { e.preventDefault(); document.getElementById(prefix + '-upload-area').classList.add('dragover'); }
+  function handleDragLeave(prefix) { document.getElementById(prefix + '-upload-area').classList.remove('dragover'); }
+  function handleDrop(e, prefix) {
+    e.preventDefault();
+    document.getElementById(prefix + '-upload-area').classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if (file) handleFile(file, prefix);
+  }
+
+  async function submitForm() {
+    const nome = document.getElementById('br-nome').value.trim();
+    const email = document.getElementById('br-email').value.trim();
+    const whatsapp = document.getElementById('br-whatsapp').value.trim();
+    if (!nome || !email) { alert('Por favor, preencha seu nome e email antes de continuar.'); return; }
+    if (!selectedFile) { alert('Por favor, anexe o comprovante de pagamento.'); return; }
+    const btn = document.getElementById('br-btn-enviar');
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
+    try {
+      const formData = new FormData();
+      formData.append('access_key', 'eb911200-f515-4a77-afbf-61c4f99be8cf');
+      formData.append('subject', 'Novo agendamento KMP Brasil — ' + selectedService.name);
+      formData.append('from_name', 'KMP Booking Brasil');
+      formData.append('name', nome);
+      formData.append('email', email);
+      formData.append('whatsapp', whatsapp || 'Não informado');
+      formData.append('servico', selectedService.name + ' · ' + selectedService.price);
+      formData.append('file', selectedFile, selectedFile.name);
+      const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: formData });
+      const data = await res.json();
+      if (data.success) { goToStep(4); }
+      else { throw new Error(data.message || 'Erro no envio'); }
+    } catch (err) {
+      btn.disabled = false;
+      btn.textContent = 'Enviar comprovante';
+      alert('Ocorreu um erro ao enviar. Por favor, tente novamente ou entre em contato pelo WhatsApp.');
+    }
+  }
 </script>
 </body>
 </html>
