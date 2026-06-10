@@ -32,92 +32,34 @@
   .service-card { border: 1.5px solid var(--stone-mid); border-radius: var(--radius-sm); padding: 1.25rem; cursor: pointer; transition: all 0.2s; margin-bottom: 0.75rem; position: relative; }
   .service-card:hover, .service-card.selected { border-color: var(--orange); background: var(--orange-light); }
   .service-card.selected::after { content: '✓'; position: absolute; top: 1rem; right: 1rem; width: 22px; height: 22px; background: var(--orange); color: white; border-radius: 50%; font-size: 12px; display: flex; align-items: center; justify-content: center; font-weight: 600; }
-  .service-name { font-size: 0.95rem; font-weight: 500; color: var(--graphite); margin-bottom: 4px; }
-  .service-desc { font-size: 0.82rem; color: var(--graphite-light); line-height: 1.5; margin-bottom: 8px; }
-  .service-meta { display: flex; gap: 12px; flex-wrap: wrap; }
+  .service-name { font-size: 0.95rem; font-weight: 600; color: var(--graphite); margin-bottom: 6px; }
+  .service-tagline { font-size: 0.82rem; color: var(--orange-dark); font-weight: 500; margin-bottom: 8px; line-height: 1.45; }
+  .service-desc { font-size: 0.82rem; color: var(--graphite-light); line-height: 1.6; margin-bottom: 10px; }
+  .includes-list { list-style: none; margin-bottom: 10px; display: flex; flex-direction: column; gap: 4px; }
+  .includes-list li { font-size: 0.78rem; color: var(--graphite-mid); line-height: 1.5; padding-left: 1.1rem; position: relative; }
+  .includes-list li::before { content: '✓'; position: absolute; left: 0; color: var(--green); font-weight: 600; }
+  .service-meta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 6px; }
   .service-tag { font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
   .tag-price { background: #FDF0E6; color: var(--orange-dark); }
   .tag-time { background: var(--stone); color: var(--graphite-light); }
   .right-col { display: flex; flex-direction: column; gap: 24px; }
-  .steps { display: flex; background: var(--white); border: 1px solid var(--stone-mid); border-radius: var(--radius-sm); overflow: hidden; }
-  .step { flex: 1; padding: 12px; text-align: center; font-size: 12px; font-weight: 500; color: var(--graphite-light); border-right: 1px solid var(--stone-mid); transition: all 0.3s; }
-  .step:last-child { border-right: none; }
-  .step.active { background: var(--orange); color: white; }
-  .step.done { background: var(--orange-light); color: var(--orange-dark); }
-  .step-panel { display: none; }
-  .step-panel.active { display: block; }
-  .calendar-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
-  .cal-nav { background: none; border: 1px solid var(--stone-mid); border-radius: 6px; width: 32px; height: 32px; cursor: pointer; font-size: 16px; color: var(--graphite-mid); display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
-  .cal-nav:hover { border-color: var(--orange); color: var(--orange); }
-  .cal-month { font-family: var(--font-display); font-size: 1.2rem; font-weight: 500; color: var(--graphite); }
-  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
-  .cal-weekday { text-align: center; font-size: 11px; font-weight: 500; color: var(--graphite-light); letter-spacing: 0.06em; padding: 6px 0; text-transform: uppercase; }
-  .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 13px; cursor: pointer; color: var(--graphite); transition: all 0.15s; border: 1.5px solid transparent; }
-  .cal-day:hover:not(.disabled):not(.empty) { background: var(--orange-light); color: var(--orange-dark); border-color: var(--orange); }
-  .cal-day.selected { background: var(--orange); color: white; border-color: var(--orange); }
-  .cal-day.today { font-weight: 600; border-color: var(--stone-mid); }
-  .cal-day.disabled { color: var(--stone-mid); cursor: default; }
-  .cal-day.empty { cursor: default; }
-  .slots-label { font-size: 12px; font-weight: 500; color: var(--graphite-light); letter-spacing: 0.05em; text-transform: uppercase; margin-top: 1.25rem; margin-bottom: 0.5rem; }
-  .time-slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 1rem; }
-  .time-slot { padding: 10px 6px; text-align: center; border: 1.5px solid var(--stone-mid); border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s; color: var(--graphite); }
-  .time-slot:hover { border-color: var(--orange); color: var(--orange); background: var(--orange-light); }
-  .time-slot.selected { background: var(--orange); color: white; border-color: var(--orange); }
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
-  label { font-size: 12px; font-weight: 500; color: var(--graphite-mid); letter-spacing: 0.04em; text-transform: uppercase; }
-  input, select, textarea { font-family: var(--font-body); font-size: 14px; color: var(--graphite); background: var(--white); border: 1.5px solid var(--stone-mid); border-radius: var(--radius-sm); padding: 11px 14px; transition: border-color 0.2s; outline: none; width: 100%; }
-  input:focus, select:focus, textarea:focus { border-color: var(--orange); }
-  textarea { resize: vertical; min-height: 90px; }
-  select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B6B6B' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
-  .payment-box { background: var(--stone); border-radius: var(--radius-sm); padding: 1rem 1.25rem; border: 1px solid var(--stone-mid); margin-bottom: 1.25rem; }
-  .payment-row { display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: var(--graphite-mid); padding: 5px 0; }
-  .payment-row.total { border-top: 1px solid var(--stone-mid); margin-top: 8px; padding-top: 12px; font-weight: 600; font-size: 15px; color: var(--graphite); }
-  .payment-row.total span:last-child { color: var(--orange); }
-  .btn-submit { width: 100%; padding: 16px; background: var(--orange); color: white; border: none; border-radius: var(--radius-sm); font-family: var(--font-body); font-size: 15px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
-  .btn-submit:hover { background: var(--orange-dark); transform: translateY(-1px); }
-  .btn-submit:disabled { opacity: 0.45; cursor: default; transform: none; }
-  .btn-back { background: none; border: 1.5px solid var(--stone-mid); border-radius: var(--radius-sm); padding: 11px 20px; font-family: var(--font-body); font-size: 13px; color: var(--graphite-mid); cursor: pointer; transition: all 0.2s; }
-  .btn-back:hover { border-color: var(--graphite-mid); }
-  .form-actions { display: flex; gap: 10px; margin-top: 8px; }
-  .form-actions .btn-submit { flex: 1; }
-  .note { font-size: 11.5px; color: var(--graphite-light); line-height: 1.6; text-align: center; }
   .info-box { padding: 1rem; background: var(--orange-light); border-radius: var(--radius-sm); border-left: 3px solid var(--orange); }
   .info-box p { font-size: 12.5px; color: var(--orange-dark); line-height: 1.65; }
-  .pix-row { background: var(--white); border-radius: var(--radius-sm); padding: 10px 14px; border: 1px solid var(--stone-mid); display: flex; justify-content: space-between; align-items: center; }
-  .pix-label { font-size: 11px; color: var(--graphite-light); margin-bottom: 2px; }
-  .pix-value { font-size: 15px; font-weight: 600; color: var(--graphite); letter-spacing: 0.04em; }
-  .copy-btn { background: none; border: 1px solid var(--stone-mid); border-radius: 6px; padding: 5px 12px; font-size: 12px; color: var(--graphite-light); cursor: pointer; white-space: nowrap; transition: all 0.2s; font-family: var(--font-body); }
-  .copy-btn:hover { border-color: var(--orange); color: var(--orange); }
-  .upload-area { border: 2px dashed var(--stone-mid); border-radius: var(--radius-sm); padding: 2rem 1rem; text-align: center; cursor: pointer; transition: border-color 0.2s; }
-  .upload-area:hover { border-color: var(--orange); }
-  .conditional-block { display: none; }
-  .conditional-block.visible { display: flex; flex-direction: column; gap: 0; }
-  .success-screen { text-align: center; padding: 3rem 2rem; }
-  .success-icon { width: 64px; height: 64px; background: #EAF5EE; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 28px; color: var(--green); }
-  .success-screen h2 { font-family: var(--font-display); font-size: 1.8rem; font-weight: 500; color: var(--graphite); margin-bottom: 0.75rem; }
-  .success-screen > p { font-size: 14px; color: var(--graphite-light); line-height: 1.7; }
-  .success-detail { background: var(--stone); border-radius: var(--radius-sm); padding: 1rem 1.25rem; margin: 1.5rem 0; text-align: left; }
-  .success-detail-row { display: flex; gap: 8px; font-size: 13px; color: var(--graphite-mid); padding: 5px 0; border-bottom: 0.5px solid var(--stone-mid); }
-  .success-detail-row:last-child { border-bottom: none; }
-  .success-detail-row strong { color: var(--graphite); min-width: 120px; flex-shrink: 0; }
+  .calendar-frame-wrap { background: var(--white); border-radius: var(--radius); border: 1px solid var(--stone-mid); overflow: hidden; }
+  .calendar-frame-wrap iframe { display: block; width: 100%; min-height: 600px; border: none; }
+  .authority-note { padding: 1rem 1.25rem; background: var(--stone); border-radius: var(--radius-sm); border: 1px solid var(--stone-mid); }
+  .authority-note p { font-size: 12px; color: var(--graphite-light); line-height: 1.7; font-style: italic; }
+  .note { font-size: 11.5px; color: var(--graphite-light); line-height: 1.6; text-align: center; }
   footer { text-align: center; padding: 2rem; font-size: 12px; color: var(--graphite-light); border-top: 1px solid var(--stone-mid); }
   footer a { color: var(--orange); text-decoration: none; }
-  .sending-overlay { display: none; position: fixed; inset: 0; background: rgba(247,245,242,0.85); z-index: 200; align-items: center; justify-content: center; flex-direction: column; gap: 16px; }
-  .sending-overlay.visible { display: flex; }
-  .spinner { width: 36px; height: 36px; border: 3px solid var(--stone-mid); border-top-color: var(--orange); border-radius: 50%; animation: spin 0.8s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
   @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
   .panel, .right-col > * { animation: fadeUp 0.4s ease both; }
-  @media (max-width: 768px) { .booking-wrapper { grid-template-columns: 1fr; padding: 0 1rem 60px; } .hero { padding: 100px 1rem 40px; } nav { padding: 0 1rem; } .form-row { grid-template-columns: 1fr; } .time-slots { grid-template-columns: repeat(4, 1fr); } }
+  .right-col > *:nth-child(1) { animation-delay: 0.05s; }
+  .right-col > *:nth-child(2) { animation-delay: 0.12s; }
+  @media (max-width: 768px) { .booking-wrapper { grid-template-columns: 1fr; padding: 0 1rem 60px; } .hero { padding: 100px 1rem 40px; } nav { padding: 0 1rem; } }
 </style>
 </head>
 <body>
-
-<div class="sending-overlay" id="sending-overlay">
-  <div class="spinner"></div>
-  <p style="font-size:14px; color:var(--graphite-mid);">Enviando...</p>
-</div>
 
 <nav>
   <a href="https://kmp-forms.vercel.app" class="nav-logo">KMP <span>Consulting</span></a>
@@ -128,7 +70,7 @@
   <p class="hero-eyebrow">Agendamento Online</p>
   <h1>Agende sua <em>consulta</em><br>com a KMP Consulting</h1>
   <div class="divider"></div>
-  <p>Escolha o tipo de serviço, selecione um horário e preencha seus dados. Pagamento via PIX — rápido, seguro e sem taxas.</p>
+  <p>Escolha o tipo de serviço e selecione um horário diretamente no calendário. Você receberá o link do Google Meet por email após o agendamento.</p>
 </section>
 
 <div class="booking-wrapper">
@@ -136,206 +78,55 @@
     <div class="panel">
       <p class="panel-title">Tipo de consulta</p>
 
-      <div class="service-card selected" onclick="selectService(this,'initial-br')" id="svc-initial-br">
-        <div class="service-name">Consultoria Inicial — Ainda estou no Brasil</div>
-        <div class="service-desc">Orientação completa para quem está planejando a ida para a Austrália: análise de perfil, opções de visto, cursos e próximos passos.</div>
+      <div class="service-card selected" onclick="selectService(this)">
+        <div class="service-name">Consultoria Estratégica Austrália — Ainda no Brasil</div>
+        <div class="service-tagline">Uma sessão personalizada para analisar seu perfil, entender seus objetivos e construir um plano claro para estudar, trabalhar e se preparar para a vida na Austrália.</div>
+        <div class="service-desc">Receba orientações sobre cursos, investimento necessário, mercado de trabalho, oportunidades para o seu perfil e os próximos passos para transformar seu projeto em realidade.</div>
+        <ul class="includes-list">
+          <li>Seu perfil acadêmico e profissional</li>
+          <li>Cursos e instituições mais adequados para seus objetivos</li>
+          <li>Investimento necessário para o projeto</li>
+          <li>Custos de vida na Austrália</li>
+          <li>Trabalho durante os estudos</li>
+          <li>Possibilidades para cônjuge e família</li>
+          <li>Planejamento de curto, médio e longo prazo</li>
+          <li>Próximos passos para iniciar sua jornada</li>
+        </ul>
         <div class="service-meta">
-          <span class="service-tag tag-price">R$ 500</span>
+          <span class="service-tag tag-price">R$ 449,98</span>
           <span class="service-tag tag-time">60 min</span>
         </div>
       </div>
 
-      <div class="service-card" onclick="selectService(this,'return')" id="svc-return">
+      <div class="service-card" onclick="selectService(this)">
         <div class="service-name">Consulta de Retorno</div>
-        <div class="service-desc">Para clientes existentes com atualizações de processo, revisão de documentos ou dúvidas de acompanhamento.</div>
+        <div class="service-desc">Para clientes existentes com atualizações de processo, revisão de documentos ou dúvidas de acompanhamento ao longo da jornada.</div>
         <div class="service-meta">
-          <span class="service-tag tag-price">R$ 250</span>
+          <span class="service-tag tag-price">R$ 249,98</span>
           <span class="service-tag tag-time">30 min</span>
         </div>
       </div>
 
       <div class="info-box" style="margin-top:1.5rem;">
-        <p>As consultas são realizadas via Google Meet. O link será enviado por email após a confirmação do pagamento.</p>
+        <p>As consultas são realizadas via Google Meet. O link será enviado por email após a confirmação do agendamento.</p>
       </div>
     </div>
   </div>
 
   <div class="right-col">
-    <div class="steps">
-      <div class="step active" id="step-ind-1">1. Horário</div>
-      <div class="step" id="step-ind-2">2. Seus dados</div>
-      <div class="step" id="step-ind-3">3. Pagamento</div>
-    </div>
-
-    <!-- STEP 1 -->
-    <div class="panel step-panel active" id="step1">
-      <div class="calendar-header">
-        <button class="cal-nav" onclick="prevMonth()">&#8592;</button>
-        <span class="cal-month" id="cal-month-label"></span>
-        <button class="cal-nav" onclick="nextMonth()">&#8594;</button>
-      </div>
-      <div class="cal-grid" id="cal-grid"></div>
-      <div id="slots-container" style="display:none;">
-        <p class="slots-label">Horários disponíveis (horário de Brasília)</p>
-        <div class="time-slots" id="time-slots"></div>
-      </div>
-      <div style="margin-top:1.5rem;">
-        <button class="btn-submit" id="btn-step1" onclick="goToStep(2)" disabled>Continuar</button>
+    <div class="panel" style="padding:0;">
+      <div class="calendar-frame-wrap">
+        <iframe
+          src="https://calendar.app.google/d7Eg5cg6PK6QiWL27"
+          title="Agendar consulta — KMP Consulting Brasil"
+          loading="lazy"
+        ></iframe>
       </div>
     </div>
-
-    <!-- STEP 2 -->
-    <div class="panel step-panel" id="step2">
-      <p class="panel-title">Seus dados</p>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label>Nome completo</label>
-          <input type="text" id="f-name" placeholder="João Silva">
-        </div>
-        <div class="form-group">
-          <label>Email</label>
-          <input type="email" id="f-email" placeholder="seu@email.com">
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label>WhatsApp</label>
-          <input type="tel" id="f-phone" placeholder="+55 11 9XXXX XXXX">
-        </div>
-        <div class="form-group">
-          <label>Estado (Brasil)</label>
-          <input type="text" id="f-state" placeholder="ex.: São Paulo">
-        </div>
-      </div>
-
-      <!-- CAMPOS CONDICIONAIS: Ainda no Brasil -->
-      <div class="conditional-block" id="block-br">
-        <div class="form-group">
-          <label>Quando pretende ir para a Austrália?</label>
-          <select id="f-timeline">
-            <option value="">Selecione...</option>
-            <option value="1m">Em até 1 mês</option>
-            <option value="3m">Em até 3 meses</option>
-            <option value="6m">Em até 6 meses</option>
-            <option value="1y">Em mais de 1 ano</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Já possui agência de intercâmbio?</label>
-          <select id="f-agency" onchange="toggleAgencyName()">
-            <option value="">Selecione...</option>
-            <option value="yes">Sim, já tenho</option>
-            <option value="no">Não, ainda não</option>
-            <option value="looking">Ainda estou pesquisando</option>
-          </select>
-        </div>
-        <div class="form-group" id="block-agency-name" style="display:none;">
-          <label>Qual agência?</label>
-          <input type="text" id="f-agency-name" placeholder="Nome da agência">
-        </div>
-      </div>
-
-      <!-- CAMPO SITUAÇÃO: Já na Austrália -->
-      <div class="form-group" id="block-status-au">
-        <label>Situação atual na Austrália</label>
-        <select id="f-status">
-          <option value="">Selecione...</option>
-          <option>Visto de estudante (500)</option>
-          <option>Visto de trabalho (482 / 186)</option>
-          <option>Residente permanente</option>
-          <option>Cidadão australiano</option>
-          <option>Visto turista / visitante (600)</option>
-          <option>Bridging Visa</option>
-          <option>Outro / Não sei</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>Descreva brevemente sua situação (opcional)</label>
-        <textarea id="f-notes" placeholder="Ex.: Quero morar na Austrália e trabalhar na minha área. Tenho 3 anos de experiência e nível intermediário de inglês..."></textarea>
-      </div>
-
-      <div class="form-actions">
-        <button class="btn-back" onclick="goToStep(1)">&#8592; Voltar</button>
-        <button class="btn-submit" onclick="goToStep(3)">Continuar</button>
-      </div>
+    <div class="authority-note">
+      <p>"Receba orientação estratégica de quem saiu do Brasil, começou do zero na Austrália e construiu uma trajetória até a cidadania australiana — com mais de 8 anos de experiência e centenas de estudantes acompanhados ao longo do caminho."</p>
     </div>
-
-    <!-- STEP 3 -->
-    <div class="panel step-panel" id="step3">
-      <p class="panel-title">Pagamento via PIX</p>
-
-      <div class="payment-box">
-        <div class="payment-row"><span>Serviço</span><span id="summary-service"></span></div>
-        <div class="payment-row"><span>Data e horário</span><span id="summary-datetime"></span></div>
-        <div class="payment-row"><span>Modalidade</span><span>Google Meet (online)</span></div>
-        <div class="payment-row total"><span>Total</span><span id="summary-total"></span></div>
-      </div>
-
-      <div class="info-box" style="margin-bottom:1.25rem;">
-        <p style="font-size:12px; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; color:var(--orange-dark); margin-bottom:0.75rem;">Dados para PIX</p>
-        <div style="display:flex; flex-direction:column; gap:10px;">
-          <div class="pix-row">
-            <div>
-              <p class="pix-label">Chave PIX (CPF)</p>
-              <p class="pix-value">385.712.558-65</p>
-            </div>
-            <button class="copy-btn" id="btn-copy-pix" onclick="copyText('38571255865', this)">Copiar</button>
-          </div>
-          <div style="background:var(--white); border-radius:var(--radius-sm); padding:10px 14px; border:1px solid var(--stone-mid);">
-            <p class="pix-label" style="margin-bottom:4px;">Titular</p>
-            <p style="font-size:14px; font-weight:500; color:var(--graphite);">Keila Mayara Peixoto</p>
-          </div>
-          <div class="pix-row">
-            <div>
-              <p class="pix-label">Valor exato a transferir</p>
-              <p style="font-size:22px; font-weight:600; color:var(--orange);" id="pix-amount"></p>
-            </div>
-            <button class="copy-btn" id="btn-copy-amt" onclick="copyAmount(this)">Copiar</button>
-          </div>
-        </div>
-        <p style="font-size:12px; color:var(--orange-dark); margin-top:0.75rem; line-height:1.6;">Faça a transferência pelo app do seu banco usando a chave PIX acima. Depois, anexe o comprovante abaixo para finalizar o agendamento.</p>
-      </div>
-
-      <div class="form-group">
-        <label>Comprovante de transferência</label>
-        <div class="upload-area" id="upload-area" onclick="document.getElementById('f-receipt').click()">
-          <div id="upload-placeholder">
-            <p style="font-size:13px; color:var(--graphite-light); margin-bottom:4px;">Clique para selecionar o arquivo</p>
-            <p style="font-size:11px; color:var(--stone-mid);">JPG, PNG ou PDF · máx. 10MB</p>
-          </div>
-          <div id="upload-preview" style="display:none;">
-            <p style="font-size:13px; color:var(--green); font-weight:500;" id="upload-filename"></p>
-            <p style="font-size:11px; color:var(--graphite-light); margin-top:4px;">Clique para trocar</p>
-          </div>
-        </div>
-        <input type="file" id="f-receipt" accept="image/*,.pdf" style="display:none;" onchange="handleUpload(this)">
-      </div>
-
-      <div style="margin-bottom:1rem;">
-        <p class="note">Seu agendamento será confirmado após a verificação do comprovante. Você receberá o link do Google Meet por email em até 24h.</p>
-      </div>
-
-      <div class="form-actions">
-        <button class="btn-back" onclick="goToStep(2)">&#8592; Voltar</button>
-        <button class="btn-submit" id="btn-submit-final" onclick="submitBooking()" disabled>Finalizar agendamento</button>
-      </div>
-    </div>
-
-    <!-- SUCCESS -->
-    <div class="panel step-panel" id="step4">
-      <div class="success-screen">
-        <div class="success-icon">✓</div>
-        <h2>Agendamento recebido!</h2>
-        <p>Recebemos seu comprovante. Assim que confirmarmos o pagamento, você receberá o link do Google Meet por email em até 24h.</p>
-        <div class="success-detail" id="success-detail"></div>
-        <div class="info-box">
-          <p>Dúvidas ou urgências? Fale pelo WhatsApp ou email: keila.peixoto@kmpconsulting.com.au</p>
-        </div>
-      </div>
-    </div>
+    <p class="note">Selecione seu horário acima. Após o agendamento, efetue o pagamento via PIX · Chave CPF <strong>385.712.558-65</strong> · Keila Mayara Peixoto para confirmar sua sessão.</p>
   </div>
 </div>
 
@@ -344,186 +135,10 @@
 </footer>
 
 <script>
-const WEB3FORMS_KEY = 'eb911200-f515-4a77-afbf-61c4f99be8cf';
-
-const services = {
-  'initial-br': { label: 'Consultoria Inicial — Ainda estou no Brasil', price: 'R$ 500', amount: '500' },
-  'return':     { label: 'Consulta de Retorno', price: 'R$ 250', amount: '250' }
-};
-
-let selectedService = 'initial-br';
-let today = new Date(), viewYear = today.getFullYear(), viewMonth = today.getMonth();
-let selectedDate = null, selectedTime = null, uploadedFile = null;
-const months = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-const days = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-const slotsByDay = { 1:['09:00','10:00','11:00','14:00','15:00','16:00'], 2:['09:00','10:00','11:00','14:00','15:00'], 3:['09:00','10:00','14:00','15:00','16:00'], 4:['09:00','10:00','11:00','14:00','15:00','16:00'], 5:['09:00','10:00','11:00'] };
-const blockedDates = new Set(['2025-6-25','2025-6-26','2025-7-4']);
-
-function selectService(card, id) {
+function selectService(card) {
   document.querySelectorAll('.service-card').forEach(c => c.classList.remove('selected'));
   card.classList.add('selected');
-  selectedService = id;
-  updateConditionalFields();
-  updateSummary();
 }
-
-function updateConditionalFields() {
-  const isBR = selectedService === 'initial-br';
-  document.getElementById('block-br').classList.toggle('visible', isBR);
-  const statusBlock = document.getElementById('block-status-au');
-  statusBlock.style.display = 'none';
-}
-
-function toggleAgencyName() {
-  const val = document.getElementById('f-agency').value;
-  document.getElementById('block-agency-name').style.display = val === 'yes' ? 'flex' : 'none';
-  document.getElementById('block-agency-name').style.flexDirection = 'column';
-}
-
-function prevMonth() { viewMonth--; if(viewMonth<0){viewMonth=11;viewYear--;} selectedDate=null; selectedTime=null; renderCalendar(); }
-function nextMonth() { viewMonth++; if(viewMonth>11){viewMonth=0;viewYear++;} selectedDate=null; selectedTime=null; renderCalendar(); }
-
-function renderCalendar() {
-  document.getElementById('cal-month-label').textContent = months[viewMonth] + ' ' + viewYear;
-  const grid = document.getElementById('cal-grid');
-  grid.innerHTML = '';
-  days.forEach(d => { const el = document.createElement('div'); el.className='cal-weekday'; el.textContent=d; grid.appendChild(el); });
-  const firstDay = new Date(viewYear, viewMonth, 1).getDay();
-  const daysInMonth = new Date(viewYear, viewMonth+1, 0).getDate();
-  for(let i=0;i<firstDay;i++){ const el=document.createElement('div'); el.className='cal-day empty'; grid.appendChild(el); }
-  for(let d=1;d<=daysInMonth;d++){
-    const el=document.createElement('div'); const date=new Date(viewYear,viewMonth,d); const dow=date.getDay();
-    const key=viewYear+'-'+viewMonth+'-'+d;
-    const isPast=date<new Date(today.getFullYear(),today.getMonth(),today.getDate());
-    const isBlocked=blockedDates.has(key); const hasSlots=slotsByDay[dow]&&slotsByDay[dow].length>0;
-    el.className='cal-day'; el.textContent=d;
-    if(isPast||isBlocked||!hasSlots){ el.classList.add('disabled'); }
-    else {
-      if(today.getFullYear()===viewYear&&today.getMonth()===viewMonth&&today.getDate()===d) el.classList.add('today');
-      if(selectedDate&&selectedDate.getDate()===d&&selectedDate.getMonth()===viewMonth&&selectedDate.getFullYear()===viewYear) el.classList.add('selected');
-      el.onclick=()=>{ selectedDate=date; selectedTime=null; renderCalendar(); renderSlots(); };
-    }
-    grid.appendChild(el);
-  }
-  renderSlots();
-}
-
-function renderSlots() {
-  const container=document.getElementById('slots-container'); const slotsDiv=document.getElementById('time-slots');
-  slotsDiv.innerHTML='';
-  if(!selectedDate){ container.style.display='none'; return; }
-  const slots=slotsByDay[selectedDate.getDay()]||[]; container.style.display='block';
-  slots.forEach(t=>{ const el=document.createElement('div'); el.className='time-slot'; el.textContent=t;
-    if(selectedTime===t) el.classList.add('selected');
-    el.onclick=()=>{ selectedTime=t; document.getElementById('btn-step1').disabled=false; renderSlots(); updateSummary(); };
-    slotsDiv.appendChild(el);
-  });
-}
-
-function goToStep(n) {
-  document.querySelectorAll('.step-panel').forEach((p,i)=>p.classList.toggle('active',i+1===n));
-  document.querySelectorAll('.step').forEach((s,i)=>{ s.classList.remove('active','done'); if(i+1===n)s.classList.add('active'); if(i+1<n)s.classList.add('done'); });
-  if(n===3) updateSummary();
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-function updateSummary() {
-  const svc=services[selectedService];
-  document.getElementById('summary-service').textContent=svc.label;
-  document.getElementById('summary-total').textContent=svc.price;
-  const amEl=document.getElementById('pix-amount'); if(amEl) amEl.textContent=svc.price;
-  if(selectedDate&&selectedTime){
-    const opts={day:'2-digit',month:'long',year:'numeric'};
-    document.getElementById('summary-datetime').textContent=selectedDate.toLocaleDateString('pt-BR',opts)+' · '+selectedTime;
-  }
-}
-
-function copyText(text, btn) {
-  navigator.clipboard.writeText(text).then(()=>{
-    const orig=btn.textContent; btn.textContent='Copiado!'; btn.style.color='var(--green)'; btn.style.borderColor='var(--green)';
-    setTimeout(()=>{ btn.textContent=orig; btn.style.color=''; btn.style.borderColor=''; },2000);
-  });
-}
-function copyAmount(btn) { copyText(services[selectedService].amount, btn); }
-
-function handleUpload(input) {
-  const file=input.files[0]; if(!file) return; uploadedFile=file;
-  document.getElementById('upload-placeholder').style.display='none';
-  document.getElementById('upload-preview').style.display='block';
-  document.getElementById('upload-filename').textContent=file.name;
-  document.getElementById('upload-area').style.borderColor='var(--orange)';
-  document.getElementById('upload-area').style.borderStyle='solid';
-  document.getElementById('btn-submit-final').disabled=false;
-}
-
-async function submitBooking() {
-  const btn=document.getElementById('btn-submit-final');
-  btn.disabled=true;
-  document.getElementById('sending-overlay').classList.add('visible');
-
-  const svc=services[selectedService];
-  const opts={weekday:'long',day:'2-digit',month:'long',year:'numeric'};
-  const name=document.getElementById('f-name').value||'—';
-  const email=document.getElementById('f-email').value||'—';
-  const phone=document.getElementById('f-phone').value||'—';
-  const state=document.getElementById('f-state').value||'—';
-  const notes=document.getElementById('f-notes').value||'—';
-  const dateStr=selectedDate?selectedDate.toLocaleDateString('pt-BR',opts):'—';
-
-  let extraInfo = '';
-  if(selectedService==='initial-br'){
-    const timeline=document.getElementById('f-timeline').value||'—';
-    const agency=document.getElementById('f-agency').value||'—';
-    const agencyName=document.getElementById('f-agency-name').value||'—';
-    extraInfo=`\nPrazo para ir à Austrália: ${timeline}\nAgência de intercâmbio: ${agency}${agency==='yes'?' ('+agencyName+')':''}`;
-  } else {
-    const status=document.getElementById('f-status').value||'—';
-    extraInfo=`\nSituação na Austrália: ${status}`;
-  }
-
-  const formData = new FormData();
-  formData.append('access_key', WEB3FORMS_KEY);
-  formData.append('subject', 'Novo Agendamento — KMP Consulting (BR)');
-  formData.append('to', 'keila.peixoto@kmpconsulting.com.au');
-  formData.append('name', name);
-  formData.append('email', email);
-  formData.append('message',
-    `NOVO AGENDAMENTO — BRASIL\n\n` +
-    `Nome: ${name}\nEmail: ${email}\nWhatsApp: ${phone}\nEstado: ${state}\n` +
-    `Serviço: ${svc.label}\nData: ${dateStr}\nHorário: ${selectedTime} (horário de Brasília)\n` +
-    `Total: ${svc.price}${extraInfo}\n\nObservações:\n${notes}`
-  );
-  if(uploadedFile) formData.append('attachment', uploadedFile, uploadedFile.name);
-
-  try {
-    const res = await fetch('https://api.web3forms.com/submit', { method:'POST', body: formData });
-    const data = await res.json();
-    document.getElementById('sending-overlay').classList.remove('visible');
-    if(data.success){
-      document.getElementById('success-detail').innerHTML=`
-        <div class="success-detail-row"><strong>Nome</strong>${name}</div>
-        <div class="success-detail-row"><strong>Email</strong>${email}</div>
-        <div class="success-detail-row"><strong>WhatsApp</strong>${phone}</div>
-        <div class="success-detail-row"><strong>Serviço</strong>${svc.label}</div>
-        <div class="success-detail-row"><strong>Data</strong>${dateStr}</div>
-        <div class="success-detail-row"><strong>Horário</strong>${selectedTime} (horário de Brasília)</div>
-        <div class="success-detail-row"><strong>Total</strong>${svc.price}</div>
-        <div class="success-detail-row"><strong>Comprovante</strong>${uploadedFile?uploadedFile.name:'—'}</div>`;
-      goToStep(4);
-    } else {
-      alert('Ocorreu um erro. Por favor, tente novamente ou entre em contato diretamente.');
-      btn.disabled=false;
-    }
-  } catch(e){
-    document.getElementById('sending-overlay').classList.remove('visible');
-    alert('Erro de conexão. Por favor, tente novamente.');
-    btn.disabled=false;
-  }
-}
-
-renderCalendar();
-updateSummary();
-updateConditionalFields();
 </script>
 </body>
 </html>
