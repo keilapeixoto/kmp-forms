@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KMP Consulting | Processo Operacional Visto Americano</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --orange: #F27B20;
+      --orange-light: #F9A05A;
+      --orange-pale: #FDF3EA;
+      --graphite: #2C2C2C;
+      --graphite-mid: #555555;
+      --graphite-light: #888888;
+      --border: #E0E0E0;
+      --white: #FFFFFF;
+      --bg: #F8F7F5;
+      --red-pale: #FDF0EE;
+      --red: #C0392B;
+      --green-pale: #EEF8F2;
+      --green: #27AE60;
+    }
+    body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--graphite); min-height: 100vh; padding: 0 0 60px; }
+
+    .header { background: var(--graphite); padding: 24px 40px; display: flex; align-items: center; justify-content: space-between; }
+    .logo-mark { display: flex; align-items: center; gap: 14px; }
+    .logo-box { background: var(--orange); border-radius: 8px; padding: 7px 13px; font-weight: 600; font-size: 17px; color: var(--white); }
+    .logo-box span { color: #F9CFA8; font-weight: 400; }
+    .logo-tagline { font-family: 'Cormorant Garamond', serif; font-size: 13px; color: #AAAAAA; font-style: italic; }
+    .header-badge { font-size: 10px; font-weight: 600; color: var(--orange-light); letter-spacing: 1.2px; text-transform: uppercase; border: 1px solid rgba(242,123,32,0.3); padding: 5px 12px; border-radius: 20px; }
+
+    .hero { background: var(--white); border-bottom: 3px solid var(--orange); padding: 40px 40px 32px; }
+    .hero-inner { max-width: 800px; margin: 0 auto; }
+    .hero-eyebrow { font-size: 11px; font-weight: 600; color: var(--orange); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
+    .hero h1 { font-family: 'Cormorant Garamond', serif; font-size: 40px; font-weight: 600; color: var(--graphite); line-height: 1.15; margin-bottom: 14px; }
+    .hero h1 em { color: var(--orange); font-style: normal; }
+    .hero p { font-size: 15px; color: var(--graphite-mid); line-height: 1.65; max-width: 620px; }
+
+    .main { max-width: 800px; margin: 36px auto; padding: 0 20px; }
+
+    /* TIMELINE OVERVIEW */
+    .timeline-overview { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-bottom: 40px; }
+    .tl-step { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 14px 10px; text-align: center; position: relative; }
+    .tl-step-num { width: 28px; height: 28px; border-radius: 50%; background: var(--orange); color: white; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; }
+    .tl-step-name { font-size: 11px; font-weight: 600; color: var(--graphite); line-height: 1.3; }
+    .tl-step-time { font-size: 10px; color: var(--graphite-light); margin-top: 4px; }
+
+    /* SECTION */
+    .section-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 600; color: var(--graphite); margin-bottom: 6px; }
+    .section-title em { color: var(--orange); font-style: normal; }
+    .section-intro { font-size: 14px; color: var(--graphite-mid); line-height: 1.6; margin-bottom: 20px; }
+    .section-block { margin-bottom: 44px; }
+
+    /* STAGE CARD */
+    .stage-card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 20px; }
+    .stage-header { padding: 18px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 14px; background: var(--white); }
+    .stage-num { width: 42px; height: 42px; border-radius: 10px; background: var(--graphite); color: var(--orange-light); font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .stage-title { font-family: 'Cormorant Garamond', serif; font-size: 21px; font-weight: 600; color: var(--graphite); }
+    .stage-meta { font-size: 11px; color: var(--graphite-light); margin-top: 2px; }
+    .stage-meta strong { color: var(--orange); font-weight: 600; }
+    .stage-body { padding: 20px 24px; }
+
+    /* ACTION LIST */
+    .action-group-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; }
+    .action-group-label.kmp { color: var(--orange); }
+    .action-group-label.client { color: var(--graphite-light); }
+    .action-list { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
+    .action-list:last-child { margin-bottom: 0; }
+    .action-list li { font-size: 13px; color: var(--graphite-mid); display: flex; align-items: flex-start; gap: 10px; line-height: 1.5; }
+    .action-list li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--orange); margin-top: 6px; flex-shrink: 0; }
+    .action-list.client li::before { background: var(--graphite-light); }
+    .action-list li strong { color: var(--graphite); font-weight: 600; }
+
+    /* EMAIL TEMPLATE BOX */
+    .email-box { background: var(--bg); border: 1.5px solid var(--border); border-radius: 10px; padding: 20px 22px; margin-top: 16px; }
+    .email-box-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px dashed var(--border); }
+    .email-box-label { font-size: 11px; font-weight: 700; color: var(--orange); text-transform: uppercase; letter-spacing: 0.8px; }
+    .email-subject { font-size: 12px; color: var(--graphite-mid); }
+    .email-subject strong { color: var(--graphite); }
+    .email-content { font-size: 13px; color: var(--graphite-mid); line-height: 1.7; }
+    .email-content p { margin-bottom: 12px; }
+    .email-content p:last-child { margin-bottom: 0; }
+    .email-content strong { color: var(--graphite); font-weight: 600; }
+    .email-content .highlight { color: var(--orange); font-weight: 600; }
+
+    /* CHECKPOINT */
+    .checkpoint { background: var(--green-pale); border: 1.5px solid #C3E6CB; border-radius: 10px; padding: 14px 18px; margin-top: 16px; }
+    .checkpoint-title { font-size: 11px; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+    .checkpoint p { font-size: 13px; color: var(--graphite-mid); line-height: 1.55; }
+    .checkpoint p strong { color: var(--graphite); }
+
+    /* WARNING */
+    .warning { background: var(--red-pale); border: 1.5px solid #F5C6C2; border-radius: 10px; padding: 14px 18px; margin-top: 16px; }
+    .warning-title { font-size: 11px; font-weight: 700; color: var(--red); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+    .warning p, .warning li { font-size: 13px; color: var(--graphite-mid); line-height: 1.55; }
+    .warning ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .warning li { display: flex; align-items: flex-start; gap: 8px; }
+    .warning li::before { content: '!'; width: 16px; height: 16px; border-radius: 50%; background: var(--red); color: white; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+
+    /* TOOLS ROW */
+    .tools-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    .tool-card { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; }
+    .tool-card-label { font-size: 10px; font-weight: 700; color: var(--orange); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+    .tool-card-title { font-size: 14px; font-weight: 600; color: var(--graphite); margin-bottom: 4px; }
+    .tool-card-desc { font-size: 12px; color: var(--graphite-mid); line-height: 1.45; }
+
+    /* SLA TABLE */
+    .sla-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .sla-table th { text-align: left; padding: 10px 14px; background: var(--graphite); color: white; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; }
+    .sla-table th:first-child { border-radius: 8px 0 0 0; }
+    .sla-table th:last-child { border-radius: 0 8px 0 0; }
+    .sla-table td { padding: 11px 14px; border-bottom: 1px solid var(--border); color: var(--graphite-mid); background: var(--white); }
+    .sla-table tr:last-child td { border-bottom: none; }
+    .sla-table td strong { color: var(--graphite); font-weight: 600; }
+    .sla-tag { display: inline-block; background: var(--orange-pale); color: var(--orange); font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 4px; }
+
+    .notice { background: var(--orange-pale); border-left: 3px solid var(--orange); border-radius: 0 8px 8px 0; padding: 13px 16px; font-size: 13px; color: var(--graphite-mid); line-height: 1.6; margin-top: 16px; }
+    .notice strong { color: var(--graphite); font-weight: 600; }
+
+    .footer { text-align: center; padding: 28px 20px 0; font-size: 12px; color: var(--graphite-light); }
+    .footer strong { color: var(--graphite-mid); }
+    .divider { height: 1px; background: var(--border); margin: 36px 0; }
+
+    @media (max-width: 640px) {
+      .header { padding: 18px 16px; flex-direction: column; gap: 10px; align-items: flex-start; }
+      .hero { padding: 28px 16px 24px; }
+      .hero h1 { font-size: 28px; }
+      .main { margin: 20px auto; }
+      .timeline-overview { grid-template-columns: repeat(3, 1fr); }
+      .tools-row { grid-template-columns: 1fr; }
+      .stage-body { padding: 16px; }
+      .sla-table { font-size: 12px; }
+      .sla-table th, .sla-table td { padding: 8px 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo-mark">
+    <div class="logo-box">kmp<span>consulting.</span></div>
+    <div class="logo-tagline">Estratégia que conecta. Futuro que transforma.</div>
+  </div>
+  <div class="header-badge">Processo Operacional · Uso Interno</div>
+</div>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">Pipeline Padrão KMP</div>
+    <h1>Processo Operacional<br>Visto Americano <em>B1/B2</em></h1>
+    <p>Fluxo completo de atendimento para clientes do serviço de visto americano, da primeira mensagem até a entrega do passaporte com o visto. Cada etapa define quem faz o quê, os prazos e os pontos de verificação de qualidade.</p>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- TIMELINE OVERVIEW -->
+  <div class="timeline-overview">
+    <div class="tl-step"><div class="tl-step-num">1</div><div class="tl-step-name">Contato e Boas Vindas</div><div class="tl-step-time">Dia 0</div></div>
+    <div class="tl-step"><div class="tl-step-num">2</div><div class="tl-step-name">Pagamento e Formulário</div><div class="tl-step-time">Dia 0 a 3</div></div>
+    <div class="tl-step"><div class="tl-step-num">3</div><div class="tl-step-name">Análise de Perfil</div><div class="tl-step-time">Dia 3 a 5</div></div>
+    <div class="tl-step"><div class="tl-step-num">4</div><div class="tl-step-name">DS-160 e Agendamento</div><div class="tl-step-time">Dia 5 a 10</div></div>
+    <div class="tl-step"><div class="tl-step-num">5</div><div class="tl-step-name">Preparo Entrevista</div><div class="tl-step-time">Semana antes</div></div>
+    <div class="tl-step"><div class="tl-step-num">6</div><div class="tl-step-name">Pós Entrevista</div><div class="tl-step-time">Até 5 dias úteis</div></div>
+  </div>
+
+  <!-- ETAPA 1 -->
+  <div class="section-block">
+    <div class="stage-card">
+      <div class="stage-header">
+        <div class="stage-num">1</div>
+        <div>
+          <div class="stage-title">Contato Inicial e Boas Vindas</div>
+          <div class="stage-meta">Prazo: <strong>resposta em até 4 horas úteis</strong> · Canal: WhatsApp ou e-mail</div>
+        </div>
+      </div>
+      <div class="stage-body">
+        <div class="action-group-label kmp">Ações KMP</div>
+        <ul class="action-list">
+          <li>Responder o primeiro contato com o e-mail de boas vindas padrão (template abaixo), personalizando o nome.</li>
+          <li>Confirmar quantas pessoas vão aplicar (individual, casal, família) para calcular as taxas correctamente.</li>
+          <li>Perguntar a cidade de preferência para a entrevista (Sydney, Melbourne ou Perth) e se há urgência de data.</li>
+          <li>Registrar o lead no CRM com estágio "Novo contato USA" e origem (Instagram, indicação, etc).</li>
+        </ul>
+
+        <div class="email-box">
+          <div class="email-box-header">
+            <div class="email-box-label">Template · E-mail de Boas Vindas</div>
+            <div class="email-subject">Assunto: <strong>Bem-vindo ao seu processo para os Estados Unidos | KMP Consulting</strong></div>
+          </div>
+          <div class="email-content">
+            <p>Prezada [NOME], tudo bem?</p>
+            <p>Agradecemos imensamente por escolher a KMP Consulting para auxiliá-la na sua jornada rumo aos Estados Unidos. Estamos entusiasmados em iniciar o processo de aplicação do seu visto e nos comprometemos a garantir que tudo ocorra de forma tranquila e eficiente.</p>
+            <p><strong>Por que escolher a KMP Consulting?</strong></p>
+            <p>Processo simplificado e sem complicações: cuidamos de cada detalhe da sua aplicação para que você tenha uma experiência tranquila e sem estresse.<br>
+            Suporte personalizado em cada etapa: nossa equipe acompanha você desde a aplicação até a preparação para a entrevista.<br>
+            Experiência e expertise: conhecemos profundamente os requisitos e as melhores práticas do consulado americano na Austrália.<br>
+            Compromisso com o seu sucesso: nossa missão é ajudar você a realizar a sua viagem aos EUA com segurança.</p>
+            <p><strong>Taxas e Serviços</strong></p>
+            <p>Taxa da aplicação do visto de turista paga à Embaixada Americana (B1/B2): <span class="highlight">AUD 296 por pessoa</span>, paga com o seu próprio cartão.<br>
+            Taxa de serviço KMP: <span class="highlight">AUD 150 por pessoa</span>, via PayID.<br>
+            Delivery do passaporte com o visto: <span class="highlight">AUD 52</span>, taxa opcional, recomendada para entrevistas em outras cidades.</p>
+            <p><strong>Nossos serviços incluem:</strong> aplicação do visto, agendamento da entrevista e preparo completo para a entrevista.</p>
+            <p>Para darmos início ao seu processo, solicitamos que efetue o pagamento da taxa KMP através do PayID <span class="highlight">0451051806</span> e na sequência inicie o preenchimento do nosso formulário online: <span class="highlight">[LINK DO FORMULÁRIO]</span></p>
+            <p>No próprio formulário você poderá anexar o comprovante de pagamento, o passaporte de cada viajante e uma foto com fundo branco de cada pessoa (observação: essa foto não será utilizada para o visto, é uma imagem separada para a finalização da aplicação).</p>
+            <p>Essas etapas são fundamentais para coletarmos as informações necessárias e garantirmos que sua aplicação avance de maneira eficiente.</p>
+            <p>Siga-nos no Instagram: @kmpconsulting_au</p>
+            <p>Kind regards,<br>Equipe KMP Consulting</p>
+          </div>
+        </div>
+
+        <div class="checkpoint">
+          <div class="checkpoint-title">Checkpoint de saída da etapa</div>
+          <p>Cliente recebeu o e-mail de boas vindas, conhece as taxas e tem o link do formulário. <strong>Mover no CRM para "Aguardando pagamento".</strong></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ETAPA 2 -->
+  <div class="section-block">
+    <div class="stage-card">
+      <div class="stage-header">
+        <div class="stage-num">2</div>
+        <div>
+          <div class="stage-title">Pagamento e Formulário Online</div>
+          <div class="stage-meta">Prazo: <strong>cliente tem até 3 dias, follow up no dia 2</strong> · Ferramenta: form-usa.html</div>
+        </div>
+      </div>
+      <div class="stage-body">
+        <div class="action-group-label client">Ações do Cliente</div>
+        <ul class="action-list client">
+          <li>Paga a taxa KMP de AUD 150 por pessoa via PayID 0451051806.</li>
+          <li>Preenche o formulário online com dados pessoais, histórico de viagens e motivo da viagem.</li>
+          <li>Anexa no formulário: comprovante de pagamento, passaporte de cada viajante e foto com fundo branco de cada pessoa.</li>
+        </ul>
+
+        <div class="action-group-label kmp">Ações KMP</div>
+        <ul class="action-list">
+          <li>Confirmar o recebimento do pagamento na conta.</li>
+          <li>Verificar se o formulário chegou completo no e-mail (via Web3Forms).</li>
+          <li>Conferir a qualidade dos anexos: passaporte legível, validade mínima de 6 meses após a data da viagem, foto com fundo branco dentro das especificações.</li>
+          <li>Se algo estiver incompleto ou ilegível, solicitar correção em até 24 horas com mensagem objetiva indicando exatamente o que falta.</li>
+          <li>Follow up automático no dia 2 se o cliente não tiver concluído.</li>
+        </ul>
+
+        <div class="warning">
+          <div class="warning-title">Não avançar para a etapa 3 se</div>
+          <ul>
+            <li>O passaporte vence em menos de 6 meses após a data prevista de regresso.</li>
+            <li>A foto não tem fundo branco puro ou tem óculos, retoque ou sombras.</li>
+            <li>O pagamento não foi identificado na conta.</li>
+          </ul>
+        </div>
+
+        <div class="checkpoint">
+          <div class="checkpoint-title">Checkpoint de saída da etapa</div>
+          <p>Pagamento confirmado, formulário completo, documentos legíveis e dentro das especificações. <strong>Mover no CRM para "Análise de perfil".</strong></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ETAPA 3 -->
+  <div class="section-block">
+    <div class="stage-card">
+      <div class="stage-header">
+        <div class="stage-num">3</div>
+        <div>
+          <div class="stage-title">Análise de Perfil e Estratégia</div>
+          <div class="stage-meta">Prazo: <strong>2 dias úteis</strong> · Referência: Guia de Aprovação KMP</div>
+        </div>
+      </div>
+      <div class="stage-body">
+        <div class="action-group-label kmp">Ações KMP</div>
+        <ul class="action-list">
+          <li><strong>Classificar o perfil de risco</strong> usando o Guia de Aprovação: visto americano anterior, histórico de viagens, vínculo empregatício, status migratório na Austrália, parentes nos EUA.</li>
+          <li><strong>Verificar o status migratório australiano:</strong> solicitar o VEVO printout ou o grant notice do visto australiano. Cliente sem visto australiano válido além da data de regresso é caso de alto risco e precisa de conversa estratégica antes de prosseguir.</li>
+          <li><strong>Identificar red flags:</strong> recusa americana anterior, lacunas de emprego nos últimos 5 anos, viagem muito longa sem justificativa, parentes próximos nos EUA.</li>
+          <li><strong>Definir a narrativa da aplicação:</strong> qual é a história consistente desta viagem (propósito, duração, financiamento, retorno).</li>
+          <li>Montar a lista personalizada de documentos de suporte que o cliente deve providenciar para a entrevista (carta do empregador, extratos, contrato de aluguel, etc).</li>
+          <li>Enviar ao cliente a lista de documentos de suporte com prazo de entrega.</li>
+        </ul>
+
+        <div class="notice">
+          <strong>Casos de casal ou família:</strong> as aplicações devem ser analisadas em conjunto. Endereço, datas, motivo da viagem e financiamento precisam ser idênticos entre as DS-160. Qualquer divergência entre os formulários do casal é red flag automático no consulado.
+        </div>
+
+        <div class="checkpoint">
+          <div class="checkpoint-title">Checkpoint de saída da etapa</div>
+          <p>Perfil classificado, narrativa definida, lista de documentos de suporte enviada ao cliente. <strong>Mover no CRM para "DS-160 em preenchimento".</strong></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ETAPA 4 -->
+  <div class="section-block">
+    <div class="stage-card">
+      <div class="stage-header">
+        <div class="stage-num">4</div>
+        <div>
+          <div class="stage-title">DS-160 e Agendamento</div>
+          <div class="stage-meta">Prazo: <strong>3 a 5 dias úteis</strong> · Sistema: CEAC + portal de agendamento</div>
+        </div>
+      </div>
+      <div class="stage-body">
+        <div class="action-group-label kmp">Ações KMP</div>
+        <ul class="action-list">
+          <li>Preencher a DS-160 no CEAC com base no formulário do cliente, seguindo o Guia de Aprovação campo a campo.</li>
+          <li><strong>Salvar o Application ID e a resposta de segurança</strong> no registro do cliente no CRM. Sem isso, o formulário não pode ser recuperado.</li>
+          <li>Revisão dupla antes de submeter: nome caractere por caractere contra o passaporte, número do passaporte, datas, empregador com descrição completa de funções, histórico de viagens dos últimos 5 anos sem lacunas.</li>
+          <li><strong>Enviar o resumo da DS-160 ao cliente para validação final antes de submeter.</strong> A DS-160 não pode ser editada após o envio.</li>
+          <li>Submeter a DS-160 e guardar a página de confirmação com o barcode.</li>
+          <li>Orientar o cliente a pagar a taxa MRV de AUD 296 com o cartão dele e enviar o recibo.</li>
+          <li>Agendar a entrevista no consulado escolhido, considerando a agenda do cliente.</li>
+          <li>Enviar ao cliente: confirmação da DS-160, comprovante de agendamento e instruções para impressão.</li>
+        </ul>
+
+        <div class="warning">
+          <div class="warning-title">Pontos de não retorno</div>
+          <ul>
+            <li>A DS-160 submetida não pode ser corrigida. Erro detectado depois exige nova DS-160 e possível reagendamento.</li>
+            <li>Nunca submeter sem a validação escrita do cliente (WhatsApp ou e-mail serve como registro).</li>
+            <li>Omissão de recusa anterior ou de parentes nos EUA é fraude e gera inelegibilidade permanente. Confirmar essas duas perguntas explicitamente com cada cliente antes de submeter.</li>
+          </ul>
+        </div>
+
+        <div class="checkpoint">
+          <div class="checkpoint-title">Checkpoint de saída da etapa</div>
+          <p>DS-160 submetida e validada pelo cliente, taxa MRV paga, entrevista agendada, comprovantes enviados. <strong>Mover no CRM para "Preparo para entrevista".</strong></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ETAPA 5 -->
+  <div class="section-block">
+    <div class="stage-card">
+      <div class="stage-header">
+        <div class="stage-num">5</div>
+        <div>
+          <div class="stage-title">Preparo Completo para a Entrevista</div>
+          <div class="stage-meta">Prazo: <strong>na semana anterior à entrevista</strong> · Formato: sessão por video ou WhatsApp</div>
+        </div>
+      </div>
+      <div class="stage-body">
+        <div class="action-group-label kmp">Ações KMP</div>
+        <ul class="action-list">
+          <li>Agendar a sessão de preparo com o cliente (30 a 45 minutos) na semana da entrevista.</li>
+          <li>Simular as 5 perguntas principais: motivo da viagem, emprego, financiamento, parentes nos EUA e plano de retorno. As respostas devem ser curtas, directas e idênticas ao que consta na DS-160.</li>
+          <li>Treinar a articulação do perfil terceiro país: "Moro e trabalho na Austrália com visto válido até [data]. Viajo por [X] dias e regresso à Austrália onde tenho [emprego, residência, estudos]."</li>
+          <li>Revisar o checklist físico do dia: passaporte, comprovante de agendamento impresso, recibo da taxa MRV, foto 5x5, carta do empregador, extratos, VEVO e demais documentos de suporte.</li>
+          <li>Enviar a página de orientações do dia (etapa 4 do sistema de forms) por e-mail com endereço do consulado e horário de chegada.</li>
+          <li>Lembrete automático 24 horas antes da entrevista.</li>
+        </ul>
+
+        <div class="action-group-label client">Ações do Cliente</div>
+        <ul class="action-list client">
+          <li>Participar da sessão de preparo.</li>
+          <li>Organizar a pasta física de documentos na ordem indicada pela KMP.</li>
+          <li>Chegar ao consulado com 15 minutos de antecedência no dia.</li>
+        </ul>
+
+        <div class="checkpoint">
+          <div class="checkpoint-title">Checkpoint de saída da etapa</div>
+          <p>Sessão de preparo realizada, cliente confirmou a pasta de documentos completa, lembrete enviado. <strong>Mover no CRM para "Entrevista agendada".</strong></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ETAPA 6 -->
+  <div class="section-block">
+    <div class="stage-card">
+      <div class="stage-header">
+        <div class="stage-num">6</div>
+        <div>
+          <div class="stage-title">Pós Entrevista e Entrega</div>
+          <div class="stage-meta">Prazo: <strong>contato no mesmo dia da entrevista</strong> · Encerramento do caso</div>
+        </div>
+      </div>
+      <div class="stage-body">
+        <div class="action-group-label kmp">Ações KMP</div>
+        <ul class="action-list">
+          <li>Contactar o cliente no mesmo dia da entrevista para saber o resultado.</li>
+          <li><strong>Se aprovado:</strong> orientar sobre o prazo de devolução do passaporte (até 5 dias úteis), o pagamento da Visa Integrity Fee de USD 250 na emissão, e acompanhar o delivery se contratado.</li>
+          <li><strong>Se administrative processing (221g):</strong> identificar o que foi solicitado, orientar o envio em até 1 ano e acompanhar o caso semanalmente.</li>
+          <li><strong>Se recusado (214b):</strong> registrar o motivo exato informado pelo oficial, analisar o que mudou em relação à estratégia e agendar conversa para avaliar reaplicação futura com mudança de circunstâncias.</li>
+          <li>Conferir os dados do visto quando o passaporte voltar: nome, número do passaporte, validade.</li>
+          <li>Enviar mensagem de encerramento com orientações de viagem e pedir indicação ou depoimento.</li>
+          <li>Registrar o resultado no CRM e arquivar o caso com todos os documentos.</li>
+        </ul>
+
+        <div class="notice">
+          <strong>Pós venda estratégico:</strong> cliente aprovado é a melhor fonte de novos clientes. Pedir o depoimento em texto ou video para os destaques do Instagram e oferecer o programa de indicação com condições especiais para amigos e familiares.
+        </div>
+
+        <div class="checkpoint">
+          <div class="checkpoint-title">Checkpoint de encerramento</div>
+          <p>Resultado registrado, visto conferido, depoimento solicitado. <strong>Mover no CRM para "Concluído" ou "Reaplicação futura".</strong></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- FERRAMENTAS -->
+  <div class="section-block">
+    <div class="section-title">Ferramentas do <em>Processo</em></div>
+    <div class="section-intro">Cada etapa usa uma ferramenta específica já criada para a KMP.</div>
+    <div class="tools-row">
+      <div class="tool-card">
+        <div class="tool-card-label">Etapas 1 e 2</div>
+        <div class="tool-card-title">form-usa.html</div>
+        <div class="tool-card-desc">Formulário online em 3 etapas com pagamento, dados dos viajantes e upload de documentos. Hospedado em kmp-forms.vercel.app.</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-card-label">Etapas 3 e 4</div>
+        <div class="tool-card-title">Guia de Aprovação B1/B2</div>
+        <div class="tool-card-desc">Referência interna com os campos críticos da DS-160, documentos de suporte e estratégia para terceiro país.</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-card-label">Todas as etapas</div>
+        <div class="tool-card-title">KMP CRM</div>
+        <div class="tool-card-desc">Pipeline com os estágios: Novo contato USA, Aguardando pagamento, Análise de perfil, DS-160 em preenchimento, Preparo para entrevista, Entrevista agendada, Concluído.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLA -->
+  <div class="section-block">
+    <div class="section-title">Prazos e <em>Compromissos</em></div>
+    <div class="section-intro">Os prazos abaixo são o padrão de qualidade KMP comunicável ao cliente.</div>
+    <table class="sla-table">
+      <tr><th>Momento</th><th>Compromisso KMP</th></tr>
+      <tr><td><strong>Primeiro contato</strong></td><td><span class="sla-tag">4 horas úteis</span> para resposta com e-mail de boas vindas</td></tr>
+      <tr><td><strong>Formulário recebido</strong></td><td><span class="sla-tag">48 horas úteis</span> para confirmação e análise de perfil</td></tr>
+      <tr><td><strong>DS-160</strong></td><td><span class="sla-tag">3 a 5 dias úteis</span> após documentos completos validados</td></tr>
+      <tr><td><strong>Agendamento</strong></td><td><span class="sla-tag">24 horas</span> após pagamento da taxa MRV confirmado</td></tr>
+      <tr><td><strong>Sessão de preparo</strong></td><td><span class="sla-tag">semana da entrevista</span> com lembrete 24h antes</td></tr>
+      <tr><td><strong>Pós entrevista</strong></td><td><span class="sla-tag">mesmo dia</span> contato para resultado e próximos passos</td></tr>
+    </table>
+  </div>
+
+  <div class="notice">
+    <strong>Nota de conformidade:</strong> Todo o material público e a comunicação com clientes deste processo utilizam a linguagem de orientação educacional e assistência administrativa de aplicação. A KMP Consulting não presta assessoria jurídica de imigração americana nem australiana.
+  </div>
+
+  <div class="footer">
+    <strong>KMP Consulting</strong> · Sydney, Australia · Processo Operacional Interno v1.0 · Junho 2026<br>
+    keila.peixoto@kmpconsulting.com.au · kmpconsulting.com.au
+  </div>
+
+</div>
+</body>
+</html>
