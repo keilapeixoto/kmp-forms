@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KMP Consulting — Checklist 482 Subsequent Entrant</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange: #F27B20;
+      --orange-dark: #E06A10;
+      --orange-light: #FFF5EC;
+      --dark: #1a1a1a;
+      --gray: #6b7280;
+      --light-gray: #f3f4f6;
+      --border: #e5e7eb;
+      --green: #16a34a;
+      --green-light: #f0fdf4;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: #f8f8f8;
+      min-height: 100vh;
+      color: var(--dark);
+    }
+
+    /* Top bar */
+    .topbar {
+      background: #fff;
+      border-bottom: 3px solid var(--orange);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+    }
+    .logo-icon { width: 42px; height: 42px; border-radius: 10px; background: linear-gradient(135deg, #F27B20 0%, #F5941E 100%); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .logo-icon span { color: #fff; font-weight: 800; font-size: 16px; letter-spacing: -0.02em; }
+    .logo-text strong { display: block; font-weight: 700; font-size: 18px; letter-spacing: -0.01em; }
+    .logo-text strong span { font-weight: 300; }
+    .logo-tagline { display: block; font-size: 10px; color: var(--orange); font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; margin-top: 2px; }
+
+    /* Layout */
+    .container { max-width: 800px; margin: 0 auto; padding: 32px 16px 48px; }
+
+    /* Header */
+    .doc-header {
+      background: #fff;
+      border-radius: 16px;
+      padding: 32px 32px 28px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+      border: 1px solid #eee;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .doc-header::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #F27B20, #F5941E);
+    }
+
+    .doc-header-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .doc-header h1 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 1.15;
+      color: var(--dark);
+    }
+
+    .doc-header h1 span { color: var(--orange); }
+
+    .doc-header p.sub {
+      font-size: 14px;
+      color: var(--gray);
+      margin-top: 6px;
+      line-height: 1.5;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--orange-light);
+      border: 1.5px solid var(--orange);
+      color: var(--orange-dark);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 100px;
+      white-space: nowrap;
+      letter-spacing: 0.03em;
+    }
+
+    /* Progress bar */
+    .progress-wrap { margin-top: 20px; }
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--gray);
+      margin-bottom: 8px;
+    }
+    .progress-label strong { color: var(--orange); font-weight: 700; }
+    .progress-bar-bg { height: 8px; background: #e5e7eb; border-radius: 100px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #F27B20, #F5941E); border-radius: 100px; transition: width 0.4s ease; }
+
+    /* Info box */
+    .info-box {
+      padding: 16px 20px;
+      background: var(--orange-light);
+      border-radius: 12px;
+      margin-bottom: 24px;
+      border-left: 4px solid var(--orange);
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--dark);
+    }
+    .info-box strong { color: var(--orange-dark); }
+
+    /* Section */
+    .section { margin-bottom: 24px; }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 20px;
+      background: var(--dark);
+      border-radius: 12px 12px 0 0;
+      color: #fff;
+    }
+
+    .section-header .sec-icon { font-size: 20px; }
+
+    .section-header h2 {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      flex: 1;
+    }
+
+    .section-header .sec-count {
+      font-size: 12px;
+      font-weight: 500;
+      opacity: 0.6;
+    }
+
+    .section-body {
+      background: #fff;
+      border-radius: 0 0 12px 12px;
+      border: 1px solid #eee;
+      border-top: none;
+      overflow: hidden;
+    }
+
+    /* Checklist item */
+    .item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .item:last-child { border-bottom: none; }
+    .item:hover { background: #fafafa; }
+    .item.checked { background: var(--green-light); }
+
+    .checkbox {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      border: 2px solid #d1d5db;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+      transition: all 0.15s;
+    }
+
+    .item.checked .checkbox {
+      background: var(--green);
+      border-color: var(--green);
+    }
+
+    .checkbox svg { display: none; }
+    .item.checked .checkbox svg { display: block; }
+
+    .item-content { flex: 1; }
+
+    .item-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--dark);
+      line-height: 1.4;
+    }
+
+    .item.checked .item-title {
+      text-decoration: line-through;
+      color: var(--gray);
+    }
+
+    .item-sub {
+      font-size: 12px;
+      color: var(--gray);
+      margin-top: 3px;
+      line-height: 1.5;
+    }
+
+    .item-en {
+      font-size: 11px;
+      color: #9ca3af;
+      font-style: italic;
+      margin-top: 2px;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 100px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 5px;
+    }
+
+    .tag-required { background: #fee2e2; color: #dc2626; }
+    .tag-conditional { background: #fef3c7; color: #d97706; }
+    .tag-optional { background: var(--orange-light); color: var(--orange-dark); }
+
+    /* Notes section */
+    .notes-section {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+      border: 1px solid #eee;
+    }
+
+    .notes-section h3 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    textarea.notes-input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: 'Outfit', sans-serif;
+      color: var(--dark);
+      resize: vertical;
+      min-height: 100px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    textarea.notes-input:focus { border-color: var(--orange); box-shadow: 0 0 0 3px rgba(242,123,32,0.12); }
+
+    /* Action bar */
+    .action-bar {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .btn-reset-all {
+      padding: 10px 20px;
+      background: transparent;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      color: var(--gray);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+      transition: all 0.2s;
+    }
+    .btn-reset-all:hover { border-color: #e53e3e; color: #e53e3e; }
+
+    .btn-print {
+      padding: 10px 20px;
+      background: linear-gradient(135deg, #F27B20 0%, #F5941E 100%);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+      box-shadow: 0 4px 14px rgba(242,123,32,0.3);
+      transition: all 0.2s;
+    }
+    .btn-print:hover { opacity: 0.9; }
+
+    .footer { text-align: center; font-size: 11px; color: #aaa; margin-top: 18px; }
+
+    @media print {
+      .topbar, .action-bar, .notes-section, .progress-wrap, .btn-print, .btn-reset-all { display: none !important; }
+      body { background: #fff; }
+      .container { padding: 0; }
+      .doc-header { box-shadow: none; border: 1px solid #ddd; }
+      .item { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo-icon"><span>kmp</span></div>
+  <div class="logo-text">
+    <strong>kmp<span> consulting</span></strong>
+    <span class="logo-tagline">Estratégia que conecta. Futuro que transforma.</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Header -->
+  <div class="doc-header">
+    <div class="doc-header-top">
+      <div>
+        <h1>Checklist de Documentos<br><span>482 Subsequent Entrant</span></h1>
+        <p class="sub">Temporary Skill Shortage Visa — Dependente / Subsequent Entrant<br>Subclass 482 · Department of Home Affairs</p>
+      </div>
+      <span class="badge"> KMP Consulting</span>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span>Documentos marcados como reunidos</span>
+        <strong id="progress-text">0 / 0</strong>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progress-bar" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Info box -->
+  <div class="info-box">
+    <strong>Como usar este checklist:</strong> Clique em cada item para marcá-lo como reunido. O progresso é salvo automaticamente no seu navegador. Documentos marcados como <span style="color:#dc2626;font-weight:700">OBRIGATÓRIO</span> são exigidos em todos os casos. Documentos <span style="color:#d97706;font-weight:700">CONDICIONAL</span> dependem da situação do solicitante.
+  </div>
+
+  <!-- Action bar -->
+  <div class="action-bar">
+    <button class="btn-reset-all" onclick="resetAll()">↺ Limpar todos os marcadores</button>
+    <button class="btn-print" onclick="window.print()"> Imprimir checklist</button>
+  </div>
+
+  <!-- Sections -->
+  <div id="checklist"></div>
+
+  <!-- Notes -->
+  <div class="notes-section">
+    <h3> Notas do caso / Case notes</h3>
+    <textarea class="notes-input" id="notes-input" placeholder="Adicione observações sobre o caso, pendências ou informações específicas do cliente..."
+      oninput="saveNotes(this.value)"></textarea>
+  </div>
+
+  <p class="footer">© <span id="yr"></span> KMP Consulting — Estratégia que conecta. Futuro que transforma. — Este checklist é de uso interno e não substitui orientação jurídica.</p>
+</div>
+
+<script>
+document.getElementById("yr").textContent = new Date().getFullYear();
+
+const SECTIONS = [
+  {
+    id: "identidade",
+    icon: "",
+    title: "Identidade e Passaporte",
+    en: "Identity and Passport",
+    items: [
+      {
+        id: "pp_bio",
+        title: "Passaporte — página de dados biográficos",
+        en: "Passport — biographical data page",
+        sub: "Cópia colorida nítida. Passaporte deve ter validade mínima de 6 meses.",
+        tag: "required"
+      },
+      {
+        id: "pp_todos",
+        title: "Passaporte — todas as páginas carimbadas",
+        en: "Passport — all stamped pages",
+        sub: "Inclui vistos, carimbos de entrada e saída de todos os países visitados.",
+        tag: "required"
+      },
+      {
+        id: "foto_facial",
+        title: "Foto facial recente (fundo branco)",
+        en: "Recent facial image (white background)",
+        sub: "Foto tipo passaporte, fundo branco, rostovisível. Arquivo JPG ou PNG.",
+        tag: "required"
+      },
+      {
+        id: "rg_cnh",
+        title: "Documento de identidade nacional (RG, CNH ou equivalente)",
+        en: "National identity document (ID card, driver's licence, or equivalent)",
+        sub: "Frente e verso. Inclui documentos australianos se o solicitante já reside aqui.",
+        tag: "optional"
+      },
+    ]
+  },
+  {
+    id: "relacionamento",
+    icon: "",
+    title: "Evidência de Relacionamento",
+    en: "Relationship Evidence",
+    items: [
+      {
+        id: "cert_defacto",
+        title: "Certidão de união estável (de facto) ou certidão de casamento",
+        en: "De facto relationship certificate or marriage certificate",
+        sub: "Documento oficial registrado em cartório ou órgão competente. Tradução juramentada se em outro idioma.",
+        tag: "required"
+      },
+      {
+        id: "contrato_aluguel",
+        title: "Contrato de aluguel ou comprovante de residência conjunta",
+        en: "Lease agreement or joint residence proof",
+        sub: "Contrato com ambos os nomes. Período atual.",
+        tag: "required"
+      },
+      {
+        id: "conta_conjunta",
+        title: "Extrato bancário de conta conjunta ou transferências entre o casal",
+        en: "Joint bank account statement or transfers between partners",
+        sub: "Últimos 3 a 6 meses. Demonstra vida financeira compartilhada.",
+        tag: "required"
+      },
+      {
+        id: "seguro_conjunto",
+        title: "Apólice de seguro conjunto (carro, saúde, residência)",
+        en: "Joint insurance policy (car, health, home)",
+        sub: "Seguro com ambos os nomes ou como beneficiários mútuos.",
+        tag: "conditional"
+      },
+      {
+        id: "conta_luz_internet",
+        title: "Contas de consumo conjuntas (luz, internet, água, gás)",
+        en: "Joint utility bills (electricity, internet, water, gas)",
+        sub: "Conta emitida para o endereço compartilhado. Pelo menos 1 conta com um dos nomes.",
+        tag: "conditional"
+      },
+      {
+        id: "fotos_viagens",
+        title: "Fotos do casal (viagens, eventos, vida cotidiana)",
+        en: "Photos of the couple (trips, events, daily life)",
+        sub: "Selecione fotos com datas e locais diferentes para demonstrar convivência ao longo do tempo.",
+        tag: "optional"
+      },
+      {
+        id: "declaracoes",
+        title: "Declarações de terceiros (familiares, amigos, colegas)",
+        en: "Statutory declarations from third parties (family, friends, colleagues)",
+        sub: "Declarações de pessoas que conhecem o casal e confirmam o relacionamento.",
+        tag: "optional"
+      },
+      {
+        id: "comunicacoes",
+        title: "Histórico de comunicações (mensagens, ligações, e-mails)",
+        en: "Communication records (messages, calls, emails)",
+        sub: "Especialmente útil se os parceiros ficaram em países diferentes por algum período.",
+        tag: "optional"
+      },
+    ]
+  },
+  {
+    id: "antecedentes",
+    icon: "",
+    title: "Antecedentes Criminais (Police Clearance)",
+    en: "Character — Police Clearance Certificates",
+    items: [
+      {
+        id: "police_australia",
+        title: "Certidão de antecedentes criminais — Austrália (AFP National Police Check)",
+        en: "Australian Federal Police (AFP) National Police Check",
+        sub: "Obrigatória para quem residiu na Austrália por 12+ meses (cumulativos) nos últimos 10 anos.",
+        tag: "required"
+      },
+      {
+        id: "police_brasil_federal",
+        title: "Certidão de antecedentes — Brasil (Polícia Federal — nível federal)",
+        en: "Brazilian Federal Police Clearance",
+        sub: "Emitida pela Polícia Federal do Brasil. Obrigatória para nacionais brasileiros que viveram no Brasil por 12+ meses nos últimos 10 anos.",
+        tag: "required"
+      },
+      {
+        id: "police_brasil_estado",
+        title: "Certidão de antecedentes — estado brasileiro de residência (ex: RS, SP, RJ)",
+        en: "Brazilian State Police Clearance (state of residence)",
+        sub: "Exigida pelo Department juntamente com a certidão federal. Solicitar no estado de residência mais recente.",
+        tag: "required"
+      },
+      {
+        id: "police_outros",
+        title: "Certidão de antecedentes de outros países (se aplicável)",
+        en: "Police clearance from other countries (if applicable)",
+        sub: "Necessária para cada país onde o solicitante residiu por 12+ meses (cumulativos) nos últimos 10 anos.",
+        tag: "conditional"
+      },
+    ]
+  },
+  {
+    id: "saude",
+    icon: "",
+    title: "Exame de Saúde",
+    en: "Health Examination",
+    items: [
+      {
+        id: "exame_saude",
+        title: "Resultado do exame de saúde (HAP ID)",
+        en: "Health examination result (HAP ID)",
+        sub: "Agendado através do ImmiAccount. O Department enviará convite para exame após lodgement. Guarde o HAP ID.",
+        tag: "conditional"
+      },
+      {
+        id: "radiografia",
+        title: "Radiografia de tórax (chest x-ray) — se solicitado",
+        en: "Chest x-ray — if requested",
+        sub: "Solicitada pelo médico designado (panel physician) durante o exame.",
+        tag: "conditional"
+      },
+    ]
+  },
+  {
+    id: "vistoAnterior",
+    icon: "",
+    title: "Visto Australiano Anterior (se aplicável)",
+    en: "Previous Australian Visa (if applicable)",
+    items: [
+      {
+        id: "grant_anterior",
+        title: "Número de concessão do visto australiano anterior (Grant Number)",
+        en: "Previous Australian visa grant number",
+        sub: "Localizado no e-mail de grant ou no ImmiAccount. Ex: 0079553171553.",
+        tag: "conditional"
+      },
+      {
+        id: "cartao_visto",
+        title: "Cartão ou carta de concessão do visto anterior",
+        en: "Previous visa grant card or letter",
+        sub: "Se disponível, anexe a carta ou cartão de concessão do visto anterior.",
+        tag: "optional"
+      },
+    ]
+  },
+  {
+    id: "residencia",
+    icon: "",
+    title: "Comprovante de Residência",
+    en: "Proof of Residence",
+    items: [
+      {
+        id: "comprov_end",
+        title: "Comprovante de endereço atual na Austrália",
+        en: "Proof of current address in Australia",
+        sub: "Conta de serviço, contrato de aluguel, correspondência bancária ou governamental com nome e endereço.",
+        tag: "required"
+      },
+
+    ]
+  },
+  {
+    id: "documentos_doc",
+    icon: "",
+    title: "Documentos de Suporte Adicionais",
+    en: "Additional Supporting Documents",
+    items: [
+      {
+        id: "traduz",
+        title: "Tradução juramentada (NAATI) de todos os documentos em português",
+        en: "NAATI-certified translation of all documents in Portuguese",
+        sub: "Obrigatório para documentos em idioma que não seja inglês. Tradutor deve ter credencial NAATI.",
+        tag: "required"
+      },
+      {
+        id: "cert_nascimento",
+        title: "Certidão de nascimento (para filhos dependentes menores de 18 anos)",
+        en: "Birth certificate (for dependent children under 18)",
+        sub: "Com tradução juramentada NAATI se em português.",
+        tag: "conditional"
+      },
+      {
+        id: "cert_adocao",
+        title: "Certidão de adoção (se aplicável)",
+        en: "Adoption certificate (if applicable)",
+        sub: "Com tradução juramentada NAATI se em português.",
+        tag: "conditional"
+      },
+      {
+        id: "seguro_saude",
+        title: "Confirmação de seguro saúde (OSHC ou equivalente)",
+        en: "Health insurance confirmation (OSHC or equivalent)",
+        sub: "O solicitante deve comprovar que fez arranjos adequados para seguro durante a estadia.",
+        tag: "required"
+      },
+    ]
+  },
+];
+
+let checked = JSON.parse(localStorage.getItem("kmp_482se_checked") || "{}");
+let notes = localStorage.getItem("kmp_482se_notes") || "";
+
+function totalItems() {
+  return SECTIONS.reduce((acc, s) => acc + s.items.length, 0);
+}
+
+function totalChecked() {
+  return Object.values(checked).filter(Boolean).length;
+}
+
+function updateProgress() {
+  const total = totalItems();
+  const done = totalChecked();
+  const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+  document.getElementById("progress-text").textContent = `${done} / ${total}`;
+  document.getElementById("progress-bar").style.width = `${pct}%`;
+}
+
+function toggle(id) {
+  checked[id] = !checked[id];
+  localStorage.setItem("kmp_482se_checked", JSON.stringify(checked));
+  const el = document.getElementById(`item_${id}`);
+  if (el) { el.classList.toggle("checked", checked[id]); }
+  updateSectionCount(id);
+  updateProgress();
+}
+
+function updateSectionCount(itemId) {
+  for (const sec of SECTIONS) {
+    if (sec.items.find(i => i.id === itemId)) {
+      const done = sec.items.filter(i => checked[i.id]).length;
+      const el = document.getElementById(`sec_count_${sec.id}`);
+      if (el) el.textContent = `${done}/${sec.items.length}`;
+      break;
+    }
+  }
+}
+
+function saveNotes(val) {
+  notes = val;
+  localStorage.setItem("kmp_482se_notes", val);
+}
+
+function resetAll() {
+  if (!confirm("Tem certeza? Todos os marcadores serão removidos.")) return;
+  checked = {};
+  localStorage.removeItem("kmp_482se_checked");
+  document.querySelectorAll(".item").forEach(el => el.classList.remove("checked"));
+  document.querySelectorAll(".sec-count").forEach(el => {
+    const parts = el.textContent.split("/");
+    el.textContent = `0/${parts[1]}`;
+  });
+  updateProgress();
+}
+
+function tagHtml(tag) {
+  if (tag === "required") return `<span class="tag tag-required">Obrigatório</span>`;
+  if (tag === "conditional") return `<span class="tag tag-conditional">Condicional</span>`;
+  if (tag === "optional") return `<span class="tag tag-optional">Recomendado</span>`;
+  return "";
+}
+
+function renderChecklist() {
+  const container = document.getElementById("checklist");
+  container.innerHTML = SECTIONS.map(sec => {
+    const secChecked = sec.items.filter(i => checked[i.id]).length;
+    const items = sec.items.map(item => `
+      <div class="item ${checked[item.id] ? "checked" : ""}" id="item_${item.id}" onclick="toggle('${item.id}')">
+        <span class="checkbox">
+          <svg width="13" height="10" viewBox="0 0 13 10" fill="none">
+            <path d="M1.5 5L5 8.5L11.5 1.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <div class="item-content">
+          <div class="item-title">${item.title}</div>
+          <div class="item-en">${item.en}</div>
+          ${item.sub ? `<div class="item-sub">${item.sub}</div>` : ""}
+          ${tagHtml(item.tag)}
+        </div>
+      </div>
+    `).join("");
+
+    return `
+      <div class="section">
+        <div class="section-header">
+          <span class="sec-icon">${sec.icon}</span>
+          <h2>${sec.title} <span style="font-weight:300;font-size:12px;opacity:0.7">/ ${sec.en}</span></h2>
+          <span class="sec-count" id="sec_count_${sec.id}">${secChecked}/${sec.items.length}</span>
+        </div>
+        <div class="section-body">${items}</div>
+      </div>`;
+  }).join("");
+}
+
+// Init
+renderChecklist();
+updateProgress();
+
+// Restore notes
+const notesEl = document.getElementById("notes-input");
+if (notesEl) notesEl.value = notes;
+</script>
+</body>
+</html>
