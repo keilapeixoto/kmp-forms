@@ -182,6 +182,7 @@ let sending = false;
 let sendError = null;
 
 function set(key, val) { f[key] = val; render(); }
+function setValue(key, val) { f[key] = val; } // atualiza sem reconstruir a tela (preserva o foco)
 
 function label(num, pt, en, req) {
   return `<label class="field-label">
@@ -194,12 +195,12 @@ function hint(text) { return `<p class="hint">${text}</p>`; }
 
 function input(key, placeholder, type = "text") {
   return `<input type="${type}" placeholder="${placeholder}" value="${(f[key] || "").toString().replace(/"/g, '&quot;')}"
-    oninput="set('${key}', this.value)" />`;
+    oninput="setValue('${key}', this.value)" />`;
 }
 
 function textarea(key, placeholder, rows = 3) {
   return `<textarea placeholder="${placeholder}" rows="${rows}"
-    oninput="set('${key}', this.value)">${f[key] || ""}</textarea>`;
+    oninput="setValue('${key}', this.value)">${f[key] || ""}</textarea>`;
 }
 
 function select(key, options, placeholder) {
