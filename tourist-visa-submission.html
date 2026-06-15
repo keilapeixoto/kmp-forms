@@ -487,12 +487,12 @@ const SECTIONS = [
   { title: "Dados Pessoais",        icon: "" },
   { title: "Passaporte",            icon: "" },
   { title: "Contato e Endereço",   icon: "" },
-  { title: "Família",               icon: "" },
-  { title: "Detalhes da Viagem",   icon: "" },
+  { title: "Família",               icon: "‍‍‍" },
+  { title: "Detalhes da Viagem",   icon: "️" },
   { title: "Trabalho e Finanças",  icon: "" },
   { title: "Histórico de Viagens", icon: "" },
   { title: "Saúde e Caráter",      icon: "" },
-  { title: "Declaração e Assinatura", icon: "" },
+  { title: "Declaração e Assinatura", icon: "️" },
 ];
 
 const WEB3FORMS_KEY = "WEB3FORMS_KEY_AQUI"; // ← cole sua chave aqui
@@ -503,9 +503,10 @@ let submitted = false;
 let sending = false;
 let sendError = null;
 
-// ─── Helpers ────────────────────────────────────────────────────────────────
+//  Helpers 
 
 function set(key, val) { f[key] = val; render(); }
+function setValue(key, val) { f[key] = val; } // atualiza sem reconstruir a tela (preserva o foco)
 
 function label(num, pt, en, req) {
   return `<label class="field-label">
@@ -520,12 +521,12 @@ function hint(text) {
 
 function input(key, placeholder, type = "text") {
   return `<input type="${type}" placeholder="${placeholder}" value="${f[key] || ""}"
-    oninput="set('${key}', this.value)" />`;
+    oninput="setValue('${key}', this.value)" />`;
 }
 
 function textarea(key, placeholder, rows = 3) {
   return `<textarea placeholder="${placeholder}" rows="${rows}"
-    oninput="set('${key}', this.value)">${f[key] || ""}</textarea>`;
+    oninput="setValue('${key}', this.value)">${f[key] || ""}</textarea>`;
 }
 
 function select(key, options, placeholder) {
@@ -572,7 +573,7 @@ function fileUpload(id, labelText) {
     <input type="file" accept=".pdf,.jpg,.jpeg,.png"
       onchange="handleFile('${id}', this)" />
     ${fileStored
-      ? `✓ ${fileStored} — clique para substituir`
+      ? ` ${fileStored} — clique para substituir`
       : `↑ ${labelText} (PDF, JPG, PNG — Máx. 10MB)`
     }
   </div>`;
@@ -585,7 +586,7 @@ function handleFile(id, input) {
   }
 }
 
-// ─── Steps ──────────────────────────────────────────────────────────────────
+//  Steps 
 
 function renderStep() {
   switch (step) {
@@ -651,7 +652,7 @@ function renderStep() {
         q(label(22,"CEP","Postal code",true) + input("cep","00000-000"))
       )}
       ${q(label(23,"País","Country",true) +
-        `<input type="text" value="${f.paisResidencia || "Brasil"}" oninput="set('paisResidencia', this.value)" />`)}
+        `<input type="text" value="${f.paisResidencia || "Brasil"}" oninput="setValue('paisResidencia', this.value)" />`)}
       ${divider("Contato / Contact Details")}
       ${row2(
         q(label(24,"Telefone residencial","Home phone") + input("telRes","(00) 0000-0000")),
@@ -786,6 +787,7 @@ function renderStep() {
       </div>
       ${divider("Upload de Documentos / Document Upload")}
       ${fileUpload("passaporte","Cópia do passaporte (página de dados) / Passport bio page")}
+      ${fileUpload("foto","Foto 3x4 ou 5x7 (fundo branco) / Passport photo (white background)")}
       ${fileUpload("renda","Comprovante de renda / Proof of income")}
       ${fileUpload("extrato","Extrato bancário (últimos 3 meses) / Bank statement (last 3 months)")}
       ${fileUpload("vinculo","Comprovante de vínculo (trabalho/estudo) / Proof of ties (work/study)")}
@@ -801,7 +803,7 @@ function renderStep() {
   }
 }
 
-// ─── Submit ──────────────────────────────────────────────────────────────────
+//  Submit 
 
 async function handleSubmit() {
   sending = true;
@@ -839,7 +841,7 @@ async function handleSubmit() {
     ["Assinatura digital", f.assinatura], ["Data da assinatura", f.dataAssinatura],
   ].filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`).join("\n");
 
-  const corpo = `Nova solicitação de visto de turista — KMP Consulting\nData: ${new Date().toLocaleString("pt-BR")}\n\n${"─".repeat(50)}\n\n${linhas}`;
+  const corpo = `Nova solicitação de visto de turista — KMP Consulting\nData: ${new Date().toLocaleString("pt-BR")}\n\n${"".repeat(50)}\n\n${linhas}`;
 
   try {
     const res = await fetch("https://api.web3forms.com/submit", {
@@ -877,7 +879,7 @@ function resetForm() {
   step = 0; f = {}; submitted = false; sendError = null; render();
 }
 
-// ─── Render ──────────────────────────────────────────────────────────────────
+//  Render 
 
 function render() {
   const app = document.getElementById("app");
@@ -901,7 +903,7 @@ function render() {
 
   const stepNavItems = SECTIONS.map((sec, i) => {
     const cls = i === step ? "active" : i < step ? "done" : "pending";
-    const label = i < step ? "✓" : i + 1;
+    const label = i < step ? "" : i + 1;
     const connector = i < SECTIONS.length - 1
       ? `<div class="step-connector ${i < step ? "done" : "pending"}"></div>` : "";
     return `<button class="step-btn ${cls}" onclick="goStep(${i})" title="${sec.title}">${label}</button>${connector}`;
@@ -912,7 +914,7 @@ function render() {
     : `<div></div>`;
 
   const nextLabel = step === SECTIONS.length - 1
-    ? (sending ? "Enviando…" : "Enviar Formulário ✓")
+    ? (sending ? "Enviando…" : "Enviar Formulário ")
     : "Próximo →";
 
   const nextAction = step === SECTIONS.length - 1
@@ -944,7 +946,7 @@ function render() {
         <div class="btn-row">
           ${prevBtn}
           <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
-            ${sendError ? `<p class="error-msg">⚠️ ${sendError}</p>` : ""}
+            ${sendError ? `<p class="error-msg">️ ${sendError}</p>` : ""}
             <button class="btn-next" onclick="${nextAction}" ${sending ? "disabled" : ""}>
               ${nextLabel}
             </button>
