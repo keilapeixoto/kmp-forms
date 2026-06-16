@@ -467,6 +467,34 @@
       color: #aaa;
       margin-top: 18px;
     }
+
+    /* Botões de PDF */
+    .success-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 24px; }
+    .btn-pdf { padding: 12px 28px; background: linear-gradient(135deg, #F27B20 0%, #F5941E 100%); border: none; border-radius: 10px; color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'Outfit', sans-serif; box-shadow: 0 4px 14px rgba(242,123,32,0.3); transition: all 0.2s; }
+    .btn-pdf:hover { opacity: 0.9; }
+    .btn-pdf-sm { padding: 8px 18px; background: transparent; border: 1.5px solid var(--orange); border-radius: 10px; color: var(--orange); font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Outfit', sans-serif; transition: all 0.2s; }
+    .btn-pdf-sm:hover { background: var(--orange-light); }
+    .success-card .btn-reset { margin-top: 0; }
+
+    /* Área de impressão (comprovante em PDF) */
+    #print-area { display: none; }
+    @media print {
+      body { background: #fff !important; }
+      .topbar, #app { display: none !important; }
+      #print-area { display: block !important; }
+      .print-doc { max-width: 100%; padding: 0; font-family: 'Outfit', sans-serif; color: #1a1a1a; }
+      .print-head { display: flex; align-items: center; gap: 12px; border-bottom: 3px solid #F27B20; padding-bottom: 14px; margin-bottom: 20px; }
+      .print-logo { width: 44px; height: 44px; border-radius: 10px; background: #F27B20; color: #fff; font-weight: 800; font-size: 16px; display: flex; align-items: center; justify-content: center; }
+      .print-brand { font-weight: 700; font-size: 18px; }
+      .print-tag { font-size: 10px; color: #F27B20; text-transform: uppercase; letter-spacing: 0.12em; }
+      .print-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+      .print-date { font-size: 12px; color: #6b7280; margin-bottom: 18px; }
+      .print-table { width: 100%; border-collapse: collapse; }
+      .print-table td { padding: 7px 10px; border-bottom: 1px solid #e5e7eb; font-size: 12.5px; vertical-align: top; }
+      .print-table td.pl { font-weight: 600; width: 38%; color: #6b7280; }
+      .print-table td.pv { color: #1a1a1a; }
+      .print-foot { margin-top: 18px; font-size: 10px; color: #9ca3af; }
+    }
   </style>
 </head>
 <body>
@@ -481,6 +509,7 @@
 </div>
 
 <div id="app"></div>
+<div id="print-area"></div>
 
 <script>
 const SECTIONS = [
@@ -805,13 +834,9 @@ function renderStep() {
 
 //  Submit 
 
-async function handleSubmit() {
-  sending = true;
-  sendError = null;
-  render();
-
+function buildSummaryPairs() {
   const nome = `${f.nome || ""} ${f.sobrenome || ""}`.trim() || "Solicitante";
-  const linhas = [
+  return [
     ["Nome completo", nome],
     ["Data de nascimento", f.dataNasc], ["Gênero", f.genero], ["Estado civil", f.estadoCivil],
     ["Nacionalidade", f.nacionalidade], ["País de nascimento", f.paisNasc],
@@ -839,7 +864,42 @@ async function handleSubmit() {
     ["Descumpriu condições de visto", f.descumpriu === "SIM/YES" ? f.descumpriuDetalhe : null],
     ["Visto recusado/cancelado", f.recusado === "SIM/YES" ? f.recusadoDetalhe : null],
     ["Assinatura digital", f.assinatura], ["Data da assinatura", f.dataAssinatura],
-  ].filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`).join("\n");
+  ].filter(([, v]) => v);
+}
+
+function escapeHtml(str) {
+  return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+function savePDF() {
+  const nome = `${f.nome || ""} ${f.sobrenome || ""}`.trim() || "Solicitante";
+  const rows = buildSummaryPairs().map(([k,v]) =>
+    `<tr><td class="pl">${escapeHtml(k)}</td><td class="pv">${escapeHtml(v).replace(/\n/g,"<br>")}</td></tr>`
+  ).join("");
+  document.getElementById("print-area").innerHTML = `
+    <div class="print-doc">
+      <div class="print-head">
+        <div class="print-logo">kmp</div>
+        <div>
+          <div class="print-brand">kmp consulting</div>
+          <div class="print-tag">Estratégia que conecta. Futuro que transforma.</div>
+        </div>
+      </div>
+      <h1 class="print-title">Visto de Turista (Subclass 600) — Comprovante de Solicitação</h1>
+      <p class="print-date">Solicitante: ${escapeHtml(nome)} · Gerado em ${new Date().toLocaleString("pt-BR")}</p>
+      <table class="print-table">${rows}</table>
+      <p class="print-foot">Este documento é uma cópia das informações fornecidas pelo solicitante e não constitui a aplicação oficial. © ${new Date().getFullYear()} KMP Consulting.</p>
+    </div>`;
+  window.print();
+}
+
+async function handleSubmit() {
+  sending = true;
+  sendError = null;
+  render();
+
+  const nome = `${f.nome || ""} ${f.sobrenome || ""}`.trim() || "Solicitante";
+  const linhas = buildSummaryPairs().map(([k, v]) => `${k}: ${v}`).join("\n");
 
   const corpo = `Nova solicitação de visto de turista — KMP Consulting\nData: ${new Date().toLocaleString("pt-BR")}\n\n${"".repeat(50)}\n\n${linhas}`;
 
@@ -895,7 +955,10 @@ function render() {
           </div>
           <h2>Formulário Enviado!</h2>
           <p>Sua solicitação foi recebida com sucesso. A equipe da <strong style="color:#F27B20">KMP Consulting</strong> entrará em contato em até 48 horas úteis.</p>
-          <button class="btn-reset" onclick="resetForm()">Novo Formulário</button>
+          <div class="success-actions">
+            <button class="btn-pdf" onclick="savePDF()">Salvar comprovante em PDF</button>
+            <button class="btn-reset" onclick="resetForm()">Novo Formulário</button>
+          </div>
         </div>
       </div>`;
     return;
@@ -950,6 +1013,7 @@ function render() {
             <button class="btn-next" onclick="${nextAction}" ${sending ? "disabled" : ""}>
               ${nextLabel}
             </button>
+            ${step === SECTIONS.length - 1 ? `<button class="btn-pdf-sm" onclick="savePDF()">Salvar cópia em PDF</button>` : ""}
           </div>
         </div>
       </div>
