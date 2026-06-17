@@ -366,6 +366,14 @@
       color: var(--orange-dark);
       font-weight: 500;
     }
+    .file-upload-wrap { margin-bottom: 10px; }
+    .file-list { margin-top: 6px; display: flex; flex-direction: column; gap: 6px; }
+    .file-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 12px; background: #fff; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; color: var(--dark); }
+    .file-item span { word-break: break-all; }
+    .file-remove { background: transparent; border: none; color: #e53e3e; font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'Outfit', sans-serif; flex-shrink: 0; }
+    .file-remove:hover { text-decoration: underline; }
+    .autosave-note { text-align: center; font-size: 12px; color: var(--gray); margin: 0 0 16px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .autosave-note .dot { width: 7px; height: 7px; border-radius: 50%; background: #16a34a; display: inline-block; }
 
     /* Buttons */
     .btn-row {
@@ -525,6 +533,7 @@ const SECTIONS = [
 ];
 
 const WEB3FORMS_KEY = "eb911200-f515-4a77-afbf-61c4f99be8cf";
+const DRAFT_KEY = "kmp_form600_draft";
 
 let step = 0;
 let f = {};
@@ -534,8 +543,22 @@ let sendError = null;
 
 //  Helpers 
 
-function set(key, val) { f[key] = val; render(); }
-function setValue(key, val) { f[key] = val; } // atualiza sem reconstruir a tela (preserva o foco)
+// Salvamento automático do rascunho neste dispositivo
+function saveDraft() {
+  try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ f, step })); } catch (e) {}
+}
+function loadDraft() {
+  try {
+    const d = JSON.parse(localStorage.getItem(DRAFT_KEY));
+    if (d && d.f && typeof d.f === "object") { f = d.f; step = d.step || 0; }
+  } catch (e) {}
+}
+function clearDraft() {
+  try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
+}
+
+function set(key, val) { f[key] = val; saveDraft(); render(); }
+function setValue(key, val) { f[key] = val; saveDraft(); } // atualiza sem reconstruir a tela (preserva o foco)
 
 function label(num, pt, en, req) {
   return `<label class="field-label">
@@ -597,22 +620,42 @@ function row3(a, b, c) { return `<div class="row3">${a}${b}${c}</div>`; }
 function q(content, mb) { return `<div class="q" ${mb ? `style="margin-bottom:${mb}px"` : ""}>${content}</div>`; }
 
 function fileUpload(id, labelText) {
-  const fileStored = f[`file_${id}`];
-  return `<div class="file-upload ${fileStored ? "has-file" : ""}" id="fu_${id}">
-    <input type="file" accept=".pdf,.jpg,.jpeg,.png"
-      onchange="handleFile('${id}', this)" />
-    ${fileStored
-      ? ` ${fileStored} — clique para substituir`
-      : `↑ ${labelText} (PDF, JPG, PNG — Máx. 10MB)`
-    }
+  const stored = f[`file_${id}`];
+  const list = Array.isArray(stored) ? stored : (stored ? [stored] : []);
+  const hasFiles = list.length > 0;
+  const listHtml = hasFiles
+    ? `<div class="file-list">${list.map((name, i) =>
+        `<div class="file-item"><span>${escapeHtml(name)}</span><button type="button" class="file-remove" onclick="removeFile(event, '${id}', ${i})">remover</button></div>`
+      ).join("")}</div>`
+    : "";
+  return `<div class="file-upload-wrap">
+    <div class="file-upload ${hasFiles ? "has-file" : ""}" id="fu_${id}">
+      <input type="file" accept=".pdf,.jpg,.jpeg,.png" multiple onchange="handleFile('${id}', this)" />
+      ${hasFiles ? `+ Adicionar mais arquivos (${list.length} anexado${list.length > 1 ? "s" : ""})` : `↑ ${labelText} (PDF, JPG, PNG — Máx. 10MB · vários arquivos permitidos)`}
+    </div>
+    ${listHtml}
   </div>`;
 }
 
 function handleFile(id, input) {
-  if (input.files && input.files[0]) {
-    f[`file_${id}`] = input.files[0].name;
+  if (input.files && input.files.length) {
+    const key = `file_${id}`;
+    const existing = Array.isArray(f[key]) ? f[key] : (f[key] ? [f[key]] : []);
+    const novos = Array.from(input.files).map(file => file.name);
+    f[key] = Array.from(new Set([...existing, ...novos]));
+    saveDraft();
     render();
   }
+}
+
+function removeFile(ev, id, index) {
+  ev.stopPropagation();
+  const key = `file_${id}`;
+  const list = Array.isArray(f[key]) ? f[key] : (f[key] ? [f[key]] : []);
+  list.splice(index, 1);
+  f[key] = list;
+  saveDraft();
+  render();
 }
 
 //  Steps 
@@ -864,7 +907,24 @@ function buildSummaryPairs() {
     ["Descumpriu condições de visto", f.descumpriu === "SIM/YES" ? f.descumpriuDetalhe : null],
     ["Visto recusado/cancelado", f.recusado === "SIM/YES" ? f.recusadoDetalhe : null],
     ["Assinatura digital", f.assinatura], ["Data da assinatura", f.dataAssinatura],
+    ...buildFilePairs(),
   ].filter(([, v]) => v);
+}
+
+function buildFilePairs() {
+  const FILE_LABELS = {
+    passaporte: "Documento(s): Passaporte",
+    foto: "Documento(s): Foto",
+    renda: "Documento(s): Comprovante de renda",
+    extrato: "Documento(s): Extrato bancário",
+    vinculo: "Documento(s): Comprovante de vínculo",
+    itinerario: "Documento(s): Itinerário de viagem",
+  };
+  return Object.keys(FILE_LABELS).map(id => {
+    const v = f[`file_${id}`];
+    const list = Array.isArray(v) ? v : (v ? [v] : []);
+    return [FILE_LABELS[id], list.length ? list.join(", ") : null];
+  });
 }
 
 function escapeHtml(str) {
@@ -918,6 +978,7 @@ async function handleSubmit() {
     const data = await res.json();
     if (data.success) {
       submitted = true;
+      clearDraft();
     } else {
       throw new Error(data.message || "Erro desconhecido");
     }
@@ -931,12 +992,13 @@ async function handleSubmit() {
 
 function goStep(n) {
   step = n;
+  saveDraft();
   render();
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 function resetForm() {
-  step = 0; f = {}; submitted = false; sendError = null; render();
+  step = 0; f = {}; submitted = false; sendError = null; clearDraft(); render();
 }
 
 //  Render 
@@ -996,6 +1058,7 @@ function render() {
         ${SECTIONS[step].icon} Etapa ${step + 1} de ${SECTIONS.length} —
         <strong>${SECTIONS[step].title}</strong>
       </p>
+      <p class="autosave-note"><span class="dot"></span> Seu progresso é salvo automaticamente neste dispositivo e navegador</p>
 
       <div class="card">
         <div class="card-header">
@@ -1022,6 +1085,7 @@ function render() {
     </div>`;
 }
 
+loadDraft();
 render();
 </script>
 </body>
