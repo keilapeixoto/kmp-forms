@@ -540,6 +540,7 @@ let f = {};
 let submitted = false;
 let sending = false;
 let sendError = null;
+let fileObjects = {}; // arquivos reais selecionados (não persistidos no rascunho)
 
 //  Helpers 
 
@@ -550,7 +551,11 @@ function saveDraft() {
 function loadDraft() {
   try {
     const d = JSON.parse(localStorage.getItem(DRAFT_KEY));
-    if (d && d.f && typeof d.f === "object") { f = d.f; step = d.step || 0; }
+    if (d && d.f && typeof d.f === "object") {
+      f = d.f; step = d.step || 0;
+      // arquivos não podem ser restaurados pelo navegador: limpa referências antigas para reanexo
+      Object.keys(f).forEach(k => { if (k.indexOf("file_") === 0) delete f[k]; });
+    }
   } catch (e) {}
 }
 function clearDraft() {
@@ -631,7 +636,7 @@ function fileUpload(id, labelText) {
   return `<div class="file-upload-wrap">
     <div class="file-upload ${hasFiles ? "has-file" : ""}" id="fu_${id}">
       <input type="file" accept=".pdf,.jpg,.jpeg,.png" multiple onchange="handleFile('${id}', this)" />
-      ${hasFiles ? `+ Adicionar mais arquivos (${list.length} anexado${list.length > 1 ? "s" : ""})` : `↑ ${labelText} (PDF, JPG, PNG — Máx. 10MB · vários arquivos permitidos)`}
+      ${hasFiles ? `+ Adicionar mais arquivos (${list.length} anexado${list.length > 1 ? "s" : ""})` : `↑ ${labelText} (PDF, JPG, PNG — Máx. 5MB por arquivo · vários arquivos permitidos)`}
     </div>
     ${listHtml}
   </div>`;
@@ -640,9 +645,15 @@ function fileUpload(id, labelText) {
 function handleFile(id, input) {
   if (input.files && input.files.length) {
     const key = `file_${id}`;
-    const existing = Array.isArray(f[key]) ? f[key] : (f[key] ? [f[key]] : []);
-    const novos = Array.from(input.files).map(file => file.name);
-    f[key] = Array.from(new Set([...existing, ...novos]));
+    if (!fileObjects[id]) fileObjects[id] = [];
+    const existingNames = Array.isArray(f[key]) ? f[key] : (f[key] ? [f[key]] : []);
+    Array.from(input.files).forEach(file => {
+      if (!existingNames.includes(file.name)) {
+        fileObjects[id].push(file);
+        existingNames.push(file.name);
+      }
+    });
+    f[key] = existingNames;
     saveDraft();
     render();
   }
@@ -654,6 +665,7 @@ function removeFile(ev, id, index) {
   const list = Array.isArray(f[key]) ? f[key] : (f[key] ? [f[key]] : []);
   list.splice(index, 1);
   f[key] = list;
+  if (fileObjects[id]) fileObjects[id].splice(index, 1);
   saveDraft();
   render();
 }
@@ -959,31 +971,47 @@ async function handleSubmit() {
   render();
 
   const nome = `${f.nome || ""} ${f.sobrenome || ""}`.trim() || "Solicitante";
-  const linhas = buildSummaryPairs().map(([k, v]) => `${k}: ${v}`).join("\n");
 
+  // Validação de tamanho: Web3Forms aceita até 5 MB por arquivo
+  const MAX = 5 * 1024 * 1024;
+  for (const id in fileObjects) {
+    for (const file of fileObjects[id]) {
+      if (file.size > MAX) {
+        sendError = `O arquivo "${file.name}" passa de 5 MB. Reduza o tamanho e anexe novamente.`;
+        sending = false; render(); return;
+      }
+    }
+  }
+
+  const linhas = buildSummaryPairs().map(([k, v]) => `${k}: ${v}`).join("\n");
   const corpo = `Nova solicitação de visto de turista — KMP Consulting\nData: ${new Date().toLocaleString("pt-BR")}\n\n${"".repeat(50)}\n\n${linhas}`;
 
   try {
-    const res = await fetch("https://api.web3forms.com/submit", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        access_key: WEB3FORMS_KEY,
-        subject: `Nova Solicitação de Visto Turista — ${nome}`,
-        from_name: "Formulário KMP Consulting",
-        message: corpo,
-        replyto: f.email || "",
-      }),
-    });
+    const fd = new FormData();
+    fd.append("access_key", WEB3FORMS_KEY);
+    fd.append("subject", `Nova Solicitação de Visto Turista — ${nome}`);
+    fd.append("from_name", "Formulário KMP Consulting");
+    fd.append("message", corpo);
+    if (f.email) fd.append("replyto", f.email);
+    // Anexa os arquivos reais. Não definir Content-Type: o navegador cuida do boundary.
+    let idx = 0;
+    for (const id in fileObjects) {
+      for (const file of fileObjects[id]) {
+        idx++;
+        fd.append(`attachment_${idx}`, file, file.name);
+      }
+    }
+    const res = await fetch("https://api.web3forms.com/submit", { method: "POST", body: fd });
     const data = await res.json();
     if (data.success) {
       submitted = true;
       clearDraft();
+      fileObjects = {};
     } else {
       throw new Error(data.message || "Erro desconhecido");
     }
   } catch (e) {
-    sendError = "Não foi possível enviar. Verifique a chave Web3Forms e tente novamente.";
+    sendError = "Não foi possível enviar. Tente novamente ou entre em contato com a KMP Consulting.";
   } finally {
     sending = false;
     render();
