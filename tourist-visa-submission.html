@@ -478,9 +478,9 @@
 
     /* Botões de PDF */
     .success-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 24px; }
-    .btn-pdf { padding: 12px 28px; background: linear-gradient(135deg, #F27B20 0%, #F5941E 100%); border: none; border-radius: 10px; color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'Outfit', sans-serif; box-shadow: 0 4px 14px rgba(242,123,32,0.3); transition: all 0.2s; }
+    .btn-pdf { display: inline-flex; align-items: center; gap: 7px; padding: 12px 28px; background: linear-gradient(135deg, #F27B20 0%, #F5941E 100%); border: none; border-radius: 10px; color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'Outfit', sans-serif; box-shadow: 0 4px 14px rgba(242,123,32,0.3); transition: all 0.2s; }
     .btn-pdf:hover { opacity: 0.9; }
-    .btn-pdf-sm { padding: 8px 18px; background: transparent; border: 1.5px solid var(--orange); border-radius: 10px; color: var(--orange); font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Outfit', sans-serif; transition: all 0.2s; }
+    .btn-pdf-sm { display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; background: transparent; border: 1.5px solid var(--orange); border-radius: 10px; color: var(--orange); font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Outfit', sans-serif; transition: all 0.2s; }
     .btn-pdf-sm:hover { background: var(--orange-light); }
     .success-card .btn-reset { margin-top: 0; }
 
@@ -1018,7 +1018,7 @@ function render() {
           <h2>Formulário Enviado!</h2>
           <p>Sua solicitação foi recebida com sucesso. A equipe da <strong style="color:#F27B20">KMP Consulting</strong> entrará em contato em até 48 horas úteis.</p>
           <div class="success-actions">
-            <button class="btn-pdf" onclick="savePDF()">Salvar comprovante em PDF</button>
+            <button class="btn-pdf" onclick="savePDF()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Salvar comprovante em PDF</button>
             <button class="btn-reset" onclick="resetForm()">Novo Formulário</button>
           </div>
         </div>
@@ -1076,7 +1076,7 @@ function render() {
             <button class="btn-next" onclick="${nextAction}" ${sending ? "disabled" : ""}>
               ${nextLabel}
             </button>
-            ${step === SECTIONS.length - 1 ? `<button class="btn-pdf-sm" onclick="savePDF()">Salvar cópia em PDF</button>` : ""}
+            ${step === SECTIONS.length - 1 ? `<button class="btn-pdf-sm" onclick="savePDF()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Salvar cópia em PDF</button>` : ""}
           </div>
         </div>
       </div>
