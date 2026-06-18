@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KMP Consulting — Formulário 482 Subsequent Entrant</title>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <title>KMP Consulting — Checklist 482 Subsequent Entrant</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -16,10 +16,18 @@
       --gray: #6b7280;
       --light-gray: #f3f4f6;
       --border: #e5e7eb;
+      --green: #16a34a;
+      --green-light: #f0fdf4;
     }
 
-    body { font-family: 'Outfit', sans-serif; background: #f8f8f8; min-height: 100vh; color: var(--dark); }
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: #f8f8f8;
+      min-height: 100vh;
+      color: var(--dark);
+    }
 
+    /* Top bar */
     .topbar {
       background: #fff;
       border-bottom: 3px solid var(--orange);
@@ -28,160 +36,299 @@
       align-items: center;
       justify-content: center;
       gap: 14px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
     }
-
-    .logo-icon {
-      width: 42px; height: 42px; border-radius: 10px;
-      background: linear-gradient(135deg, #F27B20 0%, #F5941E 100%);
-      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-    }
+    .logo-icon { width: 42px; height: 42px; border-radius: 10px; background: linear-gradient(135deg, #F27B20 0%, #F5941E 100%); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .logo-icon span { color: #fff; font-weight: 800; font-size: 16px; letter-spacing: -0.02em; }
     .logo-text strong { display: block; font-weight: 700; font-size: 18px; letter-spacing: -0.01em; }
     .logo-text strong span { font-weight: 300; }
     .logo-tagline { display: block; font-size: 10px; color: var(--orange); font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; margin-top: 2px; }
 
-    .container { max-width: 760px; margin: 0 auto; padding: 24px 16px 40px; }
+    /* Layout */
+    .container { max-width: 800px; margin: 0 auto; padding: 32px 16px 48px; }
 
-    .page-title { text-align: center; margin-bottom: 24px; }
-    .page-title h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 4px; }
-    .page-title p { font-size: 14px; color: var(--gray); }
-
-    .step-nav { display: flex; align-items: center; justify-content: center; margin-bottom: 10px; flex-wrap: wrap; gap: 2px; }
-
-    .step-btn {
-      width: 38px; height: 38px; border-radius: 50%; border: none; cursor: pointer;
-      font-weight: 700; font-size: 15px; font-family: 'Outfit', sans-serif;
-      display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s;
+    /* Header */
+    .doc-header {
+      background: #fff;
+      border-radius: 16px;
+      padding: 32px 32px 28px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+      border: 1px solid #eee;
+      position: relative;
+      overflow: hidden;
     }
-    .step-btn.active { background: linear-gradient(135deg, #F27B20 0%, #F5941E 100%); color: #fff; box-shadow: 0 2px 10px rgba(242,123,32,0.35); }
-    .step-btn.done { background: var(--orange-light); color: var(--orange); }
-    .step-btn.pending { background: #e5e7eb; color: #9ca3af; }
 
-    .step-connector { width: 28px; height: 2px; transition: background 0.3s; }
-    .step-connector.done { background: var(--orange); }
-    .step-connector.pending { background: #e5e7eb; }
+    .doc-header::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #F27B20, #F5941E);
+    }
 
-    .step-label { text-align: center; font-size: 13px; color: var(--gray); margin: 0 0 20px; }
-    .step-label strong { color: var(--dark); }
+    .doc-header-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
 
-    .card { background: #fff; border-radius: 16px; padding: 32px 28px 24px; box-shadow: 0 4px 24px rgba(0,0,0,0.05); border: 1px solid #eee; }
-    .card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
-    .card-header .icon { font-size: 28px; }
-    .card-header h2 { font-size: 22px; font-weight: 700; }
-    .card-subtitle { font-size: 13px; color: var(--gray); margin-bottom: 24px; }
+    .doc-header h1 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 1.15;
+      color: var(--dark);
+    }
 
-    .q { margin-bottom: 22px; }
+    .doc-header h1 span { color: var(--orange); }
 
-    label.field-label { display: block; margin-bottom: 6px; }
-    label.field-label .pt { font-weight: 700; font-size: 14px; }
-    label.field-label .req { color: #e53e3e; }
-    label.field-label .en { display: block; font-size: 12px; color: var(--gray); font-style: italic; margin-top: 2px; }
+    .doc-header p.sub {
+      font-size: 14px;
+      color: var(--gray);
+      margin-top: 6px;
+      line-height: 1.5;
+    }
 
-    .hint { font-size: 12px; color: var(--orange-dark); margin-bottom: 6px; font-weight: 500; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--orange-light);
+      border: 1.5px solid var(--orange);
+      color: var(--orange-dark);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 100px;
+      white-space: nowrap;
+      letter-spacing: 0.03em;
+    }
 
-    input[type="text"], input[type="email"], input[type="date"], select, textarea {
-      width: 100%; padding: 10px 14px; border: 1.5px solid var(--border);
-      border-radius: 8px; font-size: 14px; font-family: 'Outfit', sans-serif;
-      color: var(--dark); background: #fff; outline: none;
+    /* Progress bar */
+    .progress-wrap { margin-top: 20px; }
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--gray);
+      margin-bottom: 8px;
+    }
+    .progress-label strong { color: var(--orange); font-weight: 700; }
+    .progress-bar-bg { height: 8px; background: #e5e7eb; border-radius: 100px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #F27B20, #F5941E); border-radius: 100px; transition: width 0.4s ease; }
+
+    /* Info box */
+    .info-box {
+      padding: 16px 20px;
+      background: var(--orange-light);
+      border-radius: 12px;
+      margin-bottom: 24px;
+      border-left: 4px solid var(--orange);
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--dark);
+    }
+    .info-box strong { color: var(--orange-dark); }
+
+    /* Section */
+    .section { margin-bottom: 24px; }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 20px;
+      background: var(--dark);
+      border-radius: 12px 12px 0 0;
+      color: #fff;
+    }
+
+    .section-header .sec-icon { font-size: 20px; }
+
+    .section-header h2 {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      flex: 1;
+    }
+
+    .section-header .sec-count {
+      font-size: 12px;
+      font-weight: 500;
+      opacity: 0.6;
+    }
+
+    .section-body {
+      background: #fff;
+      border-radius: 0 0 12px 12px;
+      border: 1px solid #eee;
+      border-top: none;
+      overflow: hidden;
+    }
+
+    /* Checklist item */
+    .item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .item:last-child { border-bottom: none; }
+    .item:hover { background: #fafafa; }
+    .item.checked { background: var(--green-light); }
+
+    .checkbox {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      border: 2px solid #d1d5db;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+      transition: all 0.15s;
+    }
+
+    .item.checked .checkbox {
+      background: var(--green);
+      border-color: var(--green);
+    }
+
+    .checkbox svg { display: none; }
+    .item.checked .checkbox svg { display: block; }
+
+    .item-content { flex: 1; }
+
+    .item-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--dark);
+      line-height: 1.4;
+    }
+
+    .item.checked .item-title {
+      text-decoration: line-through;
+      color: var(--gray);
+    }
+
+    .item-sub {
+      font-size: 12px;
+      color: var(--gray);
+      margin-top: 3px;
+      line-height: 1.5;
+    }
+
+    .item-en {
+      font-size: 11px;
+      color: #9ca3af;
+      font-style: italic;
+      margin-top: 2px;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 100px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 5px;
+    }
+
+    .tag-required { background: #fee2e2; color: #dc2626; }
+    .tag-conditional { background: #fef3c7; color: #d97706; }
+    .tag-optional { background: var(--orange-light); color: var(--orange-dark); }
+
+    /* Notes section */
+    .notes-section {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+      border: 1px solid #eee;
+    }
+
+    .notes-section h3 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    textarea.notes-input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: 'Outfit', sans-serif;
+      color: var(--dark);
+      resize: vertical;
+      min-height: 100px;
+      outline: none;
       transition: border-color 0.2s, box-shadow 0.2s;
     }
-    input:focus, select:focus, textarea:focus { border-color: var(--orange); box-shadow: 0 0 0 3px rgba(242,123,32,0.12); }
+    textarea.notes-input:focus { border-color: var(--orange); box-shadow: 0 0 0 3px rgba(242,123,32,0.12); }
 
-    select {
-      appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%239ca3af' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-      background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; cursor: pointer;
+    /* Action bar */
+    .action-bar {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
     }
-    textarea { resize: vertical; min-height: 64px; }
 
-    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
-    @media (max-width: 540px) { .row2, .row3 { grid-template-columns: 1fr; } }
-
-    .radio-group { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 4px; }
-    .radio-label { display: flex; align-items: center; gap: 7px; cursor: pointer; font-size: 14px; user-select: none; }
-    .radio-outer { width: 18px; height: 18px; border-radius: 50%; border: 2px solid #d1d5db; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: border-color 0.15s; }
-    .radio-outer.checked { border-color: var(--orange); }
-    .radio-inner { width: 9px; height: 9px; border-radius: 50%; background: var(--orange); }
-
-    .conditional { margin-top: 8px; padding: 12px 16px; background: var(--orange-light); border-radius: 8px; border-left: 3px solid var(--orange); }
-
-    .divider { display: flex; align-items: center; gap: 12px; margin: 28px 0 20px; }
-    .divider-line { height: 1px; flex: 1; background: var(--border); }
-    .divider-text { font-size: 11px; font-weight: 700; color: var(--orange); text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap; }
-
-    .info-box { padding: 16px 20px; background: var(--orange-light); border-radius: 12px; margin-bottom: 24px; border-left: 4px solid var(--orange); }
-    .info-box p { font-size: 13px; line-height: 1.7; color: var(--dark); }
-    .info-box p + p { margin-top: 8px; }
-
-    .declaration-box { padding: 20px 24px; background: var(--orange-light); border-radius: 12px; margin-bottom: 24px; border-left: 4px solid var(--orange); }
-    .declaration-box p { font-size: 14px; line-height: 1.7; }
-    .declaration-box p.en { font-size: 13px; color: var(--gray); font-style: italic; margin-top: 10px; }
-
-    .file-upload {
-      border: 2px dashed #d1d5db; border-radius: 10px; padding: 16px;
-      text-align: center; cursor: pointer; background: #fafafa;
-      transition: all 0.2s; margin-bottom: 10px; font-size: 13px;
-      color: var(--gray); position: relative;
+    .btn-reset-all {
+      padding: 10px 20px;
+      background: transparent;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      color: var(--gray);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+      transition: all 0.2s;
     }
-    .file-upload input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; padding: 0; border: none; box-shadow: none; }
-    .file-upload.has-file { border-style: solid; border-color: var(--orange); background: var(--orange-light); color: var(--orange-dark); font-weight: 500; }
-    .file-upload-wrap { margin-bottom: 10px; }
-    .file-list { margin-top: 6px; display: flex; flex-direction: column; gap: 6px; }
-    .file-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 12px; background: #fff; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; color: var(--dark); }
-    .file-item span { word-break: break-all; }
-    .file-remove { background: transparent; border: none; color: #e53e3e; font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'Outfit', sans-serif; flex-shrink: 0; }
-    .file-remove:hover { text-decoration: underline; }
-    .autosave-note { text-align: center; font-size: 12px; color: var(--gray); margin: 0 0 16px; display: flex; align-items: center; justify-content: center; gap: 6px; }
-    .autosave-note .dot { width: 7px; height: 7px; border-radius: 50%; background: #16a34a; display: inline-block; }
+    .btn-reset-all:hover { border-color: #e53e3e; color: #e53e3e; }
 
-    .btn-row { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--border); }
-    .btn-prev { padding: 10px 22px; background: transparent; border: 1.5px solid var(--border); border-radius: 10px; color: var(--gray); font-size: 14px; font-weight: 600; cursor: pointer; font-family: 'Outfit', sans-serif; transition: all 0.2s; }
-    .btn-prev:hover { border-color: var(--orange); color: var(--orange); }
-    .btn-next { padding: 10px 26px; background: linear-gradient(135deg, #F27B20 0%, #F5941E 100%); border: none; border-radius: 10px; color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'Outfit', sans-serif; box-shadow: 0 4px 14px rgba(242,123,32,0.3); transition: all 0.2s; }
-    .btn-next:hover { opacity: 0.9; transform: translateY(-1px); }
-    .btn-next:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-
-    .error-msg { font-size: 13px; color: #e53e3e; margin-bottom: 8px; text-align: right; }
-
-    .success-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--light-gray); }
-    .success-card { background: #fff; border-radius: 20px; padding: 56px 44px; text-align: center; max-width: 500px; box-shadow: 0 16px 48px rgba(0,0,0,0.08); }
-    .success-icon { width: 68px; height: 68px; border-radius: 16px; background: linear-gradient(135deg, #F27B20 0%, #F5941E 100%); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
-    .success-card h2 { font-size: 26px; font-weight: 800; margin-bottom: 10px; }
-    .success-card p { color: var(--gray); font-size: 15px; line-height: 1.6; }
-    .btn-reset { margin-top: 24px; padding: 12px 28px; background: transparent; border: 1.5px solid var(--orange); border-radius: 10px; color: var(--orange); font-size: 14px; font-weight: 600; cursor: pointer; font-family: 'Outfit', sans-serif; }
+    .btn-print {
+      padding: 10px 20px;
+      background: linear-gradient(135deg, #F27B20 0%, #F5941E 100%);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+      box-shadow: 0 4px 14px rgba(242,123,32,0.3);
+      transition: all 0.2s;
+    }
+    .btn-print:hover { opacity: 0.9; }
 
     .footer { text-align: center; font-size: 11px; color: #aaa; margin-top: 18px; }
 
-    /* Botões de PDF */
-    .success-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 24px; }
-    .btn-pdf { padding: 12px 28px; background: linear-gradient(135deg, #F27B20 0%, #F5941E 100%); border: none; border-radius: 10px; color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'Outfit', sans-serif; box-shadow: 0 4px 14px rgba(242,123,32,0.3); transition: all 0.2s; }
-    .btn-pdf:hover { opacity: 0.9; }
-    .btn-pdf-sm { padding: 8px 18px; background: transparent; border: 1.5px solid var(--orange); border-radius: 10px; color: var(--orange); font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Outfit', sans-serif; transition: all 0.2s; }
-    .btn-pdf-sm:hover { background: var(--orange-light); }
-    .success-card .btn-reset { margin-top: 0; }
-
-    /* Área de impressão (comprovante em PDF) */
-    #print-area { display: none; }
     @media print {
-      body { background: #fff !important; }
-      .topbar, #app { display: none !important; }
-      #print-area { display: block !important; }
-      .print-doc { max-width: 100%; padding: 0; font-family: 'Outfit', sans-serif; color: #1a1a1a; }
-      .print-head { display: flex; align-items: center; gap: 12px; border-bottom: 3px solid #F27B20; padding-bottom: 14px; margin-bottom: 20px; }
-      .print-logo { width: 44px; height: 44px; border-radius: 10px; background: #F27B20; color: #fff; font-weight: 800; font-size: 16px; display: flex; align-items: center; justify-content: center; }
-      .print-brand { font-weight: 700; font-size: 18px; }
-      .print-tag { font-size: 10px; color: #F27B20; text-transform: uppercase; letter-spacing: 0.12em; }
-      .print-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
-      .print-date { font-size: 12px; color: #6b7280; margin-bottom: 18px; }
-      .print-table { width: 100%; border-collapse: collapse; }
-      .print-table td { padding: 7px 10px; border-bottom: 1px solid #e5e7eb; font-size: 12.5px; vertical-align: top; }
-      .print-table td.pl { font-weight: 600; width: 38%; color: #6b7280; }
-      .print-table td.pv { color: #1a1a1a; }
-      .print-foot { margin-top: 18px; font-size: 10px; color: #9ca3af; }
+      .topbar, .action-bar, .notes-section, .progress-wrap, .btn-print, .btn-reset-all { display: none !important; }
+      body { background: #fff; }
+      .container { padding: 0; }
+      .doc-header { box-shadow: none; border: 1px solid #ddd; }
+      .item { break-inside: avoid; }
     }
   </style>
 </head>
@@ -195,539 +342,392 @@
   </div>
 </div>
 
-<div id="app"></div>
-<div id="print-area"></div>
+<div class="container">
+
+  <!-- Header -->
+  <div class="doc-header">
+    <div class="doc-header-top">
+      <div>
+        <h1>Checklist de Documentos<br><span>482 Subsequent Entrant</span></h1>
+        <p class="sub">Temporary Skill Shortage Visa — Dependente / Subsequent Entrant<br>Subclass 482 · Department of Home Affairs</p>
+      </div>
+      <span class="badge"> KMP Consulting</span>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span>Documentos marcados como reunidos</span>
+        <strong id="progress-text">0 / 0</strong>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progress-bar" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Info box -->
+  <div class="info-box">
+    <strong>Como usar este checklist:</strong> Clique em cada item para marcá-lo como reunido. O progresso é salvo automaticamente no seu navegador. Documentos marcados como <span style="color:#dc2626;font-weight:700">OBRIGATÓRIO</span> são exigidos em todos os casos. Documentos <span style="color:#d97706;font-weight:700">CONDICIONAL</span> dependem da situação do solicitante.
+  </div>
+
+  <!-- Action bar -->
+  <div class="action-bar">
+    <button class="btn-reset-all" onclick="resetAll()">↺ Limpar todos os marcadores</button>
+    <button class="btn-print" onclick="window.print()"> Imprimir checklist</button>
+  </div>
+
+  <!-- Sections -->
+  <div id="checklist"></div>
+
+  <!-- Notes -->
+  <div class="notes-section">
+    <h3> Notas do caso / Case notes</h3>
+    <textarea class="notes-input" id="notes-input" placeholder="Adicione observações sobre o caso, pendências ou informações específicas do cliente..."
+      oninput="saveNotes(this.value)"></textarea>
+  </div>
+
+  <p class="footer">© <span id="yr"></span> KMP Consulting — Estratégia que conecta. Futuro que transforma. — Este checklist é de uso interno e não substitui orientação jurídica.</p>
+</div>
 
 <script>
+document.getElementById("yr").textContent = new Date().getFullYear();
+
 const SECTIONS = [
-  { title: "Dados do Visto Principal",    icon: "" },
-  { title: "Dados Pessoais",              icon: "" },
-  { title: "Passaporte",                  icon: "" },
-  { title: "Contato e Endereço",         icon: "" },
-  { title: "Histórico de Residência",    icon: "" },
-  { title: "Histórico de Viagens",       icon: "" },
-  { title: "Saúde e Caráter",            icon: "" },
-  { title: "Declaração e Assinatura",    icon: "️" },
+  {
+    id: "identidade",
+    icon: "",
+    title: "Identidade e Passaporte",
+    en: "Identity and Passport",
+    items: [
+      {
+        id: "pp_bio",
+        title: "Passaporte — página de dados biográficos",
+        en: "Passport — biographical data page",
+        sub: "Cópia colorida nítida. Passaporte deve ter validade mínima de 6 meses.",
+        tag: "required"
+      },
+      {
+        id: "pp_todos",
+        title: "Passaporte — todas as páginas carimbadas",
+        en: "Passport — all stamped pages",
+        sub: "Inclui vistos, carimbos de entrada e saída de todos os países visitados.",
+        tag: "required"
+      },
+      {
+        id: "foto_facial",
+        title: "Foto facial recente (fundo branco)",
+        en: "Recent facial image (white background)",
+        sub: "Foto tipo passaporte, fundo branco, rostovisível. Arquivo JPG ou PNG.",
+        tag: "required"
+      },
+      {
+        id: "rg_cnh",
+        title: "Documento de identidade nacional (RG, CNH ou equivalente)",
+        en: "National identity document (ID card, driver's licence, or equivalent)",
+        sub: "Frente e verso. Inclui documentos australianos se o solicitante já reside aqui.",
+        tag: "optional"
+      },
+    ]
+  },
+  {
+    id: "relacionamento",
+    icon: "",
+    title: "Evidência de Relacionamento",
+    en: "Relationship Evidence",
+    items: [
+      {
+        id: "cert_defacto",
+        title: "Certidão de união estável (de facto) ou certidão de casamento",
+        en: "De facto relationship certificate or marriage certificate",
+        sub: "Documento oficial registrado em cartório ou órgão competente. Tradução juramentada se em outro idioma.",
+        tag: "required"
+      },
+      {
+        id: "contrato_aluguel",
+        title: "Contrato de aluguel ou comprovante de residência conjunta",
+        en: "Lease agreement or joint residence proof",
+        sub: "Contrato com ambos os nomes. Período atual.",
+        tag: "required"
+      },
+      {
+        id: "conta_conjunta",
+        title: "Extrato bancário de conta conjunta ou transferências entre o casal",
+        en: "Joint bank account statement or transfers between partners",
+        sub: "Últimos 3 a 6 meses. Demonstra vida financeira compartilhada.",
+        tag: "required"
+      },
+      {
+        id: "seguro_conjunto",
+        title: "Apólice de seguro conjunto (carro, saúde, residência)",
+        en: "Joint insurance policy (car, health, home)",
+        sub: "Seguro com ambos os nomes ou como beneficiários mútuos.",
+        tag: "conditional"
+      },
+      {
+        id: "conta_luz_internet",
+        title: "Contas de consumo conjuntas (luz, internet, água, gás)",
+        en: "Joint utility bills (electricity, internet, water, gas)",
+        sub: "Conta emitida para o endereço compartilhado. Pelo menos 1 conta com um dos nomes.",
+        tag: "conditional"
+      },
+      {
+        id: "fotos_viagens",
+        title: "Fotos do casal (viagens, eventos, vida cotidiana)",
+        en: "Photos of the couple (trips, events, daily life)",
+        sub: "Selecione fotos com datas e locais diferentes para demonstrar convivência ao longo do tempo.",
+        tag: "optional"
+      },
+      {
+        id: "declaracoes",
+        title: "Declarações de terceiros (familiares, amigos, colegas)",
+        en: "Statutory declarations from third parties (family, friends, colleagues)",
+        sub: "Declarações de pessoas que conhecem o casal e confirmam o relacionamento.",
+        tag: "optional"
+      },
+      {
+        id: "comunicacoes",
+        title: "Histórico de comunicações (mensagens, ligações, e-mails)",
+        en: "Communication records (messages, calls, emails)",
+        sub: "Especialmente útil se os parceiros ficaram em países diferentes por algum período.",
+        tag: "optional"
+      },
+    ]
+  },
+  {
+    id: "antecedentes",
+    icon: "",
+    title: "Antecedentes Criminais (Police Clearance)",
+    en: "Character — Police Clearance Certificates",
+    items: [
+      {
+        id: "police_australia",
+        title: "Certidão de antecedentes criminais — Austrália (AFP National Police Check)",
+        en: "Australian Federal Police (AFP) National Police Check",
+        sub: "Obrigatória para quem residiu na Austrália por 12+ meses (cumulativos) nos últimos 10 anos.",
+        tag: "required"
+      },
+      {
+        id: "police_brasil_federal",
+        title: "Certidão de antecedentes — Brasil (Polícia Federal — nível federal)",
+        en: "Brazilian Federal Police Clearance",
+        sub: "Emitida pela Polícia Federal do Brasil. Obrigatória para nacionais brasileiros que viveram no Brasil por 12+ meses nos últimos 10 anos.",
+        tag: "required"
+      },
+      {
+        id: "police_brasil_estado",
+        title: "Certidão de antecedentes — estado brasileiro de residência (ex: RS, SP, RJ)",
+        en: "Brazilian State Police Clearance (state of residence)",
+        sub: "Exigida pelo Department juntamente com a certidão federal. Solicitar no estado de residência mais recente.",
+        tag: "required"
+      },
+      {
+        id: "police_outros",
+        title: "Certidão de antecedentes de outros países (se aplicável)",
+        en: "Police clearance from other countries (if applicable)",
+        sub: "Necessária para cada país onde o solicitante residiu por 12+ meses (cumulativos) nos últimos 10 anos.",
+        tag: "conditional"
+      },
+    ]
+  },
+  {
+    id: "saude",
+    icon: "",
+    title: "Exame de Saúde",
+    en: "Health Examination",
+    items: [
+      {
+        id: "exame_saude",
+        title: "Resultado do exame de saúde (HAP ID)",
+        en: "Health examination result (HAP ID)",
+        sub: "Agendado através do ImmiAccount. O Department enviará convite para exame após lodgement. Guarde o HAP ID.",
+        tag: "conditional"
+      },
+      {
+        id: "radiografia",
+        title: "Radiografia de tórax (chest x-ray) — se solicitado",
+        en: "Chest x-ray — if requested",
+        sub: "Solicitada pelo médico designado (panel physician) durante o exame.",
+        tag: "conditional"
+      },
+    ]
+  },
+  {
+    id: "vistoAnterior",
+    icon: "",
+    title: "Visto Australiano Anterior (se aplicável)",
+    en: "Previous Australian Visa (if applicable)",
+    items: [
+      {
+        id: "grant_anterior",
+        title: "Número de concessão do visto australiano anterior (Grant Number)",
+        en: "Previous Australian visa grant number",
+        sub: "Localizado no e-mail de grant ou no ImmiAccount. Ex: 0079553171553.",
+        tag: "conditional"
+      },
+      {
+        id: "cartao_visto",
+        title: "Cartão ou carta de concessão do visto anterior",
+        en: "Previous visa grant card or letter",
+        sub: "Se disponível, anexe a carta ou cartão de concessão do visto anterior.",
+        tag: "optional"
+      },
+    ]
+  },
+  {
+    id: "residencia",
+    icon: "",
+    title: "Comprovante de Residência",
+    en: "Proof of Residence",
+    items: [
+      {
+        id: "comprov_end",
+        title: "Comprovante de endereço atual na Austrália",
+        en: "Proof of current address in Australia",
+        sub: "Conta de serviço, contrato de aluguel, correspondência bancária ou governamental com nome e endereço.",
+        tag: "required"
+      },
+
+    ]
+  },
+  {
+    id: "documentos_doc",
+    icon: "",
+    title: "Documentos de Suporte Adicionais",
+    en: "Additional Supporting Documents",
+    items: [
+      {
+        id: "traduz",
+        title: "Tradução juramentada (NAATI) de todos os documentos em português",
+        en: "NAATI-certified translation of all documents in Portuguese",
+        sub: "Obrigatório para documentos em idioma que não seja inglês. Tradutor deve ter credencial NAATI.",
+        tag: "required"
+      },
+      {
+        id: "cert_nascimento",
+        title: "Certidão de nascimento (para filhos dependentes menores de 18 anos)",
+        en: "Birth certificate (for dependent children under 18)",
+        sub: "Com tradução juramentada NAATI se em português.",
+        tag: "conditional"
+      },
+      {
+        id: "cert_adocao",
+        title: "Certidão de adoção (se aplicável)",
+        en: "Adoption certificate (if applicable)",
+        sub: "Com tradução juramentada NAATI se em português.",
+        tag: "conditional"
+      },
+      {
+        id: "seguro_saude",
+        title: "Confirmação de seguro saúde (OSHC ou equivalente)",
+        en: "Health insurance confirmation (OSHC or equivalent)",
+        sub: "O solicitante deve comprovar que fez arranjos adequados para seguro durante a estadia.",
+        tag: "required"
+      },
+    ]
+  },
 ];
 
-const WEB3FORMS_KEY = "eb911200-f515-4a77-afbf-61c4f99be8cf";
-const DRAFT_KEY = "kmp_form482_draft";
+let checked = JSON.parse(localStorage.getItem("kmp_482se_checked") || "{}");
+let notes = localStorage.getItem("kmp_482se_notes") || "";
 
-let step = 0;
-let f = {};
-let submitted = false;
-let sending = false;
-let sendError = null;
-
-// Salvamento automático do rascunho neste dispositivo
-function saveDraft() {
-  try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ f, step })); } catch (e) {}
-}
-function loadDraft() {
-  try {
-    const d = JSON.parse(localStorage.getItem(DRAFT_KEY));
-    if (d && d.f && typeof d.f === "object") { f = d.f; step = d.step || 0; }
-  } catch (e) {}
-}
-function clearDraft() {
-  try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
+function totalItems() {
+  return SECTIONS.reduce((acc, s) => acc + s.items.length, 0);
 }
 
-function set(key, val) { f[key] = val; saveDraft(); render(); }
-function setValue(key, val) { f[key] = val; saveDraft(); } // atualiza sem reconstruir a tela (preserva o foco)
-
-function label(num, pt, en, req) {
-  return `<label class="field-label">
-    <span class="pt">${num ? `${num}. ` : ""}${pt}${req ? ' <span class="req">*</span>' : ""}</span>
-    ${en ? `<span class="en">${en}</span>` : ""}
-  </label>`;
+function totalChecked() {
+  return Object.values(checked).filter(Boolean).length;
 }
 
-function hint(text) { return `<p class="hint">${text}</p>`; }
-
-function input(key, placeholder, type = "text") {
-  return `<input type="${type}" placeholder="${placeholder}" value="${(f[key] || "").toString().replace(/"/g, '&quot;')}"
-    oninput="setValue('${key}', this.value)" />`;
+function updateProgress() {
+  const total = totalItems();
+  const done = totalChecked();
+  const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+  document.getElementById("progress-text").textContent = `${done} / ${total}`;
+  document.getElementById("progress-bar").style.width = `${pct}%`;
 }
 
-function textarea(key, placeholder, rows = 3) {
-  return `<textarea placeholder="${placeholder}" rows="${rows}"
-    oninput="setValue('${key}', this.value)">${f[key] || ""}</textarea>`;
+function toggle(id) {
+  checked[id] = !checked[id];
+  localStorage.setItem("kmp_482se_checked", JSON.stringify(checked));
+  const el = document.getElementById(`item_${id}`);
+  if (el) { el.classList.toggle("checked", checked[id]); }
+  updateSectionCount(id);
+  updateProgress();
 }
 
-function select(key, options, placeholder) {
-  const opts = options.map(o =>
-    `<option value="${o}" ${f[key] === o ? "selected" : ""}>${o}</option>`
-  ).join("");
-  return `<select onchange="set('${key}', this.value)">
-    <option value="" disabled ${!f[key] ? "selected" : ""}>${placeholder || "Selecione / Select"}</option>
-    ${opts}
-  </select>`;
-}
-
-function radio(key, options) {
-  return `<div class="radio-group">
-    ${options.map(o => `
-      <label class="radio-label" onclick="set('${key}', '${o}')">
-        <span class="radio-outer ${f[key] === o ? "checked" : ""}">
-          ${f[key] === o ? '<span class="radio-inner"></span>' : ""}
-        </span>
-        ${o}
-      </label>`).join("")}
-  </div>`;
-}
-
-function conditional(show, content) {
-  return show ? `<div class="conditional">${content}</div>` : "";
-}
-
-function divider(text) {
-  return `<div class="divider"><div class="divider-line"></div><span class="divider-text">${text}</span><div class="divider-line"></div></div>`;
-}
-
-function row2(a, b) { return `<div class="row2">${a}${b}</div>`; }
-function row3(a, b, c) { return `<div class="row3">${a}${b}${c}</div>`; }
-function q(content) { return `<div class="q">${content}</div>`; }
-
-function fileUpload(id, labelText) {
-  const stored = f[`file_${id}`];
-  const list = Array.isArray(stored) ? stored : (stored ? [stored] : []);
-  const hasFiles = list.length > 0;
-  const listHtml = hasFiles
-    ? `<div class="file-list">${list.map((name, i) =>
-        `<div class="file-item"><span>${escapeHtml(name)}</span><button type="button" class="file-remove" onclick="removeFile(event, '${id}', ${i})">remover</button></div>`
-      ).join("")}</div>`
-    : "";
-  return `<div class="file-upload-wrap">
-    <div class="file-upload ${hasFiles ? "has-file" : ""}" id="fu_${id}">
-      <input type="file" accept=".pdf,.jpg,.jpeg,.png" multiple onchange="handleFile('${id}', this)" />
-      ${hasFiles ? `+ Adicionar mais arquivos (${list.length} anexado${list.length > 1 ? "s" : ""})` : `↑ ${labelText} (PDF, JPG, PNG — Máx. 10MB · vários arquivos permitidos)`}
-    </div>
-    ${listHtml}
-  </div>`;
-}
-
-function handleFile(id, inp) {
-  if (inp.files && inp.files.length) {
-    const key = `file_${id}`;
-    const existing = Array.isArray(f[key]) ? f[key] : (f[key] ? [f[key]] : []);
-    const novos = Array.from(inp.files).map(file => file.name);
-    // acumula e remove duplicados pelo nome
-    f[key] = Array.from(new Set([...existing, ...novos]));
-    saveDraft();
-    render();
+function updateSectionCount(itemId) {
+  for (const sec of SECTIONS) {
+    if (sec.items.find(i => i.id === itemId)) {
+      const done = sec.items.filter(i => checked[i.id]).length;
+      const el = document.getElementById(`sec_count_${sec.id}`);
+      if (el) el.textContent = `${done}/${sec.items.length}`;
+      break;
+    }
   }
 }
 
-function removeFile(ev, id, index) {
-  ev.stopPropagation();
-  const key = `file_${id}`;
-  const list = Array.isArray(f[key]) ? f[key] : (f[key] ? [f[key]] : []);
-  list.splice(index, 1);
-  f[key] = list;
-  saveDraft();
-  render();
+function saveNotes(val) {
+  notes = val;
+  localStorage.setItem("kmp_482se_notes", val);
 }
 
-function renderStep() {
-  switch (step) {
-
-    case 0: return `
-      <div class="info-box">
-        <p>Esta seção recolhe os dados do visto principal (Subclass 482) ao qual este dependente está sendo vinculado.</p>
-        <p>This section collects the details of the primary 482 visa holder to whom this subsequent entrant is being linked.</p>
-      </div>
-      ${q(label(1,"Número de referência do visto principal (TRN)","Transaction Reference Number (TRN) of the primary 482 holder",true) +
-        hint("O TRN está disponível no ImmiAccount ou na confirmação de aplicação do titular principal.") +
-        input("trnPrimario","Ex: EGP23YS46J"))}
-      ${q(label(2,"Data de nascimento do titular principal","Date of birth of the primary visa holder",true) +
-        input("nascPrimario","","date"))}
-      ${q(label(3,"Relacionamento com o titular principal","Relationship to the primary visa holder",true) +
-        `<select onchange="set('relacao', this.value)">
-          <option value="" disabled ${!f.relacao ? "selected" : ""}>Selecione / Select</option>
-          <option value="Cônjuge/Spouse" ${f.relacao === "Cônjuge/Spouse" ? "selected" : ""}>Cônjuge / Spouse</option>
-          <option value="Parceiro(a) de facto/De Facto Partner" ${f.relacao === "Parceiro(a) de facto/De Facto Partner" ? "selected" : ""}>Parceiro(a) de facto / De Facto Partner</option>
-          <option value="Filho(a)/Child" ${f.relacao === "Filho(a)/Child" ? "selected" : ""}>Filho(a) / Child</option>
-        </select>`)}
-      ${q(label(4,"O dependente foi incluído na indicação (nomination)?","Was this family member included in the nomination form?",true) +
-        radio("inclusoNominacao",["SIM/YES","NÃO/NO"]))}
-      ${q(label(5,"Localização atual do dependente","Current location of the applicant",true) +
-        radio("localAtual",["Austrália/Australia","Fora da Austrália/Outside Australia"]))}
-    `;
-
-    case 1: return `
-      ${row2(
-        q(label(6,"Nome (conforme passaporte)","Given names (as in passport)",true) + input("nome","Nome / Given names")),
-        q(label(7,"Sobrenome (conforme passaporte)","Family name (as in passport)",true) + input("sobrenome","Sobrenome / Family name"))
-      )}
-      ${q(label(8,"O solicitante já foi conhecido por outro nome?","Has the applicant ever been known by any other name?") +
-        radio("outroNome",["SIM/YES","NÃO/NO"]) +
-        conditional(f.outroNome === "SIM/YES",
-          input("outroNomeDetalhe","Informe o(s) outro(s) nome(s) / Provide other name(s)")))}
-      ${q(label(9,"Gênero","Sex",true) +
-        radio("genero",["Masculino/Male","Feminino/Female","Outro/Other"]))}
-      ${q(label(10,"Data de nascimento","Date of birth",true) +
-        input("dataNasc","","date"))}
-      ${row2(
-        q(label(11,"Cidade de nascimento","Town/city of birth",true) + input("cidadeNasc","Ex: Caxias do Sul")),
-        q(label(12,"País de nascimento","Country of birth",true) + input("paisNasc","Ex: Brasil / Brazil"))
-      )}
-      ${q(label(13,"Estado civil","Relationship status",true) +
-        select("estadoCivil",["Solteiro(a)/Single","Casado(a)/Married","Divorciado(a)/Divorced","Viúvo(a)/Widowed","Separado(a)/Separated","União Estável/De Facto","Noivo(a)/Engaged"]))}
-      ${q(label(14,"Nacionalidade atual","Current nationality/citizenship",true) +
-        input("nacionalidade","Ex: Brasileira / Brazilian"))}
-      ${q(label(15,"O solicitante possui outra cidadania?","Does the applicant hold any other citizenship?") +
-        radio("outraCidadania",["SIM/YES","NÃO/NO"]) +
-        conditional(f.outraCidadania === "SIM/YES",
-          input("outraCidadaniaDetalhe","Qual país? / Which country?")))}
-    `;
-
-    case 2: return `
-      ${q(label(16,"Número do passaporte","Passport number",true) + input("numPassaporte","Ex: FS874251"))}
-      ${row2(
-        q(label(17,"País de emissão","Country of issue",true) + input("paisPassaporte","Ex: Brasil / Brazil")),
-        q(label(18,"Nacionalidade conforme passaporte","Nationality as shown in passport",true) + input("nacPassaporte","Ex: BRASILEIRA / BRAZILIAN"))
-      )}
-      ${row3(
-        q(label(19,"Data de emissão","Date of issue",true) + input("dataEmissao","","date")),
-        q(label(20,"Data de validade","Date of expiry",true) + input("dataValidade","","date")),
-        q(label(21,"Local de emissão","Place of issue",true) + input("localEmissao","Ex: DPF/CXS/RS"))
-      )}
-      ${q(label(22,"O solicitante possui ou já possuiu outro passaporte?","Does the applicant hold or have they held any other passport?") +
-        radio("outroPassaporte",["SIM/YES","NÃO/NO"]) +
-        conditional(f.outroPassaporte === "SIM/YES",
-          input("outroPassaporteDetalhe","País, número, validade / Country, number, expiry")))}
-      ${divider("Número de visto australiano anterior / Previous Australian visa")}
-      ${q(label(23,"O solicitante possui um número de concessão de visto australiano anterior?","Does the applicant have an Australian visa grant number from a previous visa application?") +
-        radio("vistoAnterior",["SIM/YES","NÃO/NO"]) +
-        conditional(f.vistoAnterior === "SIM/YES",
-          input("vistoAnteriorNum","Australian Visa Grant Number")))}
-      ${divider("Documento de identidade nacional / National identity document")}
-      ${q(label(24,"O solicitante possui carteira de identidade nacional?","Does the applicant have a national identity card?") +
-        radio("temRG",["SIM/YES","NÃO/NO"]) +
-        conditional(f.temRG === "SIM/YES",
-          row2(
-            `<div>${label(null,"Tipo de documento","Document type") + select("tipoDoc",["RG (Brasil)","CNH / Driver's licence","Carteira de Trabalho","Outro/Other"])}</div>`,
-            `<div>${label(null,"Número","Document number") + input("numDoc","Ex: 24086413")}</div>`
-          ) +
-          `<div style="margin-top:12px">${label(null,"País de emissão","Country of issue") + input("paisDoc","Ex: Brasil / Australia")}</div>`
-        ))}
-      ${q(label(25,"O solicitante possui outros documentos de viagem?","Does the applicant have any other travel documents?") +
-        radio("outrosDocViagem",["SIM/YES","NÃO/NO"]) +
-        conditional(f.outrosDocViagem === "SIM/YES",
-          textarea("outrosDocViagemDetalhe","Descreva / Describe")))}
-    `;
-
-    case 3: return `
-      ${q(label(26,"País de residência habitual","Usual country of residence",true) +
-        input("paisResidencia","Ex: Austrália / Australia"))}
-      ${divider("Endereço residencial / Residential address")}
-      ${q(label(27,"Endereço residencial completo","Residential address (street address required, no PO Box)",true) +
-        input("endereco","Rua, número, complemento / Street, number, unit"))}
-      ${row3(
-        q(label(28,"Subúrbio / Cidade","Suburb/Town",true) + input("cidade","Maroubra")),
-        q(label(29,"Estado","State/Territory",true) + input("estado","NSW")),
-        q(label(30,"CEP / Postcode","Postcode",true) + input("cep","2035"))
-      )}
-      ${q(label(31,"País","Country",true) + input("paisEnd","Australia"))}
-      ${divider("Contato / Contact")}
-      ${row2(
-        q(label(32,"Telefone residencial","Home phone") + input("telRes","0400 000 000")),
-        q(label(33,"Telefone comercial","Business phone") + input("telCom","02 0000 0000"))
-      )}
-      ${row2(
-        q(label(34,"Celular","Mobile/cell phone",true) + input("celular","0400 000 000")),
-        q(label(35,"E-mail","Email address",true) + input("email","seuemail@exemplo.com","email"))
-      )}
-    `;
-
-    case 4: return `
-      <div class="info-box">
-        <p>Informe todos os países onde o solicitante residiu por 12 meses ou mais (cumulativos) nos últimos 10 anos, desde os 16 anos de idade.</p>
-        <p>List all countries where the applicant has spent 12 months or more (cumulative) in the last 10 years since turning 16 years of age.</p>
-      </div>
-      ${q(label(36,"Primeiro endereço de residência","First country of residence",true) +
-        hint("Informe o período e endereço completo / Provide the period and full address") +
-        row2(
-          input("resid1De","De / From","date"),
-          input("resid1Ate","Até / To (deixe em branco se atual)","date")
-        ) +
-        `<div style="margin-top:10px">${input("resid1Pais","País / Country")}</div>` +
-        `<div style="margin-top:10px">${input("resid1End","Endereço completo / Full address")}</div>`
-      )}
-      ${q(label(37,"Segundo endereço de residência (se houver)","Second country of residence (if applicable)") +
-        row2(
-          input("resid2De","De / From","date"),
-          input("resid2Ate","Até / To","date")
-        ) +
-        `<div style="margin-top:10px">${input("resid2Pais","País / Country")}</div>` +
-        `<div style="margin-top:10px">${input("resid2End","Endereço completo / Full address")}</div>`
-      )}
-      ${q(label(38,"Terceiro endereço de residência (se houver)","Third country of residence (if applicable)") +
-        row2(
-          input("resid3De","De / From","date"),
-          input("resid3Ate","Até / To","date")
-        ) +
-        `<div style="margin-top:10px">${input("resid3Pais","País / Country")}</div>` +
-        `<div style="margin-top:10px">${input("resid3End","Endereço completo / Full address")}</div>`
-      )}
-      ${q(label(39,"Endereços adicionais","Additional addresses (if more than 3)") +
-        textarea("residExtra","Informe país, endereço e período / Country, address and period",4))}
-    `;
-
-    case 5: return `
-      ${q(label(40,"Nos últimos 10 anos, o solicitante visitou algum país fora do seu país de residência habitual?","In the last 10 years, has the applicant visited any countries outside their usual country of residence?",true) +
-        radio("temViagens",["SIM/YES","NÃO/NO"]))}
-      ${conditional(f.temViagens === "SIM/YES", `
-        <div class="q">
-          ${hint("Liste todos os países visitados com datas. O Department pode exigir certidão de antecedentes criminais de países onde o solicitante ficou 12+ meses nos últimos 10 anos.")}
-          ${textarea("viagensDetalhe","País, motivo, de / até — Ex: BRASIL, Visita familiar, 19/12/2022 a 23/01/2023",8)}
-        </div>
-      `)}
-      ${q(label(41,"O solicitante já realizou exame de saúde para visto australiano nos últimos 12 meses?","Has the applicant undertaken a health examination for an Australian visa in the last 12 months?",true) +
-        radio("exameSaude",["SIM/YES","NÃO/NO"]) +
-        conditional(f.exameSaude === "SIM/YES",
-          input("exameSaudeDetalhe","HAP ID ou detalhes do exame / HAP ID or examination details")))}
-    `;
-
-    case 6: return `
-      ${divider("Declaração de Saúde / Health Declaration")}
-      ${q(label(42,"Nos últimos 5 anos, o solicitante viveu fora do seu país de passaporte por mais de 3 meses consecutivos (excluindo Austrália)?","In the last 5 years, has the applicant lived outside their country of passport for more than 3 consecutive months (excluding Australia)?",true) +
-        radio("viviuFora",["SIM/YES","NÃO/NO"]))}
-      ${q(label(43,"O solicitante pretende ser internado em hospital ou instalação de saúde na Austrália?","Does the applicant intend to enter a hospital or health care facility in Australia?",true) +
-        radio("hospital",["SIM/YES","NÃO/NO"]))}
-      ${q(label(44,"O solicitante pretende trabalhar ou estudar como profissional de saúde na Austrália?","Does the applicant intend to work or study as a health care worker in Australia?",true) +
-        radio("profSaude",["SIM/YES","NÃO/NO"]))}
-      ${q(label(45,"O solicitante possui alguma condição de saúde relevante (TB, doença cardíaca, HIV, doença renal, doença mental, gravidez, etc.)?","Does the applicant have any relevant health condition (TB, heart disease, HIV, kidney disease, mental illness, pregnancy, etc.)?",true) +
-        radio("condicaoSaude",["SIM/YES","NÃO/NO"]) +
-        conditional(f.condicaoSaude === "SIM/YES",
-          textarea("condicaoSaudeDetalhe","Descreva a condição / Describe the condition")))}
-      ${divider("Declaração de Caráter / Character Declaration")}
-      ${q(label(46,"O solicitante já foi condenado por algum crime em qualquer país?","Has the applicant ever been convicted of an offence in any country?",true) +
-        radio("crime",["SIM/YES","NÃO/NO"]) +
-        conditional(f.crime === "SIM/YES",
-          textarea("crimeDetalhe","Data, natureza do crime, sentença / Date, nature, sentence")))}
-      ${q(label(47,"O solicitante possui alguma acusação criminal pendente?","Has the applicant been charged with any offence currently awaiting legal action?",true) +
-        radio("acusacao",["SIM/YES","NÃO/NO"]) +
-        conditional(f.acusacao === "SIM/YES",
-          textarea("acusacaoDetalhe","Descreva / Describe")))}
-      ${q(label(48,"O solicitante já foi removido, deportado ou excluído de qualquer país?","Has the applicant ever been removed, deported or excluded from any country?",true) +
-        radio("deportado",["SIM/YES","NÃO/NO"]) +
-        conditional(f.deportado === "SIM/YES",
-          textarea("deportadoDetalhe","Descreva / Describe")))}
-      ${q(label(49,"O solicitante já excedeu o período de permanência autorizado em algum visto em qualquer país?","Has the applicant ever overstayed a visa in any country?",true) +
-        radio("overstay",["SIM/YES","NÃO/NO"]) +
-        conditional(f.overstay === "SIM/YES",
-          textarea("overstayDetalhe","País, visto, período / Country, visa, period")))}
-      ${q(label(50,"O solicitante já foi associado a atividades que representem risco à segurança nacional?","Has the applicant ever been involved in activities that represent a risk to national security?",true) +
-        radio("segNacional",["SIM/YES","NÃO/NO"]))}
-    `;
-
-    case 7: return `
-      <div class="declaration-box">
-        <p><strong>Declaração / Declaration:</strong> Eu declaro que todas as informações fornecidas neste formulário são verdadeiras e corretas. Compreendo que fornecer informações falsas ou incompletas pode resultar na recusa da aplicação e no cancelamento de vistos já concedidos.</p>
-        <p class="en">I declare that all information provided in this form is true and correct. I understand that providing false or incomplete information may result in refusal of the application and cancellation of any visa already granted.</p>
-      </div>
-      ${divider("Upload de Documentos / Document Upload")}
-      ${fileUpload("passaporte","Passaporte (página de dados) / Passport bio page")}
-      ${fileUpload("relacao","Evidência de relacionamento / Relationship evidence (de facto certificate, marriage certificate, etc.)")}
-      ${fileUpload("policeAustralia","Certidão de antecedentes — Austrália / Australian Federal Police Clearance")}
-      ${fileUpload("policeBrasil","Certidão de antecedentes — Brasil / Brazilian Police Clearance (Federal)")}
-      ${fileUpload("policeEstado","Certidão de antecedentes — Estado (RS, SP, etc.) / State Police Clearance")}
-      ${fileUpload("fotoFacial","Foto facial recente (fundo branco) / Recent facial image (white background)")}
-      ${fileUpload("contrato","Contrato de aluguel ou prova de residência conjunta / Lease agreement or joint residence proof")}
-      ${fileUpload("extratos","Extratos bancários ou transferências conjuntas / Bank statements or joint transfers")}
-      ${fileUpload("seguros","Seguro conjunto (carro, saúde, etc.) / Joint insurance (car, health, etc.)")}
-      ${fileUpload("outros","Outros documentos / Other documents")}
-      ${divider("Assinatura / Signature")}
-      ${q(label(null,"Assinatura digital","Digital signature — type your full name",true) +
-        hint("Digite seu nome completo como assinatura digital / Type your full name as digital signature") +
-        input("assinatura","Nome completo / Full name"))}
-      ${q(label(null,"Data","Date",true) + input("dataAssinatura","","date"))}
-    `;
-
-    default: return "";
-  }
-}
-
-function buildSummaryPairs() {
-  const nome = `${f.nome || ""} ${f.sobrenome || ""}`.trim() || "Solicitante";
-  return [
-    ["TRN do visto principal", f.trnPrimario],
-    ["Data de nasc. do titular principal", f.nascPrimario],
-    ["Relacionamento", f.relacao],
-    ["Incluído na nomination", f.inclusoNominacao],
-    ["Localização atual", f.localAtual],
-    ["Nome do dependente", nome],
-    ["Outro nome", f.outroNome === "SIM/YES" ? f.outroNomeDetalhe : null],
-    ["Gênero", f.genero], ["Data de nascimento", f.dataNasc],
-    ["Cidade de nascimento", f.cidadeNasc], ["País de nascimento", f.paisNasc],
-    ["Estado civil", f.estadoCivil], ["Nacionalidade", f.nacionalidade],
-    ["Outra cidadania", f.outraCidadania === "SIM/YES" ? f.outraCidadaniaDetalhe : null],
-    ["Passaporte", f.numPassaporte], ["País do passaporte", f.paisPassaporte],
-    ["Validade passaporte", f.dataValidade],
-    ["Visto australiano anterior", f.vistoAnterior === "SIM/YES" ? f.vistoAnteriorNum : null],
-    ["Documento identidade", f.temRG === "SIM/YES" ? `${f.tipoDoc} ${f.numDoc} (${f.paisDoc})` : null],
-    ["País de residência", f.paisResidencia],
-    ["Endereço", `${f.endereco}, ${f.cidade}, ${f.estado} ${f.cep}, ${f.paisEnd}`],
-    ["Celular", f.celular], ["E-mail", f.email],
-    ["Histórico de viagens", f.temViagens === "SIM/YES" ? f.viagensDetalhe : "Não"],
-    ["Exame de saúde recente", f.exameSaude === "SIM/YES" ? f.exameSaudeDetalhe : "Não"],
-    ["Condição de saúde", f.condicaoSaude === "SIM/YES" ? f.condicaoSaudeDetalhe : "Não"],
-    ["Condenação criminal", f.crime === "SIM/YES" ? f.crimeDetalhe : "Não"],
-    ["Deportação", f.deportado === "SIM/YES" ? f.deportadoDetalhe : "Não"],
-    ["Overstay", f.overstay === "SIM/YES" ? f.overstayDetalhe : "Não"],
-    ["Assinatura digital", f.assinatura],
-    ["Data da assinatura", f.dataAssinatura],
-    ...buildFilePairs(),
-  ].filter(([,v]) => v);
-}
-
-function buildFilePairs() {
-  const FILE_LABELS = {
-    passaporte: "Documento(s): Passaporte",
-    relacao: "Documento(s): Evidência de relacionamento",
-    policeAustralia: "Documento(s): Antecedentes Austrália (AFP)",
-    policeBrasil: "Documento(s): Antecedentes Brasil (Federal)",
-    policeEstado: "Documento(s): Antecedentes Estado (Brasil)",
-    fotoFacial: "Documento(s): Foto facial",
-    contrato: "Documento(s): Contrato/prova de residência",
-    extratos: "Documento(s): Extratos bancários",
-    seguros: "Documento(s): Seguro conjunto",
-    outros: "Documento(s): Outros",
-  };
-  return Object.keys(FILE_LABELS).map(id => {
-    const v = f[`file_${id}`];
-    const list = Array.isArray(v) ? v : (v ? [v] : []);
-    return [FILE_LABELS[id], list.length ? list.join(", ") : null];
+function resetAll() {
+  if (!confirm("Tem certeza? Todos os marcadores serão removidos.")) return;
+  checked = {};
+  localStorage.removeItem("kmp_482se_checked");
+  document.querySelectorAll(".item").forEach(el => el.classList.remove("checked"));
+  document.querySelectorAll(".sec-count").forEach(el => {
+    const parts = el.textContent.split("/");
+    el.textContent = `0/${parts[1]}`;
   });
+  updateProgress();
 }
 
-function escapeHtml(str) {
-  return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+function tagHtml(tag) {
+  if (tag === "required") return `<span class="tag tag-required">Obrigatório</span>`;
+  if (tag === "conditional") return `<span class="tag tag-conditional">Condicional</span>`;
+  if (tag === "optional") return `<span class="tag tag-optional">Recomendado</span>`;
+  return "";
 }
 
-function savePDF() {
-  const nome = `${f.nome || ""} ${f.sobrenome || ""}`.trim() || "Solicitante";
-  const rows = buildSummaryPairs().map(([k,v]) =>
-    `<tr><td class="pl">${escapeHtml(k)}</td><td class="pv">${escapeHtml(v).replace(/\n/g,"<br>")}</td></tr>`
-  ).join("");
-  document.getElementById("print-area").innerHTML = `
-    <div class="print-doc">
-      <div class="print-head">
-        <div class="print-logo">kmp</div>
-        <div>
-          <div class="print-brand">kmp consulting</div>
-          <div class="print-tag">Estratégia que conecta. Futuro que transforma.</div>
+function renderChecklist() {
+  const container = document.getElementById("checklist");
+  container.innerHTML = SECTIONS.map(sec => {
+    const secChecked = sec.items.filter(i => checked[i.id]).length;
+    const items = sec.items.map(item => `
+      <div class="item ${checked[item.id] ? "checked" : ""}" id="item_${item.id}" onclick="toggle('${item.id}')">
+        <span class="checkbox">
+          <svg width="13" height="10" viewBox="0 0 13 10" fill="none">
+            <path d="M1.5 5L5 8.5L11.5 1.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <div class="item-content">
+          <div class="item-title">${item.title}</div>
+          <div class="item-en">${item.en}</div>
+          ${item.sub ? `<div class="item-sub">${item.sub}</div>` : ""}
+          ${tagHtml(item.tag)}
         </div>
       </div>
-      <h1 class="print-title">482 Subsequent Entrant — Comprovante de Solicitação</h1>
-      <p class="print-date">Solicitante: ${escapeHtml(nome)} · Gerado em ${new Date().toLocaleString("pt-BR")}</p>
-      <table class="print-table">${rows}</table>
-      <p class="print-foot">Este documento é uma cópia das informações fornecidas pelo solicitante e não constitui a aplicação oficial. © ${new Date().getFullYear()} KMP Consulting.</p>
-    </div>`;
-  window.print();
-}
+    `).join("");
 
-async function handleSubmit() {
-  sending = true; sendError = null; render();
-  const nome = `${f.nome || ""} ${f.sobrenome || ""}`.trim() || "Solicitante";
-  const linhas = buildSummaryPairs().map(([k,v]) => `${k}: ${v}`).join("\n");
-
-  const corpo = `Nova solicitação — 482 Subsequent Entrant — KMP Consulting\nData: ${new Date().toLocaleString("pt-BR")}\n\n${"".repeat(50)}\n\n${linhas}`;
-  try {
-    const res = await fetch("https://api.web3forms.com/submit", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        access_key: WEB3FORMS_KEY,
-        subject: `482 Subsequent Entrant — ${nome}`,
-        from_name: "Formulário KMP Consulting",
-        message: corpo, replyto: f.email || "",
-      }),
-    });
-    const data = await res.json();
-    if (data.success) { submitted = true; clearDraft(); }
-    else throw new Error(data.message || "Erro desconhecido");
-  } catch(e) {
-    sendError = "Não foi possível enviar. Tente novamente ou entre em contato com a KMP Consulting.";
-  } finally { sending = false; render(); }
-}
-
-function goStep(n) { step = n; saveDraft(); render(); window.scrollTo({ top: 0, behavior: "smooth" }); }
-function resetForm() { step = 0; f = {}; submitted = false; sendError = null; clearDraft(); render(); }
-
-function render() {
-  const app = document.getElementById("app");
-
-  if (submitted) {
-    app.innerHTML = `
-      <div class="success-screen">
-        <div class="success-card">
-          <div class="success-icon">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-              <path d="M8 16L14 22L24 10" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <h2>Formulário Enviado!</h2>
-          <p>Sua solicitação foi recebida com sucesso. A equipe da <strong style="color:#F27B20">KMP Consulting</strong> entrará em contato em até 48 horas úteis.</p>
-          <div class="success-actions">
-            <button class="btn-pdf" onclick="savePDF()">Salvar comprovante em PDF</button>
-            <button class="btn-reset" onclick="resetForm()">Novo Formulário</button>
-          </div>
+    return `
+      <div class="section">
+        <div class="section-header">
+          <span class="sec-icon">${sec.icon}</span>
+          <h2>${sec.title} <span style="font-weight:300;font-size:12px;opacity:0.7">/ ${sec.en}</span></h2>
+          <span class="sec-count" id="sec_count_${sec.id}">${secChecked}/${sec.items.length}</span>
         </div>
+        <div class="section-body">${items}</div>
       </div>`;
-    return;
-  }
-
-  const stepNavItems = SECTIONS.map((sec, i) => {
-    const cls = i === step ? "active" : i < step ? "done" : "pending";
-    const lbl = i < step ? "" : i + 1;
-    const connector = i < SECTIONS.length - 1
-      ? `<div class="step-connector ${i < step ? "done" : "pending"}"></div>` : "";
-    return `<button class="step-btn ${cls}" onclick="goStep(${i})" title="${sec.title}">${lbl}</button>${connector}`;
   }).join("");
-
-  const prevBtn = step > 0
-    ? `<button class="btn-prev" onclick="goStep(${step - 1})">← Anterior</button>`
-    : `<div></div>`;
-
-  const nextLabel = step === SECTIONS.length - 1
-    ? (sending ? "Enviando…" : "Enviar Formulário ")
-    : "Próximo →";
-
-  const nextAction = step === SECTIONS.length - 1 ? "handleSubmit()" : `goStep(${step + 1})`;
-
-  app.innerHTML = `
-    <div class="container">
-      <div class="page-title">
-        <h1>482 Subsequent Entrant</h1>
-        <p>Formulário de Solicitação — Temporary Skill Shortage (Subsequent Entrant) Visa</p>
-      </div>
-      <div class="step-nav">${stepNavItems}</div>
-      <p class="step-label">${SECTIONS[step].icon} Etapa ${step + 1} de ${SECTIONS.length} — <strong>${SECTIONS[step].title}</strong></p>
-      <p class="autosave-note"><span class="dot"></span> Seu progresso é salvo automaticamente neste dispositivo e navegador</p>
-      <div class="card">
-        <div class="card-header">
-          <span class="icon">${SECTIONS[step].icon}</span>
-          <h2>${SECTIONS[step].title}</h2>
-        </div>
-        <p class="card-subtitle">Etapa ${step + 1} de ${SECTIONS.length}</p>
-        ${renderStep()}
-        <div class="btn-row">
-          ${prevBtn}
-          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
-            ${sendError ? `<p class="error-msg">️ ${sendError}</p>` : ""}
-            <button class="btn-next" onclick="${nextAction}" ${sending ? "disabled" : ""}>${nextLabel}</button>
-            ${step === SECTIONS.length - 1 ? `<button class="btn-pdf-sm" onclick="savePDF()">Salvar cópia em PDF</button>` : ""}
-          </div>
-        </div>
-      </div>
-      <p class="footer">© ${new Date().getFullYear()} KMP Consulting — Estratégia que conecta. Futuro que transforma.</p>
-    </div>`;
 }
 
-loadDraft();
-render();
+// Init
+renderChecklist();
+updateProgress();
+
+// Restore notes
+const notesEl = document.getElementById("notes-input");
+if (notesEl) notesEl.value = notes;
 </script>
 </body>
 </html>
