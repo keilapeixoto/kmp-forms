@@ -129,6 +129,14 @@
     }
     .file-upload input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; padding: 0; border: none; box-shadow: none; }
     .file-upload.has-file { border-style: solid; border-color: var(--orange); background: var(--orange-light); color: var(--orange-dark); font-weight: 500; }
+    .file-upload-wrap { margin-bottom: 10px; }
+    .file-list { margin-top: 6px; display: flex; flex-direction: column; gap: 6px; }
+    .file-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 12px; background: #fff; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; color: var(--dark); }
+    .file-item span { word-break: break-all; }
+    .file-remove { background: transparent; border: none; color: #e53e3e; font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'Outfit', sans-serif; flex-shrink: 0; }
+    .file-remove:hover { text-decoration: underline; }
+    .autosave-note { text-align: center; font-size: 12px; color: var(--gray); margin: 0 0 16px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .autosave-note .dot { width: 7px; height: 7px; border-radius: 50%; background: #16a34a; display: inline-block; }
 
     .btn-row { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--border); }
     .btn-prev { padding: 10px 22px; background: transparent; border: 1.5px solid var(--border); border-radius: 10px; color: var(--gray); font-size: 14px; font-weight: 600; cursor: pointer; font-family: 'Outfit', sans-serif; transition: all 0.2s; }
@@ -150,9 +158,9 @@
 
     /* Botões de PDF */
     .success-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 24px; }
-    .btn-pdf { padding: 12px 28px; background: linear-gradient(135deg, #F27B20 0%, #F5941E 100%); border: none; border-radius: 10px; color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'Outfit', sans-serif; box-shadow: 0 4px 14px rgba(242,123,32,0.3); transition: all 0.2s; }
+    .btn-pdf { display: inline-flex; align-items: center; gap: 7px; padding: 12px 28px; background: linear-gradient(135deg, #F27B20 0%, #F5941E 100%); border: none; border-radius: 10px; color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'Outfit', sans-serif; box-shadow: 0 4px 14px rgba(242,123,32,0.3); transition: all 0.2s; }
     .btn-pdf:hover { opacity: 0.9; }
-    .btn-pdf-sm { padding: 8px 18px; background: transparent; border: 1.5px solid var(--orange); border-radius: 10px; color: var(--orange); font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Outfit', sans-serif; transition: all 0.2s; }
+    .btn-pdf-sm { display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; background: transparent; border: 1.5px solid var(--orange); border-radius: 10px; color: var(--orange); font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Outfit', sans-serif; transition: all 0.2s; }
     .btn-pdf-sm:hover { background: var(--orange-light); }
     .success-card .btn-reset { margin-top: 0; }
 
@@ -203,15 +211,35 @@ const SECTIONS = [
 ];
 
 const WEB3FORMS_KEY = "eb911200-f515-4a77-afbf-61c4f99be8cf";
+const DRAFT_KEY = "kmp_form482_draft";
 
 let step = 0;
 let f = {};
 let submitted = false;
 let sending = false;
 let sendError = null;
+let fileObjects = {}; // arquivos reais selecionados (não persistidos no rascunho)
 
-function set(key, val) { f[key] = val; render(); }
-function setValue(key, val) { f[key] = val; } // atualiza sem reconstruir a tela (preserva o foco)
+// Salvamento automático do rascunho neste dispositivo
+function saveDraft() {
+  try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ f, step })); } catch (e) {}
+}
+function loadDraft() {
+  try {
+    const d = JSON.parse(localStorage.getItem(DRAFT_KEY));
+    if (d && d.f && typeof d.f === "object") {
+      f = d.f; step = d.step || 0;
+      // arquivos não podem ser restaurados pelo navegador: limpa referências antigas para reanexo
+      Object.keys(f).forEach(k => { if (k.indexOf("file_") === 0) delete f[k]; });
+    }
+  } catch (e) {}
+}
+function clearDraft() {
+  try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
+}
+
+function set(key, val) { f[key] = val; saveDraft(); render(); }
+function setValue(key, val) { f[key] = val; saveDraft(); } // atualiza sem reconstruir a tela (preserva o foco)
 
 function label(num, pt, en, req) {
   return `<label class="field-label">
@@ -268,14 +296,48 @@ function q(content) { return `<div class="q">${content}</div>`; }
 
 function fileUpload(id, labelText) {
   const stored = f[`file_${id}`];
-  return `<div class="file-upload ${stored ? "has-file" : ""}" id="fu_${id}">
-    <input type="file" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFile('${id}', this)" />
-    ${stored ? ` ${stored} — clique para substituir` : `↑ ${labelText} (PDF, JPG, PNG — Máx. 10MB)`}
+  const list = Array.isArray(stored) ? stored : (stored ? [stored] : []);
+  const hasFiles = list.length > 0;
+  const listHtml = hasFiles
+    ? `<div class="file-list">${list.map((name, i) =>
+        `<div class="file-item"><span>${escapeHtml(name)}</span><button type="button" class="file-remove" onclick="removeFile(event, '${id}', ${i})">remover</button></div>`
+      ).join("")}</div>`
+    : "";
+  return `<div class="file-upload-wrap">
+    <div class="file-upload ${hasFiles ? "has-file" : ""}" id="fu_${id}">
+      <input type="file" accept=".pdf,.jpg,.jpeg,.png" multiple onchange="handleFile('${id}', this)" />
+      ${hasFiles ? `+ Adicionar mais arquivos (${list.length} anexado${list.length > 1 ? "s" : ""})` : `↑ ${labelText} (PDF, JPG, PNG — Máx. 5MB por arquivo · vários arquivos permitidos)`}
+    </div>
+    ${listHtml}
   </div>`;
 }
 
 function handleFile(id, inp) {
-  if (inp.files && inp.files[0]) { f[`file_${id}`] = inp.files[0].name; render(); }
+  if (inp.files && inp.files.length) {
+    const key = `file_${id}`;
+    if (!fileObjects[id]) fileObjects[id] = [];
+    const existingNames = Array.isArray(f[key]) ? f[key] : (f[key] ? [f[key]] : []);
+    Array.from(inp.files).forEach(file => {
+      if (!existingNames.includes(file.name)) {
+        fileObjects[id].push(file);
+        existingNames.push(file.name);
+      }
+    });
+    f[key] = existingNames;
+    saveDraft();
+    render();
+  }
+}
+
+function removeFile(ev, id, index) {
+  ev.stopPropagation();
+  const key = `file_${id}`;
+  const list = Array.isArray(f[key]) ? f[key] : (f[key] ? [f[key]] : []);
+  list.splice(index, 1);
+  f[key] = list;
+  if (fileObjects[id]) fileObjects[id].splice(index, 1);
+  saveDraft();
+  render();
 }
 
 function renderStep() {
@@ -528,7 +590,28 @@ function buildSummaryPairs() {
     ["Overstay", f.overstay === "SIM/YES" ? f.overstayDetalhe : "Não"],
     ["Assinatura digital", f.assinatura],
     ["Data da assinatura", f.dataAssinatura],
+    ...buildFilePairs(),
   ].filter(([,v]) => v);
+}
+
+function buildFilePairs() {
+  const FILE_LABELS = {
+    passaporte: "Documento(s): Passaporte",
+    relacao: "Documento(s): Evidência de relacionamento",
+    policeAustralia: "Documento(s): Antecedentes Austrália (AFP)",
+    policeBrasil: "Documento(s): Antecedentes Brasil (Federal)",
+    policeEstado: "Documento(s): Antecedentes Estado (Brasil)",
+    fotoFacial: "Documento(s): Foto facial",
+    contrato: "Documento(s): Contrato/prova de residência",
+    extratos: "Documento(s): Extratos bancários",
+    seguros: "Documento(s): Seguro conjunto",
+    outros: "Documento(s): Outros",
+  };
+  return Object.keys(FILE_LABELS).map(id => {
+    const v = f[`file_${id}`];
+    const list = Array.isArray(v) ? v : (v ? [v] : []);
+    return [FILE_LABELS[id], list.length ? list.join(", ") : null];
+  });
 }
 
 function escapeHtml(str) {
@@ -560,29 +643,47 @@ function savePDF() {
 async function handleSubmit() {
   sending = true; sendError = null; render();
   const nome = `${f.nome || ""} ${f.sobrenome || ""}`.trim() || "Solicitante";
-  const linhas = buildSummaryPairs().map(([k,v]) => `${k}: ${v}`).join("\n");
 
+  // Validação de tamanho: Web3Forms aceita até 5 MB por arquivo
+  const MAX = 5 * 1024 * 1024;
+  for (const id in fileObjects) {
+    for (const file of fileObjects[id]) {
+      if (file.size > MAX) {
+        sendError = `O arquivo "${file.name}" passa de 5 MB. Reduza o tamanho e anexe novamente.`;
+        sending = false; render(); return;
+      }
+    }
+  }
+
+  const linhas = buildSummaryPairs().map(([k,v]) => `${k}: ${v}`).join("\n");
   const corpo = `Nova solicitação — 482 Subsequent Entrant — KMP Consulting\nData: ${new Date().toLocaleString("pt-BR")}\n\n${"".repeat(50)}\n\n${linhas}`;
+
   try {
-    const res = await fetch("https://api.web3forms.com/submit", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        access_key: WEB3FORMS_KEY,
-        subject: `482 Subsequent Entrant — ${nome}`,
-        from_name: "Formulário KMP Consulting",
-        message: corpo, replyto: f.email || "",
-      }),
-    });
+    const fd = new FormData();
+    fd.append("access_key", WEB3FORMS_KEY);
+    fd.append("subject", `482 Subsequent Entrant — ${nome}`);
+    fd.append("from_name", "Formulário KMP Consulting");
+    fd.append("message", corpo);
+    if (f.email) fd.append("replyto", f.email);
+    // Anexa os arquivos reais. Não definir Content-Type: o navegador cuida do boundary.
+    let idx = 0;
+    for (const id in fileObjects) {
+      for (const file of fileObjects[id]) {
+        idx++;
+        fd.append(`attachment_${idx}`, file, file.name);
+      }
+    }
+    const res = await fetch("https://api.web3forms.com/submit", { method: "POST", body: fd });
     const data = await res.json();
-    if (data.success) { submitted = true; }
+    if (data.success) { submitted = true; clearDraft(); fileObjects = {}; }
     else throw new Error(data.message || "Erro desconhecido");
   } catch(e) {
     sendError = "Não foi possível enviar. Tente novamente ou entre em contato com a KMP Consulting.";
   } finally { sending = false; render(); }
 }
 
-function goStep(n) { step = n; render(); window.scrollTo({ top: 0, behavior: "smooth" }); }
-function resetForm() { step = 0; f = {}; submitted = false; sendError = null; render(); }
+function goStep(n) { step = n; saveDraft(); render(); window.scrollTo({ top: 0, behavior: "smooth" }); }
+function resetForm() { step = 0; f = {}; submitted = false; sendError = null; clearDraft(); render(); }
 
 function render() {
   const app = document.getElementById("app");
@@ -599,7 +700,7 @@ function render() {
           <h2>Formulário Enviado!</h2>
           <p>Sua solicitação foi recebida com sucesso. A equipe da <strong style="color:#F27B20">KMP Consulting</strong> entrará em contato em até 48 horas úteis.</p>
           <div class="success-actions">
-            <button class="btn-pdf" onclick="savePDF()">Salvar comprovante em PDF</button>
+            <button class="btn-pdf" onclick="savePDF()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Salvar comprovante em PDF</button>
             <button class="btn-reset" onclick="resetForm()">Novo Formulário</button>
           </div>
         </div>
@@ -633,6 +734,7 @@ function render() {
       </div>
       <div class="step-nav">${stepNavItems}</div>
       <p class="step-label">${SECTIONS[step].icon} Etapa ${step + 1} de ${SECTIONS.length} — <strong>${SECTIONS[step].title}</strong></p>
+      <p class="autosave-note"><span class="dot"></span> Seu progresso é salvo automaticamente neste dispositivo e navegador</p>
       <div class="card">
         <div class="card-header">
           <span class="icon">${SECTIONS[step].icon}</span>
@@ -645,7 +747,7 @@ function render() {
           <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
             ${sendError ? `<p class="error-msg">️ ${sendError}</p>` : ""}
             <button class="btn-next" onclick="${nextAction}" ${sending ? "disabled" : ""}>${nextLabel}</button>
-            ${step === SECTIONS.length - 1 ? `<button class="btn-pdf-sm" onclick="savePDF()">Salvar cópia em PDF</button>` : ""}
+            ${step === SECTIONS.length - 1 ? `<button class="btn-pdf-sm" onclick="savePDF()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Salvar cópia em PDF</button>` : ""}
           </div>
         </div>
       </div>
@@ -653,6 +755,7 @@ function render() {
     </div>`;
 }
 
+loadDraft();
 render();
 </script>
 </body>
