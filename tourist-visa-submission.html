@@ -534,6 +534,7 @@ const SECTIONS = [
 
 const WEB3FORMS_KEY = "eb911200-f515-4a77-afbf-61c4f99be8cf";
 const DRAFT_KEY = "kmp_form600_draft";
+const FORM_VERSION = "2026.06.29"; // selo de versão para conferir o deploy
 
 let step = 0;
 let f = {};
@@ -892,33 +893,78 @@ function renderStep() {
 function buildSummaryPairs() {
   const nome = `${f.nome || ""} ${f.sobrenome || ""}`.trim() || "Solicitante";
   return [
+    // Dados pessoais
     ["Nome completo", nome],
-    ["Data de nascimento", f.dataNasc], ["Gênero", f.genero], ["Estado civil", f.estadoCivil],
-    ["Nacionalidade", f.nacionalidade], ["País de nascimento", f.paisNasc],
+    ["Outros nomes", f.outrosNomes],
+    ["Gênero", f.genero],
+    ["Data de nascimento", f.dataNasc],
+    ["Cidade de nascimento", f.cidadeNasc],
+    ["País de nascimento", f.paisNasc],
+    ["Estado civil", f.estadoCivil],
+    ["Nacionalidade", f.nacionalidade],
     ["Outra nacionalidade", f.outraNacionalidade === "SIM/YES" ? f.outraNacionalidadeDetalhe : null],
-    ["Nº Passaporte", f.numPassaporte], ["País emissão passaporte", f.paisPassaporte],
-    ["Validade passaporte", f.dataValidade], ["RG", f.rg], ["CPF", f.cpf],
-    ["Endereço", f.endereco], ["Cidade", f.cidade], ["Estado", f.estado], ["CEP", f.cep],
-    ["Celular", f.celular], ["E-mail", f.email],
-    ["Cônjuge", f.nomePartner], ["Cônjuge viaja junto", f.partnerViaja],
+    ["Escolaridade", f.escolaridade],
+    // Passaporte
+    ["Nº Passaporte", f.numPassaporte],
+    ["País emissão passaporte", f.paisPassaporte],
+    ["Nacionalidade no passaporte", f.nacionalidadePassaporte],
+    ["Data de emissão", f.dataEmissao],
+    ["Validade passaporte", f.dataValidade],
+    ["Local de emissão", f.localEmissao],
+    ["Outro passaporte", f.outroPassaporte === "SIM/YES" ? f.outroPassaporteDetalhe : null],
+    ["RG", f.rg],
+    ["CPF", f.cpf],
+    // Contato e endereço
+    ["Endereço", `${f.endereco || ""}, ${f.cidade || ""}, ${f.estado || ""} ${f.cep || ""}`.trim()],
+    ["País de residência", f.paisResidencia],
+    ["Telefone residencial", f.telRes],
+    ["Telefone comercial", f.telCom],
+    ["Celular", f.celular],
+    ["E-mail", f.email],
+    ["Endereço para correspondência", f.endCorresp],
+    // Família
+    ["Cônjuge/parceiro(a)", f.nomePartner],
+    ["Data nasc. do cônjuge", f.nascPartner],
+    ["Nacionalidade do cônjuge", f.nacPartner],
+    ["Passaporte do cônjuge", f.passaportePartner],
+    ["Cônjuge viaja junto", f.partnerViaja],
     ["Filhos", f.temFilhos === "SIM/YES" ? f.filhosDetalhe : null],
+    ["Nome da mãe", f.nomeMae],
+    ["Nome do pai", f.nomePai],
     ["Familiar/amigo na Austrália", f.familiaAustralia === "SIM/YES" ? f.familiaAustraliaDetalhe : null],
-    ["Motivo da viagem", f.motivoViagem], ["Data de chegada", f.dataChegada],
-    ["Tempo de permanência", f.tempoPermanencia], ["Endereço na Austrália", f.enderecoAustralia],
+    // Detalhes da viagem
+    ["Motivo da viagem", f.motivoViagem],
+    ["Data de chegada", f.dataChegada],
+    ["Tempo de permanência", f.tempoPermanencia],
+    ["Endereço na Austrália", f.enderecoAustralia],
     ["Cidades a visitar", f.cidadesVisitar],
-    ["Situação profissional", f.situacao], ["Empresa", f.empresa], ["Cargo", f.cargo],
-    ["Quem custeia a viagem", f.quemPaga], ["Renda mensal", f.renda], ["Fundos disponíveis", f.fundos],
+    ["Passagem comprada", f.passagemComprada],
+    ["Acompanhante na viagem", f.acompanhante === "SIM/YES" ? f.acompanhanteDetalhe : null],
+    // Trabalho e finanças
+    ["Situação profissional", f.situacao],
+    ["Empresa", f.empresa],
+    ["Cargo", f.cargo],
+    ["Endereço da empresa", f.endEmpresa],
+    ["Telefone da empresa", f.telEmpresa],
+    ["Quem custeia a viagem", f.quemPaga],
+    ["Renda mensal", f.renda],
+    ["Fundos disponíveis", f.fundos],
+    // Histórico de viagens
     ["Já visitou a Austrália", f.jaVisitouAustralia === "SIM/YES" ? f.jaVisitouAustraliaDetalhe : null],
     ["Já solicitou visto", f.jaSolicitouVisto === "SIM/YES" ? f.jaSolicitouVistoDetalhe : null],
+    ["Solicitou residência permanente (5 anos)", f.residenciaPerm === "SIM/YES" ? (f.residenciaPermDetalhe || "Sim") : "Não"],
     ["Países visitados (10 anos)", f.paisesVisitados],
     ["Vistos anteriores", f.vistosAnteriores],
-    ["Condição de saúde", f.saude === "SIM/YES" ? f.saudeDetalhe : null],
+    // Saúde e caráter
+    ["Condição de saúde", f.saude === "SIM/YES" ? f.saudeDetalhe : "Não"],
     ["Pretende trabalhar na Austrália", f.trabalharAustralia],
-    ["Condenação criminal", f.crime === "SIM/YES" ? f.crimeDetalhe : null],
-    ["Acusação pendente", f.acusacao === "SIM/YES" ? f.acusacaoDetalhe : null],
-    ["Descumpriu condições de visto", f.descumpriu === "SIM/YES" ? f.descumpriuDetalhe : null],
-    ["Visto recusado/cancelado", f.recusado === "SIM/YES" ? f.recusadoDetalhe : null],
-    ["Assinatura digital", f.assinatura], ["Data da assinatura", f.dataAssinatura],
+    ["Condenação criminal", f.crime === "SIM/YES" ? f.crimeDetalhe : "Não"],
+    ["Acusação pendente", f.acusacao === "SIM/YES" ? f.acusacaoDetalhe : "Não"],
+    ["Descumpriu condições de visto", f.descumpriu === "SIM/YES" ? f.descumpriuDetalhe : "Não"],
+    ["Visto recusado/cancelado", f.recusado === "SIM/YES" ? f.recusadoDetalhe : "Não"],
+    // Assinatura
+    ["Assinatura digital", f.assinatura],
+    ["Data da assinatura", f.dataAssinatura],
     ...buildFilePairs(),
   ].filter(([, v]) => v);
 }
@@ -960,7 +1006,7 @@ function savePDF() {
       <h1 class="print-title">Visto de Turista (Subclass 600) — Comprovante de Solicitação</h1>
       <p class="print-date">Solicitante: ${escapeHtml(nome)} · Gerado em ${new Date().toLocaleString("pt-BR")}</p>
       <table class="print-table">${rows}</table>
-      <p class="print-foot">Este documento é uma cópia das informações fornecidas pelo solicitante e não constitui a aplicação oficial. © ${new Date().getFullYear()} KMP Consulting.</p>
+      <p class="print-foot">Este documento é uma cópia das informações fornecidas pelo solicitante e não constitui a aplicação oficial. © ${new Date().getFullYear()} KMP Consulting. · Versão ${FORM_VERSION}</p>
     </div>`;
   window.print();
 }
@@ -1011,7 +1057,7 @@ async function handleSubmit() {
       throw new Error(data.message || "Erro desconhecido");
     }
   } catch (e) {
-    sendError = "Não foi possível enviar. Tente novamente ou entre em contato com a KMP Consulting.";
+    sendError = "Não foi possível enviar: " + (e && e.message ? e.message : "erro desconhecido") + ". Se persistir, entre em contato com a KMP Consulting.";
   } finally {
     sending = false;
     render();
@@ -1109,7 +1155,7 @@ function render() {
         </div>
       </div>
 
-      <p class="footer">© ${new Date().getFullYear()} KMP Consulting — Estratégia que conecta. Futuro que transforma.</p>
+      <p class="footer">© ${new Date().getFullYear()} KMP Consulting — Estratégia que conecta. Futuro que transforma. · v${FORM_VERSION}</p>
     </div>`;
 }
 
