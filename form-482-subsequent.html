@@ -212,6 +212,7 @@ const SECTIONS = [
 
 const WEB3FORMS_KEY = "eb911200-f515-4a77-afbf-61c4f99be8cf";
 const DRAFT_KEY = "kmp_form482_draft";
+const FORM_VERSION = "2026.06.29"; // selo de versão para conferir o deploy
 
 let step = 0;
 let f = {};
@@ -670,7 +671,7 @@ function savePDF() {
       <h1 class="print-title">482 Subsequent Entrant — Comprovante de Solicitação</h1>
       <p class="print-date">Solicitante: ${escapeHtml(nome)} · Gerado em ${new Date().toLocaleString("pt-BR")}</p>
       <table class="print-table">${rows}</table>
-      <p class="print-foot">Este documento é uma cópia das informações fornecidas pelo solicitante e não constitui a aplicação oficial. © ${new Date().getFullYear()} KMP Consulting.</p>
+      <p class="print-foot">Este documento é uma cópia das informações fornecidas pelo solicitante e não constitui a aplicação oficial. © ${new Date().getFullYear()} KMP Consulting. · Versão ${FORM_VERSION}</p>
     </div>`;
   window.print();
 }
@@ -786,7 +787,7 @@ function render() {
           </div>
         </div>
       </div>
-      <p class="footer">© ${new Date().getFullYear()} KMP Consulting — Estratégia que conecta. Futuro que transforma.</p>
+      <p class="footer">© ${new Date().getFullYear()} KMP Consulting — Estratégia que conecta. Futuro que transforma. · v${FORM_VERSION}</p>
     </div>`;
 }
 
