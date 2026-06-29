@@ -563,31 +563,66 @@ function renderStep() {
 
 function buildSummaryPairs() {
   const nome = `${f.nome || ""} ${f.sobrenome || ""}`.trim() || "Solicitante";
+  const residLine = (n) => {
+    const end = f[`resid${n}End`], pais = f[`resid${n}Pais`], de = f[`resid${n}De`], ate = f[`resid${n}Ate`];
+    if (!end && !pais && !de && !ate) return null;
+    const periodo = de ? `${de} a ${ate || "atual"}` : "";
+    return [end, pais, periodo].filter(Boolean).join(" · ");
+  };
   return [
+    // Visto principal
     ["TRN do visto principal", f.trnPrimario],
     ["Data de nasc. do titular principal", f.nascPrimario],
     ["Relacionamento", f.relacao],
     ["Incluído na nomination", f.inclusoNominacao],
     ["Localização atual", f.localAtual],
+    // Dados pessoais
     ["Nome do dependente", nome],
     ["Outro nome", f.outroNome === "SIM/YES" ? f.outroNomeDetalhe : null],
-    ["Gênero", f.genero], ["Data de nascimento", f.dataNasc],
-    ["Cidade de nascimento", f.cidadeNasc], ["País de nascimento", f.paisNasc],
-    ["Estado civil", f.estadoCivil], ["Nacionalidade", f.nacionalidade],
+    ["Gênero", f.genero],
+    ["Data de nascimento", f.dataNasc],
+    ["Cidade de nascimento", f.cidadeNasc],
+    ["País de nascimento", f.paisNasc],
+    ["Estado civil", f.estadoCivil],
+    ["Nacionalidade", f.nacionalidade],
     ["Outra cidadania", f.outraCidadania === "SIM/YES" ? f.outraCidadaniaDetalhe : null],
-    ["Passaporte", f.numPassaporte], ["País do passaporte", f.paisPassaporte],
+    // Passaporte
+    ["Passaporte", f.numPassaporte],
+    ["País do passaporte", f.paisPassaporte],
+    ["Nacionalidade no passaporte", f.nacPassaporte],
+    ["Data de emissão", f.dataEmissao],
     ["Validade passaporte", f.dataValidade],
+    ["Local de emissão", f.localEmissao],
+    ["Outro passaporte", f.outroPassaporte === "SIM/YES" ? f.outroPassaporteDetalhe : null],
     ["Visto australiano anterior", f.vistoAnterior === "SIM/YES" ? f.vistoAnteriorNum : null],
-    ["Documento identidade", f.temRG === "SIM/YES" ? `${f.tipoDoc} ${f.numDoc} (${f.paisDoc})` : null],
+    ["Documento identidade", f.temRG === "SIM/YES" ? `${f.tipoDoc || ""} ${f.numDoc || ""} (${f.paisDoc || ""})`.trim() : null],
+    ["Outros documentos de viagem", f.outrosDocViagem === "SIM/YES" ? f.outrosDocViagemDetalhe : null],
+    // Contato e endereço atual
     ["País de residência", f.paisResidencia],
-    ["Endereço", `${f.endereco}, ${f.cidade}, ${f.estado} ${f.cep}, ${f.paisEnd}`],
-    ["Celular", f.celular], ["E-mail", f.email],
+    ["Endereço atual", `${f.endereco || ""}, ${f.cidade || ""}, ${f.estado || ""} ${f.cep || ""}, ${f.paisEnd || ""}`],
+    ["Telefone residencial", f.telRes],
+    ["Telefone comercial", f.telCom],
+    ["Celular", f.celular],
+    ["E-mail", f.email],
+    // Histórico de residência
+    ["Residência anterior 1", residLine(1)],
+    ["Residência anterior 2", residLine(2)],
+    ["Residência anterior 3", residLine(3)],
+    ["Outras residências", f.residExtra],
+    // Histórico de viagens
     ["Histórico de viagens", f.temViagens === "SIM/YES" ? f.viagensDetalhe : "Não"],
     ["Exame de saúde recente", f.exameSaude === "SIM/YES" ? f.exameSaudeDetalhe : "Não"],
+    // Saúde e caráter
+    ["Viveu fora do país de passaporte por 3+ meses", f.viviuFora],
+    ["Pretende entrar em hospital ou instituição de saúde", f.hospital],
+    ["Pretende trabalhar como profissional de saúde", f.profSaude],
     ["Condição de saúde", f.condicaoSaude === "SIM/YES" ? f.condicaoSaudeDetalhe : "Não"],
     ["Condenação criminal", f.crime === "SIM/YES" ? f.crimeDetalhe : "Não"],
+    ["Acusação pendente", f.acusacao === "SIM/YES" ? f.acusacaoDetalhe : "Não"],
     ["Deportação", f.deportado === "SIM/YES" ? f.deportadoDetalhe : "Não"],
     ["Overstay", f.overstay === "SIM/YES" ? f.overstayDetalhe : "Não"],
+    ["Risco à segurança nacional", f.segNacional],
+    // Assinatura
     ["Assinatura digital", f.assinatura],
     ["Data da assinatura", f.dataAssinatura],
     ...buildFilePairs(),
@@ -678,7 +713,7 @@ async function handleSubmit() {
     if (data.success) { submitted = true; clearDraft(); fileObjects = {}; }
     else throw new Error(data.message || "Erro desconhecido");
   } catch(e) {
-    sendError = "Não foi possível enviar. Tente novamente ou entre em contato com a KMP Consulting.";
+    sendError = "Não foi possível enviar: " + (e && e.message ? e.message : "erro desconhecido") + ". Se persistir, entre em contato com a KMP Consulting.";
   } finally { sending = false; render(); }
 }
 
