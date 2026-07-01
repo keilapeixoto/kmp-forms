@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KMP Consulting | Processo Operacional Visto Americano</title>
+  <title>KMP Consulting | US Visa Application</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -19,120 +19,134 @@
       --bg: #F8F7F5;
       --red-pale: #FDF0EE;
       --red: #C0392B;
-      --green-pale: #EEF8F2;
-      --green: #27AE60;
     }
     body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--graphite); min-height: 100vh; padding: 0 0 60px; }
-
-    .header { background: var(--graphite); padding: 24px 40px; display: flex; align-items: center; justify-content: space-between; }
+    .header { background: var(--graphite); padding: 28px 40px; display: flex; align-items: center; justify-content: space-between; }
     .logo-mark { display: flex; align-items: center; gap: 14px; }
-    .logo-box { background: var(--orange); border-radius: 8px; padding: 7px 13px; font-weight: 600; font-size: 17px; color: var(--white); }
+    .logo-box { background: var(--orange); border-radius: 8px; padding: 8px 14px; font-weight: 600; font-size: 18px; color: var(--white); letter-spacing: 0.5px; }
     .logo-box span { color: #F9CFA8; font-weight: 400; }
     .logo-tagline { font-family: 'Cormorant Garamond', serif; font-size: 13px; color: #AAAAAA; font-style: italic; }
-    .header-badge { font-size: 10px; font-weight: 600; color: var(--orange-light); letter-spacing: 1.2px; text-transform: uppercase; border: 1px solid rgba(242,123,32,0.3); padding: 5px 12px; border-radius: 20px; }
-
-    .hero { background: var(--white); border-bottom: 3px solid var(--orange); padding: 40px 40px 32px; }
-    .hero-inner { max-width: 800px; margin: 0 auto; }
+    .header-badge { font-size: 11px; font-weight: 500; color: var(--orange-light); letter-spacing: 1.2px; text-transform: uppercase; border: 1px solid rgba(242,123,32,0.3); padding: 5px 12px; border-radius: 20px; }
+    .steps-bar { background: var(--orange-pale); border-bottom: 1px solid #EDD5B8; padding: 20px 40px; }
+    .steps-inner { max-width: 760px; margin: 0 auto; display: flex; align-items: center; }
+    .step-item { display: flex; align-items: center; gap: 10px; }
+    .step-num { width: 26px; height: 26px; border-radius: 50%; background: var(--orange); color: white; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .step-num.inactive { background: var(--border); color: var(--graphite-light); }
+    .step-label { font-size: 12px; font-weight: 500; color: var(--graphite-mid); }
+    .step-label.active { color: var(--graphite); font-weight: 600; }
+    .step-divider { flex: 1; height: 1px; background: #DDD; margin: 0 10px; }
+    .page { display: none; }
+    .page.active { display: block; }
+    .hero { background: var(--white); border-bottom: 3px solid var(--orange); padding: 44px 40px 36px; }
+    .hero-inner { max-width: 760px; margin: 0 auto; }
     .hero-eyebrow { font-size: 11px; font-weight: 600; color: var(--orange); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
-    .hero h1 { font-family: 'Cormorant Garamond', serif; font-size: 40px; font-weight: 600; color: var(--graphite); line-height: 1.15; margin-bottom: 14px; }
+    .hero h1 { font-family: 'Cormorant Garamond', serif; font-size: 38px; font-weight: 600; color: var(--graphite); line-height: 1.15; margin-bottom: 16px; }
     .hero h1 em { color: var(--orange); font-style: normal; }
-    .hero p { font-size: 15px; color: var(--graphite-mid); line-height: 1.65; max-width: 620px; }
-
-    .main { max-width: 800px; margin: 36px auto; padding: 0 20px; }
-
-    /* TIMELINE OVERVIEW */
-    .timeline-overview { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-bottom: 40px; }
-    .tl-step { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 14px 10px; text-align: center; position: relative; }
-    .tl-step-num { width: 28px; height: 28px; border-radius: 50%; background: var(--orange); color: white; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; }
-    .tl-step-name { font-size: 11px; font-weight: 600; color: var(--graphite); line-height: 1.3; }
-    .tl-step-time { font-size: 10px; color: var(--graphite-light); margin-top: 4px; }
-
-    /* SECTION */
-    .section-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 600; color: var(--graphite); margin-bottom: 6px; }
-    .section-title em { color: var(--orange); font-style: normal; }
-    .section-intro { font-size: 14px; color: var(--graphite-mid); line-height: 1.6; margin-bottom: 20px; }
-    .section-block { margin-bottom: 44px; }
-
-    /* STAGE CARD */
-    .stage-card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 20px; }
-    .stage-header { padding: 18px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 14px; background: var(--white); }
-    .stage-num { width: 42px; height: 42px; border-radius: 10px; background: var(--graphite); color: var(--orange-light); font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .stage-title { font-family: 'Cormorant Garamond', serif; font-size: 21px; font-weight: 600; color: var(--graphite); }
-    .stage-meta { font-size: 11px; color: var(--graphite-light); margin-top: 2px; }
-    .stage-meta strong { color: var(--orange); font-weight: 600; }
-    .stage-body { padding: 20px 24px; }
-
-    /* ACTION LIST */
-    .action-group-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; }
-    .action-group-label.kmp { color: var(--orange); }
-    .action-group-label.client { color: var(--graphite-light); }
-    .action-list { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
-    .action-list:last-child { margin-bottom: 0; }
-    .action-list li { font-size: 13px; color: var(--graphite-mid); display: flex; align-items: flex-start; gap: 10px; line-height: 1.5; }
-    .action-list li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--orange); margin-top: 6px; flex-shrink: 0; }
-    .action-list.client li::before { background: var(--graphite-light); }
-    .action-list li strong { color: var(--graphite); font-weight: 600; }
-
-    /* EMAIL TEMPLATE BOX */
-    .email-box { background: var(--bg); border: 1.5px solid var(--border); border-radius: 10px; padding: 20px 22px; margin-top: 16px; }
-    .email-box-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px dashed var(--border); }
-    .email-box-label { font-size: 11px; font-weight: 700; color: var(--orange); text-transform: uppercase; letter-spacing: 0.8px; }
-    .email-subject { font-size: 12px; color: var(--graphite-mid); }
-    .email-subject strong { color: var(--graphite); }
-    .email-content { font-size: 13px; color: var(--graphite-mid); line-height: 1.7; }
-    .email-content p { margin-bottom: 12px; }
-    .email-content p:last-child { margin-bottom: 0; }
-    .email-content strong { color: var(--graphite); font-weight: 600; }
-    .email-content .highlight { color: var(--orange); font-weight: 600; }
-
-    /* CHECKPOINT */
-    .checkpoint { background: var(--green-pale); border: 1.5px solid #C3E6CB; border-radius: 10px; padding: 14px 18px; margin-top: 16px; }
-    .checkpoint-title { font-size: 11px; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
-    .checkpoint p { font-size: 13px; color: var(--graphite-mid); line-height: 1.55; }
-    .checkpoint p strong { color: var(--graphite); }
-
-    /* WARNING */
-    .warning { background: var(--red-pale); border: 1.5px solid #F5C6C2; border-radius: 10px; padding: 14px 18px; margin-top: 16px; }
-    .warning-title { font-size: 11px; font-weight: 700; color: var(--red); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
-    .warning p, .warning li { font-size: 13px; color: var(--graphite-mid); line-height: 1.55; }
-    .warning ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
-    .warning li { display: flex; align-items: flex-start; gap: 8px; }
-    .warning li::before { content: '!'; width: 16px; height: 16px; border-radius: 50%; background: var(--red); color: white; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
-
-    /* TOOLS ROW */
-    .tools-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-    .tool-card { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; }
-    .tool-card-label { font-size: 10px; font-weight: 700; color: var(--orange); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
-    .tool-card-title { font-size: 14px; font-weight: 600; color: var(--graphite); margin-bottom: 4px; }
-    .tool-card-desc { font-size: 12px; color: var(--graphite-mid); line-height: 1.45; }
-
-    /* SLA TABLE */
-    .sla-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    .sla-table th { text-align: left; padding: 10px 14px; background: var(--graphite); color: white; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; }
-    .sla-table th:first-child { border-radius: 8px 0 0 0; }
-    .sla-table th:last-child { border-radius: 0 8px 0 0; }
-    .sla-table td { padding: 11px 14px; border-bottom: 1px solid var(--border); color: var(--graphite-mid); background: var(--white); }
-    .sla-table tr:last-child td { border-bottom: none; }
-    .sla-table td strong { color: var(--graphite); font-weight: 600; }
-    .sla-tag { display: inline-block; background: var(--orange-pale); color: var(--orange); font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 4px; }
-
-    .notice { background: var(--orange-pale); border-left: 3px solid var(--orange); border-radius: 0 8px 8px 0; padding: 13px 16px; font-size: 13px; color: var(--graphite-mid); line-height: 1.6; margin-top: 16px; }
+    .hero p { font-size: 15px; color: var(--graphite-mid); line-height: 1.65; max-width: 580px; }
+    .main { max-width: 760px; margin: 36px auto; padding: 0 20px; }
+    .card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 22px; }
+    .card-header { padding: 18px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 14px; }
+    .card-icon { width: 36px; height: 36px; background: var(--orange-pale); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
+    .card-title { font-family: 'Cormorant Garamond', serif; font-size: 19px; font-weight: 600; color: var(--graphite); }
+    .card-subtitle { font-size: 12px; color: var(--graphite-light); margin-top: 2px; }
+    .card-body { padding: 22px 24px; }
+    .subsection-label { font-size: 11px; font-weight: 700; color: var(--orange); letter-spacing: 1px; text-transform: uppercase; margin: 24px 0 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .subsection-label:first-child { margin-top: 0; }
+    .field-group { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+    .field-group.full { grid-template-columns: 1fr; }
+    .field-group.three { grid-template-columns: 1fr 1fr 1fr; }
+    .field { display: flex; flex-direction: column; gap: 5px; }
+    label { font-size: 11px; font-weight: 600; color: var(--graphite); letter-spacing: 0.4px; text-transform: uppercase; }
+    label .req { color: var(--orange); margin-left: 2px; }
+    .field-hint { font-size: 11px; color: var(--graphite-light); margin-top: 2px; line-height: 1.4; }
+    input[type="text"], input[type="email"], input[type="tel"], input[type="date"], input[type="number"], select, textarea {
+      font-family: 'Outfit', sans-serif; font-size: 14px; color: var(--graphite);
+      background: var(--bg); border: 1.5px solid var(--border); border-radius: 8px;
+      padding: 10px 13px; transition: border-color 0.2s, box-shadow 0.2s; outline: none; width: 100%;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--orange); box-shadow: 0 0 0 3px rgba(242,123,32,0.1); background: var(--white); }
+    input::placeholder, textarea::placeholder { color: var(--graphite-light); }
+    select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23888' d='M1 1l5 5 5-5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 13px center; padding-right: 34px; }
+    textarea { resize: vertical; min-height: 80px; }
+    .upload-block { padding-top: 18px; border-top: 1px solid #F0F0F0; }
+    .upload-block:first-child { border-top: none; padding-top: 0; }
+    .upload-block-label { font-size: 12px; font-weight: 600; color: var(--graphite); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px; }
+    .upload-block-label .req { color: var(--orange); }
+    .upload-zone { border: 2px dashed var(--border); border-radius: 10px; padding: 26px 18px; text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s; position: relative; }
+    .upload-zone:hover { border-color: var(--orange); background: var(--orange-pale); }
+    .upload-zone.has-file { border-style: solid; border-color: var(--orange); background: var(--orange-pale); }
+    .upload-zone.has-error { border-color: var(--red); background: var(--red-pale); }
+    .upload-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+    .upload-label { font-size: 14px; font-weight: 500; color: var(--graphite); margin-bottom: 4px; }
+    .upload-hint { font-size: 12px; color: var(--graphite-light); }
+    .upload-accepted { display: inline-block; margin-top: 10px; background: var(--orange-pale); color: var(--orange); font-size: 11px; font-weight: 600; letter-spacing: 0.5px; padding: 4px 10px; border-radius: 4px; text-transform: uppercase; }
+    .uploaded-name { margin-top: 10px; font-size: 12px; color: var(--orange); font-weight: 600; display: none; }
+    .upload-error { margin-top: 10px; font-size: 12px; color: var(--red); font-weight: 600; display: none; }
+    .req-box { background: #F5F5F5; border-radius: 8px; padding: 13px 15px; margin-bottom: 12px; }
+    .req-box-title { font-size: 11px; font-weight: 600; color: var(--graphite-light); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 7px; }
+    .req-list { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+    .req-list li { font-size: 13px; color: var(--graphite-mid); display: flex; align-items: flex-start; gap: 8px; line-height: 1.4; }
+    .req-list li::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--orange); margin-top: 5px; flex-shrink: 0; }
+    .notice { background: var(--orange-pale); border-left: 3px solid var(--orange); border-radius: 0 8px 8px 0; padding: 11px 14px; font-size: 12px; color: var(--graphite-mid); line-height: 1.55; margin-top: 12px; }
     .notice strong { color: var(--graphite); font-weight: 600; }
-
+    .warning-box { background: var(--red-pale); border-left: 3px solid var(--red); border-radius: 0 8px 8px 0; padding: 11px 14px; font-size: 12px; color: var(--graphite-mid); line-height: 1.55; margin-top: 12px; }
+    .warning-box strong { color: var(--red); font-weight: 600; }
+    .payment-box { background: var(--orange-pale); border: 1.5px solid #EDD5B8; border-radius: 10px; padding: 20px 22px; margin-bottom: 18px; }
+    .payment-box-title { font-size: 13px; font-weight: 600; color: var(--graphite); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 14px; }
+    .payment-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 9px; padding-bottom: 9px; border-bottom: 1px dashed #EDD5B8; gap: 12px; }
+    .payment-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .payment-desc { font-size: 13px; color: var(--graphite-mid); line-height: 1.4; flex: 1; }
+    .payment-note { font-size: 11px; color: var(--graphite-light); margin-top: 2px; }
+    .payment-amount { font-size: 15px; font-weight: 600; color: var(--graphite); white-space: nowrap; }
+    .payid-block { background: var(--white); border: 1.5px solid var(--orange); border-radius: 8px; padding: 13px 16px; margin-top: 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .payid-label { font-size: 11px; font-weight: 600; color: var(--orange); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 3px; }
+    .payid-value { font-size: 15px; font-weight: 600; color: var(--graphite); }
+    .copy-btn { background: var(--orange); color: white; border: none; border-radius: 6px; padding: 8px 13px; font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .copy-btn:hover { background: #D96A14; }
+    .travellers-row { display: flex; gap: 10px; margin-bottom: 20px; }
+    .traveller-btn { flex: 1; padding: 11px; border-radius: 8px; border: 1.5px solid var(--border); background: var(--bg); font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 500; color: var(--graphite-mid); cursor: pointer; text-align: center; transition: all 0.15s; }
+    .traveller-btn.active { border-color: var(--orange); background: var(--orange-pale); color: var(--graphite); font-weight: 600; }
+    .repeat-block { background: var(--bg); border: 1px solid var(--border); border-radius: 9px; padding: 16px 18px; margin-bottom: 12px; position: relative; }
+    .repeat-block-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .repeat-block-title { font-size: 11px; font-weight: 600; color: var(--graphite); text-transform: uppercase; letter-spacing: 0.7px; }
+    .remove-btn { background: none; border: 1.5px solid var(--border); color: var(--graphite-light); font-size: 12px; font-weight: 500; cursor: pointer; padding: 5px 10px; border-radius: 6px; font-family: 'Outfit', sans-serif; }
+    .remove-btn:hover { border-color: #C0392B; color: #C0392B; }
+    .add-btn { background: var(--white); color: var(--orange); border: 1.5px dashed var(--orange); border-radius: 8px; padding: 12px 14px; font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; width: 100%; transition: background 0.15s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .add-btn:hover { background: var(--orange-pale); }
+    .signature-box { background: var(--bg); border: 1.5px solid var(--border); border-radius: 10px; padding: 18px 20px; }
+    .signature-canvas-wrap { background: var(--white); border: 1.5px solid var(--border); border-radius: 8px; padding: 0; overflow: hidden; position: relative; }
+    .signature-canvas { display: block; width: 100%; height: 160px; cursor: crosshair; touch-action: none; }
+    .signature-placeholder { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 12px; color: var(--graphite-light); pointer-events: none; font-style: italic; }
+    .signature-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+    .signature-hint { font-size: 11px; color: var(--graphite-light); }
+    .clear-signature { background: none; border: none; color: var(--orange); font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'Outfit', sans-serif; text-decoration: underline; }
+    .signature-checkbox { display: flex; align-items: flex-start; gap: 10px; margin-top: 16px; padding: 12px 14px; background: var(--white); border: 1.5px solid var(--border); border-radius: 8px; cursor: pointer; }
+    .signature-checkbox input { margin-top: 2px; cursor: pointer; flex-shrink: 0; accent-color: var(--orange); }
+    .signature-checkbox-label { font-size: 12px; color: var(--graphite-mid); line-height: 1.5; cursor: pointer; }
+    .signature-checkbox-label strong { color: var(--graphite); }
+    .nav-row { display: flex; gap: 12px; margin-top: 8px; }
+    .btn-primary { flex: 1; background: var(--orange); color: white; border: none; border-radius: 10px; padding: 15px 32px; font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-primary:hover { background: #D96A14; }
+    .btn-primary:disabled { background: #CCC; cursor: not-allowed; }
+    .btn-secondary { flex: 1; background: var(--white); color: var(--graphite); border: 1.5px solid var(--border); border-radius: 10px; padding: 15px 32px; font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-secondary:hover { border-color: var(--orange); color: var(--orange); }
+    .submit-note { font-size: 12px; color: var(--graphite-light); margin-top: 12px; line-height: 1.5; text-align: center; }
     .footer { text-align: center; padding: 28px 20px 0; font-size: 12px; color: var(--graphite-light); }
     .footer strong { color: var(--graphite-mid); }
-    .divider { height: 1px; background: var(--border); margin: 36px 0; }
-
+    .loading { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
     @media (max-width: 640px) {
-      .header { padding: 18px 16px; flex-direction: column; gap: 10px; align-items: flex-start; }
-      .hero { padding: 28px 16px 24px; }
-      .hero h1 { font-size: 28px; }
+      .header { padding: 18px 20px; flex-direction: column; gap: 10px; align-items: flex-start; }
+      .hero { padding: 28px 20px 22px; }
+      .hero h1 { font-size: 26px; }
+      .steps-bar { padding: 14px 16px; }
+      .step-label { display: none; }
+      .card-body { padding: 18px 16px; }
+      .card-header { padding: 14px 16px; }
+      .field-group, .field-group.three { grid-template-columns: 1fr; }
       .main { margin: 20px auto; }
-      .timeline-overview { grid-template-columns: repeat(3, 1fr); }
-      .tools-row { grid-template-columns: 1fr; }
-      .stage-body { padding: 16px; }
-      .sla-table { font-size: 12px; }
-      .sla-table th, .sla-table td { padding: 8px 10px; }
+      .travellers-row { flex-direction: column; }
+      .nav-row { flex-direction: column; }
     }
   </style>
 </head>
@@ -143,318 +157,969 @@
     <div class="logo-box">kmp<span>consulting.</span></div>
     <div class="logo-tagline">Estratégia que conecta. Futuro que transforma.</div>
   </div>
-  <div class="header-badge">Processo Operacional · Uso Interno</div>
+  <div class="header-badge">US Visa B1/B2</div>
 </div>
 
-<div class="hero">
-  <div class="hero-inner">
-    <div class="hero-eyebrow">Pipeline Padrão KMP</div>
-    <h1>Processo Operacional<br>Visto Americano <em>B1/B2</em></h1>
-    <p>Fluxo completo de atendimento para clientes do serviço de visto americano, da primeira mensagem até a entrega do passaporte com o visto. Cada etapa define quem faz o quê, os prazos e os pontos de verificação de qualidade.</p>
+<div class="steps-bar">
+  <div class="steps-inner">
+    <div class="step-item"><div class="step-num" id="snum1">1</div><div class="step-label active" id="slabel1">Pagamento</div></div>
+    <div class="step-divider"></div>
+    <div class="step-item"><div class="step-num inactive" id="snum2">2</div><div class="step-label" id="slabel2">Formulário</div></div>
+    <div class="step-divider"></div>
+    <div class="step-item"><div class="step-num inactive" id="snum3">3</div><div class="step-label" id="slabel3">Documentos</div></div>
+    <div class="step-divider"></div>
+    <div class="step-item"><div class="step-num inactive" id="snum4">4</div><div class="step-label" id="slabel4">Confirmação</div></div>
   </div>
 </div>
+<form id="kmpForm">
+<input type="hidden" name="access_key" value="eb911200-f515-4a77-afbf-61c4f99be8cf">
+<input type="hidden" name="subject" value="Nova aplicação Visto USA B1/B2 - KMP Consulting">
+<input type="hidden" name="from_name" value="KMP Consulting Forms">
 
-<div class="main">
+<!-- Hidden formatted summary field that will appear as a single readable block in email -->
+<input type="hidden" name="_resumo_completo" id="resumoCompleto">
 
-  <!-- TIMELINE OVERVIEW -->
-  <div class="timeline-overview">
-    <div class="tl-step"><div class="tl-step-num">1</div><div class="tl-step-name">Contato e Boas Vindas</div><div class="tl-step-time">Dia 0</div></div>
-    <div class="tl-step"><div class="tl-step-num">2</div><div class="tl-step-name">Pagamento e Formulário</div><div class="tl-step-time">Dia 0 a 3</div></div>
-    <div class="tl-step"><div class="tl-step-num">3</div><div class="tl-step-name">Análise de Perfil</div><div class="tl-step-time">Dia 3 a 5</div></div>
-    <div class="tl-step"><div class="tl-step-num">4</div><div class="tl-step-name">DS-160 e Agendamento</div><div class="tl-step-time">Dia 5 a 10</div></div>
-    <div class="tl-step"><div class="tl-step-num">5</div><div class="tl-step-name">Preparo Entrevista</div><div class="tl-step-time">Semana antes</div></div>
-    <div class="tl-step"><div class="tl-step-num">6</div><div class="tl-step-name">Pós Entrevista</div><div class="tl-step-time">Até 5 dias úteis</div></div>
+<!-- PAGE 1: PAGAMENTO -->
+<div class="page active" id="page1">
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">Visto Americano B1/B2</div>
+      <h1>Bem-vindo ao seu processo<br>para os <em>Estados Unidos</em></h1>
+      <p>Preencha este formulário com atenção e envie os documentos solicitados. Assim que concluirmos a revisão, daremos início à sua aplicação e ao agendamento da entrevista consular.</p>
+    </div>
   </div>
-
-  <!-- ETAPA 1 -->
-  <div class="section-block">
-    <div class="stage-card">
-      <div class="stage-header">
-        <div class="stage-num">1</div>
+  <div class="main">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">💳</div>
         <div>
-          <div class="stage-title">Contato Inicial e Boas Vindas</div>
-          <div class="stage-meta">Prazo: <strong>resposta em até 4 horas úteis</strong> · Canal: WhatsApp ou e-mail</div>
+          <div class="card-title">Taxas e Pagamento</div>
+          <div class="card-subtitle">Efectue o pagamento antes de avançar</div>
         </div>
       </div>
-      <div class="stage-body">
-        <div class="action-group-label kmp">Ações KMP</div>
-        <ul class="action-list">
-          <li>Responder o primeiro contato com o e-mail de boas vindas padrão (template abaixo), personalizando o nome.</li>
-          <li>Confirmar quantas pessoas vão aplicar (individual, casal, família) para calcular as taxas correctamente.</li>
-          <li>Perguntar a cidade de preferência para a entrevista (Sydney, Melbourne ou Perth) e se há urgência de data.</li>
-          <li>Registrar o lead no CRM com estágio "Novo contato USA" e origem (Instagram, indicação, etc).</li>
-        </ul>
-
-        <div class="email-box">
-          <div class="email-box-header">
-            <div class="email-box-label">Template · E-mail de Boas Vindas</div>
-            <div class="email-subject">Assunto: <strong>Bem-vindo ao seu processo para os Estados Unidos | KMP Consulting</strong></div>
+      <div class="card-body">
+        <div class="payment-box">
+          <div class="payment-box-title">Resumo de Taxas</div>
+          <div class="payment-row">
+            <div>
+              <div class="payment-desc">Taxa da Embaixada Americana (B1/B2) por pessoa</div>
+              <div class="payment-note">Paga directamente no site da embaixada com seu próprio cartão</div>
+            </div>
+            <div class="payment-amount">AUD 296</div>
           </div>
-          <div class="email-content">
-            <p>Prezada [NOME], tudo bem?</p>
-            <p>Agradecemos imensamente por escolher a KMP Consulting para auxiliá-la na sua jornada rumo aos Estados Unidos. Estamos entusiasmados em iniciar o processo de aplicação do seu visto e nos comprometemos a garantir que tudo ocorra de forma tranquila e eficiente.</p>
-            <p><strong>Por que escolher a KMP Consulting?</strong></p>
-            <p>Processo simplificado e sem complicações: cuidamos de cada detalhe da sua aplicação para que você tenha uma experiência tranquila e sem estresse.<br>
-            Suporte personalizado em cada etapa: nossa equipe acompanha você desde a aplicação até a preparação para a entrevista.<br>
-            Experiência e expertise: conhecemos profundamente os requisitos e as melhores práticas do consulado americano na Austrália.<br>
-            Compromisso com o seu sucesso: nossa missão é ajudar você a realizar a sua viagem aos EUA com segurança.</p>
-            <p><strong>Taxas e Serviços</strong></p>
-            <p>Taxa da aplicação do visto de turista paga à Embaixada Americana (B1/B2): <span class="highlight">AUD 296 por pessoa</span>, paga com o seu próprio cartão.<br>
-            Taxa de serviço KMP: <span class="highlight">AUD 150 por pessoa</span>, via PayID.<br>
-            Delivery do passaporte com o visto: <span class="highlight">AUD 52</span>, taxa opcional, recomendada para entrevistas em outras cidades.</p>
-            <p><strong>Nossos serviços incluem:</strong> aplicação do visto, agendamento da entrevista e preparo completo para a entrevista.</p>
-            <p>Para darmos início ao seu processo, solicitamos que efetue o pagamento da taxa KMP através do PayID <span class="highlight">0451051806</span> e na sequência inicie o preenchimento do nosso formulário online: <span class="highlight">[LINK DO FORMULÁRIO]</span></p>
-            <p>No próprio formulário você poderá anexar o comprovante de pagamento, o passaporte de cada viajante e uma foto com fundo branco de cada pessoa (observação: essa foto não será utilizada para o visto, é uma imagem separada para a finalização da aplicação).</p>
-            <p>Essas etapas são fundamentais para coletarmos as informações necessárias e garantirmos que sua aplicação avance de maneira eficiente.</p>
-            <p>Siga-nos no Instagram: @kmpconsulting_au</p>
-            <p>Kind regards,<br>Equipe KMP Consulting</p>
+          <div class="payment-row">
+            <div>
+              <div class="payment-desc">Taxa de serviço KMP Consulting</div>
+              <div class="payment-note">Inclui aplicação, agendamento e preparo completo para entrevista</div>
+            </div>
+            <div class="payment-amount">AUD 150</div>
+          </div>
+          <div class="payment-row">
+            <div>
+              <div class="payment-desc">Delivery do passaporte com visto (opcional)</div>
+              <div class="payment-note">Recomendado para entrevistas em outras cidades</div>
+            </div>
+            <div class="payment-amount">AUD 52</div>
           </div>
         </div>
-
-        <div class="checkpoint">
-          <div class="checkpoint-title">Checkpoint de saída da etapa</div>
-          <p>Cliente recebeu o e-mail de boas vindas, conhece as taxas e tem o link do formulário. <strong>Mover no CRM para "Aguardando pagamento".</strong></p>
+        <div class="payid-block">
+          <div>
+            <div class="payid-label">PayID</div>
+            <div class="payid-value">0451051806</div>
+          </div>
+          <button type="button" class="copy-btn" onclick="navigator.clipboard.writeText('0451051806').then(()=>{this.textContent='Copiado';setTimeout(()=>{this.textContent='Copiar'},2000)})">Copiar</button>
         </div>
+        <div class="notice"><strong>Conta:</strong> Keila Mayara Peixoto. Após o pagamento, anexe o comprovante abaixo para liberar a próxima etapa.</div>
       </div>
     </div>
-  </div>
 
-  <!-- ETAPA 2 -->
-  <div class="section-block">
-    <div class="stage-card">
-      <div class="stage-header">
-        <div class="stage-num">2</div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">🧾</div>
         <div>
-          <div class="stage-title">Pagamento e Formulário Online</div>
-          <div class="stage-meta">Prazo: <strong>cliente tem até 3 dias, follow up no dia 2</strong> · Ferramenta: form-usa.html</div>
+          <div class="card-title">Comprovante de Pagamento</div>
+          <div class="card-subtitle">Anexe o comprovante para liberar a próxima etapa</div>
         </div>
       </div>
-      <div class="stage-body">
-        <div class="action-group-label client">Ações do Cliente</div>
-        <ul class="action-list client">
-          <li>Paga a taxa KMP de AUD 150 por pessoa via PayID 0451051806.</li>
-          <li>Preenche o formulário online com dados pessoais, histórico de viagens e motivo da viagem.</li>
-          <li>Anexa no formulário: comprovante de pagamento, passaporte de cada viajante e foto com fundo branco de cada pessoa.</li>
-        </ul>
-
-        <div class="action-group-label kmp">Ações KMP</div>
-        <ul class="action-list">
-          <li>Confirmar o recebimento do pagamento na conta.</li>
-          <li>Verificar se o formulário chegou completo no e-mail (via Web3Forms).</li>
-          <li>Conferir a qualidade dos anexos: passaporte legível, validade mínima de 6 meses após a data da viagem, foto com fundo branco dentro das especificações.</li>
-          <li>Se algo estiver incompleto ou ilegível, solicitar correção em até 24 horas com mensagem objetiva indicando exatamente o que falta.</li>
-          <li>Follow up automático no dia 2 se o cliente não tiver concluído.</li>
-        </ul>
-
-        <div class="warning">
-          <div class="warning-title">Não avançar para a etapa 3 se</div>
-          <ul>
-            <li>O passaporte vence em menos de 6 meses após a data prevista de regresso.</li>
-            <li>A foto não tem fundo branco puro ou tem óculos, retoque ou sombras.</li>
-            <li>O pagamento não foi identificado na conta.</li>
+      <div class="card-body">
+        <div class="req-box">
+          <div class="req-box-title">O comprovante deve conter</div>
+          <ul class="req-list">
+            <li>Data e hora da transferência</li>
+            <li>Valor transferido (AUD 150 por pessoa)</li>
+            <li>Identificação do destinatário (PayID 0451051806)</li>
           </ul>
         </div>
-
-        <div class="checkpoint">
-          <div class="checkpoint-title">Checkpoint de saída da etapa</div>
-          <p>Pagamento confirmado, formulário completo, documentos legíveis e dentro das especificações. <strong>Mover no CRM para "Análise de perfil".</strong></p>
+        <div class="warning-box"><strong>Limite:</strong> arquivo único de até 4 MB. Se o comprovante estiver maior, tire um screenshot ou salve em qualidade menor antes de anexar.</div>
+        <div class="upload-zone" id="uz-payment">
+          <input type="file" name="Comprovante_Pagamento" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileUpload(this,'fn-payment','uz-payment','btnNext1','paymentRequiredNote')" />
+          <div style="font-size:22px;color:#CCC;margin-bottom:8px">🧾</div>
+          <div class="upload-label">Clique para seleccionar ou arraste aqui</div>
+          <div class="upload-hint">Screenshot do app bancário ou PDF do comprovante</div>
+          <span class="upload-accepted">PDF · JPG · PNG · máx. 4MB</span>
+          <div class="uploaded-name" id="fn-payment"></div>
+          <div class="upload-error" id="err-payment"></div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- ETAPA 3 -->
-  <div class="section-block">
-    <div class="stage-card">
-      <div class="stage-header">
-        <div class="stage-num">3</div>
-        <div>
-          <div class="stage-title">Análise de Perfil e Estratégia</div>
-          <div class="stage-meta">Prazo: <strong>2 dias úteis</strong> · Referência: Guia de Aprovação KMP</div>
-        </div>
-      </div>
-      <div class="stage-body">
-        <div class="action-group-label kmp">Ações KMP</div>
-        <ul class="action-list">
-          <li><strong>Classificar o perfil de risco</strong> usando o Guia de Aprovação: visto americano anterior, histórico de viagens, vínculo empregatício, status migratório na Austrália, parentes nos EUA.</li>
-          <li><strong>Verificar o status migratório australiano:</strong> solicitar o VEVO printout ou o grant notice do visto australiano. Cliente sem visto australiano válido além da data de regresso é caso de alto risco e precisa de conversa estratégica antes de prosseguir.</li>
-          <li><strong>Identificar red flags:</strong> recusa americana anterior, lacunas de emprego nos últimos 5 anos, viagem muito longa sem justificativa, parentes próximos nos EUA.</li>
-          <li><strong>Definir a narrativa da aplicação:</strong> qual é a história consistente desta viagem (propósito, duração, financiamento, retorno).</li>
-          <li>Montar a lista personalizada de documentos de suporte que o cliente deve providenciar para a entrevista (carta do empregador, extratos, contrato de aluguel, etc).</li>
-          <li>Enviar ao cliente a lista de documentos de suporte com prazo de entrega.</li>
-        </ul>
-
-        <div class="notice">
-          <strong>Casos de casal ou família:</strong> as aplicações devem ser analisadas em conjunto. Endereço, datas, motivo da viagem e financiamento precisam ser idênticos entre as DS-160. Qualquer divergência entre os formulários do casal é red flag automático no consulado.
-        </div>
-
-        <div class="checkpoint">
-          <div class="checkpoint-title">Checkpoint de saída da etapa</div>
-          <p>Perfil classificado, narrativa definida, lista de documentos de suporte enviada ao cliente. <strong>Mover no CRM para "DS-160 em preenchimento".</strong></p>
-        </div>
-      </div>
+    <div class="nav-row" style="justify-content:flex-end">
+      <button type="button" class="btn-primary" style="max-width:280px" id="btnNext1" onclick="goTo(2)" disabled>Próxima etapa →</button>
     </div>
+    <p class="submit-note" id="paymentRequiredNote">Anexe o comprovante de pagamento para liberar a próxima etapa.</p>
+    <div class="footer"><strong>KMP Consulting</strong> · Sydney, Australia<br>vistos@kmpconsulting.com.au · kmpconsulting.com.au</div>
   </div>
-
-  <!-- ETAPA 4 -->
-  <div class="section-block">
-    <div class="stage-card">
-      <div class="stage-header">
-        <div class="stage-num">4</div>
-        <div>
-          <div class="stage-title">DS-160 e Agendamento</div>
-          <div class="stage-meta">Prazo: <strong>3 a 5 dias úteis</strong> · Sistema: CEAC + portal de agendamento</div>
-        </div>
-      </div>
-      <div class="stage-body">
-        <div class="action-group-label kmp">Ações KMP</div>
-        <ul class="action-list">
-          <li>Preencher a DS-160 no CEAC com base no formulário do cliente, seguindo o Guia de Aprovação campo a campo.</li>
-          <li><strong>Salvar o Application ID e a resposta de segurança</strong> no registro do cliente no CRM. Sem isso, o formulário não pode ser recuperado.</li>
-          <li>Revisão dupla antes de submeter: nome caractere por caractere contra o passaporte, número do passaporte, datas, empregador com descrição completa de funções, histórico de viagens dos últimos 5 anos sem lacunas.</li>
-          <li><strong>Enviar o resumo da DS-160 ao cliente para validação final antes de submeter.</strong> A DS-160 não pode ser editada após o envio.</li>
-          <li>Submeter a DS-160 e guardar a página de confirmação com o barcode.</li>
-          <li>Orientar o cliente a pagar a taxa MRV de AUD 296 com o cartão dele e enviar o recibo.</li>
-          <li>Agendar a entrevista no consulado escolhido, considerando a agenda do cliente.</li>
-          <li>Enviar ao cliente: confirmação da DS-160, comprovante de agendamento e instruções para impressão.</li>
-        </ul>
-
-        <div class="warning">
-          <div class="warning-title">Pontos de não retorno</div>
-          <ul>
-            <li>A DS-160 submetida não pode ser corrigida. Erro detectado depois exige nova DS-160 e possível reagendamento.</li>
-            <li>Nunca submeter sem a validação escrita do cliente (WhatsApp ou e-mail serve como registro).</li>
-            <li>Omissão de recusa anterior ou de parentes nos EUA é fraude e gera inelegibilidade permanente. Confirmar essas duas perguntas explicitamente com cada cliente antes de submeter.</li>
-          </ul>
-        </div>
-
-        <div class="checkpoint">
-          <div class="checkpoint-title">Checkpoint de saída da etapa</div>
-          <p>DS-160 submetida e validada pelo cliente, taxa MRV paga, entrevista agendada, comprovantes enviados. <strong>Mover no CRM para "Preparo para entrevista".</strong></p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ETAPA 5 -->
-  <div class="section-block">
-    <div class="stage-card">
-      <div class="stage-header">
-        <div class="stage-num">5</div>
-        <div>
-          <div class="stage-title">Preparo Completo para a Entrevista</div>
-          <div class="stage-meta">Prazo: <strong>na semana anterior à entrevista</strong> · Formato: sessão por video ou WhatsApp</div>
-        </div>
-      </div>
-      <div class="stage-body">
-        <div class="action-group-label kmp">Ações KMP</div>
-        <ul class="action-list">
-          <li>Agendar a sessão de preparo com o cliente (30 a 45 minutos) na semana da entrevista.</li>
-          <li>Simular as 5 perguntas principais: motivo da viagem, emprego, financiamento, parentes nos EUA e plano de retorno. As respostas devem ser curtas, directas e idênticas ao que consta na DS-160.</li>
-          <li>Treinar a articulação do perfil terceiro país: "Moro e trabalho na Austrália com visto válido até [data]. Viajo por [X] dias e regresso à Austrália onde tenho [emprego, residência, estudos]."</li>
-          <li>Revisar o checklist físico do dia: passaporte, comprovante de agendamento impresso, recibo da taxa MRV, foto 5x5, carta do empregador, extratos, VEVO e demais documentos de suporte.</li>
-          <li>Enviar a página de orientações do dia (etapa 4 do sistema de forms) por e-mail com endereço do consulado e horário de chegada.</li>
-          <li>Lembrete automático 24 horas antes da entrevista.</li>
-        </ul>
-
-        <div class="action-group-label client">Ações do Cliente</div>
-        <ul class="action-list client">
-          <li>Participar da sessão de preparo.</li>
-          <li>Organizar a pasta física de documentos na ordem indicada pela KMP.</li>
-          <li>Chegar ao consulado com 15 minutos de antecedência no dia.</li>
-        </ul>
-
-        <div class="checkpoint">
-          <div class="checkpoint-title">Checkpoint de saída da etapa</div>
-          <p>Sessão de preparo realizada, cliente confirmou a pasta de documentos completa, lembrete enviado. <strong>Mover no CRM para "Entrevista agendada".</strong></p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ETAPA 6 -->
-  <div class="section-block">
-    <div class="stage-card">
-      <div class="stage-header">
-        <div class="stage-num">6</div>
-        <div>
-          <div class="stage-title">Pós Entrevista e Entrega</div>
-          <div class="stage-meta">Prazo: <strong>contato no mesmo dia da entrevista</strong> · Encerramento do caso</div>
-        </div>
-      </div>
-      <div class="stage-body">
-        <div class="action-group-label kmp">Ações KMP</div>
-        <ul class="action-list">
-          <li>Contactar o cliente no mesmo dia da entrevista para saber o resultado.</li>
-          <li><strong>Se aprovado:</strong> orientar sobre o prazo de devolução do passaporte (até 5 dias úteis), o pagamento da Visa Integrity Fee de USD 250 na emissão, e acompanhar o delivery se contratado.</li>
-          <li><strong>Se administrative processing (221g):</strong> identificar o que foi solicitado, orientar o envio em até 1 ano e acompanhar o caso semanalmente.</li>
-          <li><strong>Se recusado (214b):</strong> registrar o motivo exato informado pelo oficial, analisar o que mudou em relação à estratégia e agendar conversa para avaliar reaplicação futura com mudança de circunstâncias.</li>
-          <li>Conferir os dados do visto quando o passaporte voltar: nome, número do passaporte, validade.</li>
-          <li>Enviar mensagem de encerramento com orientações de viagem e pedir indicação ou depoimento.</li>
-          <li>Registrar o resultado no CRM e arquivar o caso com todos os documentos.</li>
-        </ul>
-
-        <div class="notice">
-          <strong>Pós venda estratégico:</strong> cliente aprovado é a melhor fonte de novos clientes. Pedir o depoimento em texto ou video para os destaques do Instagram e oferecer o programa de indicação com condições especiais para amigos e familiares.
-        </div>
-
-        <div class="checkpoint">
-          <div class="checkpoint-title">Checkpoint de encerramento</div>
-          <p>Resultado registrado, visto conferido, depoimento solicitado. <strong>Mover no CRM para "Concluído" ou "Reaplicação futura".</strong></p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="divider"></div>
-
-  <!-- FERRAMENTAS -->
-  <div class="section-block">
-    <div class="section-title">Ferramentas do <em>Processo</em></div>
-    <div class="section-intro">Cada etapa usa uma ferramenta específica já criada para a KMP.</div>
-    <div class="tools-row">
-      <div class="tool-card">
-        <div class="tool-card-label">Etapas 1 e 2</div>
-        <div class="tool-card-title">form-usa.html</div>
-        <div class="tool-card-desc">Formulário online em 3 etapas com pagamento, dados dos viajantes e upload de documentos. Hospedado em kmp-forms.vercel.app.</div>
-      </div>
-      <div class="tool-card">
-        <div class="tool-card-label">Etapas 3 e 4</div>
-        <div class="tool-card-title">Guia de Aprovação B1/B2</div>
-        <div class="tool-card-desc">Referência interna com os campos críticos da DS-160, documentos de suporte e estratégia para terceiro país.</div>
-      </div>
-      <div class="tool-card">
-        <div class="tool-card-label">Todas as etapas</div>
-        <div class="tool-card-title">KMP CRM</div>
-        <div class="tool-card-desc">Pipeline com os estágios: Novo contato USA, Aguardando pagamento, Análise de perfil, DS-160 em preenchimento, Preparo para entrevista, Entrevista agendada, Concluído.</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- SLA -->
-  <div class="section-block">
-    <div class="section-title">Prazos e <em>Compromissos</em></div>
-    <div class="section-intro">Os prazos abaixo são o padrão de qualidade KMP comunicável ao cliente.</div>
-    <table class="sla-table">
-      <tr><th>Momento</th><th>Compromisso KMP</th></tr>
-      <tr><td><strong>Primeiro contato</strong></td><td><span class="sla-tag">4 horas úteis</span> para resposta com e-mail de boas vindas</td></tr>
-      <tr><td><strong>Formulário recebido</strong></td><td><span class="sla-tag">48 horas úteis</span> para confirmação e análise de perfil</td></tr>
-      <tr><td><strong>DS-160</strong></td><td><span class="sla-tag">3 a 5 dias úteis</span> após documentos completos validados</td></tr>
-      <tr><td><strong>Agendamento</strong></td><td><span class="sla-tag">24 horas</span> após pagamento da taxa MRV confirmado</td></tr>
-      <tr><td><strong>Sessão de preparo</strong></td><td><span class="sla-tag">semana da entrevista</span> com lembrete 24h antes</td></tr>
-      <tr><td><strong>Pós entrevista</strong></td><td><span class="sla-tag">mesmo dia</span> contato para resultado e próximos passos</td></tr>
-    </table>
-  </div>
-
-  <div class="notice">
-    <strong>Nota de conformidade:</strong> Todo o material público e a comunicação com clientes deste processo utilizam a linguagem de orientação educacional e assistência administrativa de aplicação. A KMP Consulting não presta assessoria jurídica de imigração americana nem australiana.
-  </div>
-
-  <div class="footer">
-    <strong>KMP Consulting</strong> · Sydney, Australia · Processo Operacional Interno v1.0 · Junho 2026<br>
-    keila.peixoto@kmpconsulting.com.au · kmpconsulting.com.au
-  </div>
-
 </div>
+
+<!-- PAGE 2: FORMULÁRIO -->
+<div class="page" id="page2">
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">Etapa 2 de 4</div>
+      <h1>Informações da <em>aplicação</em></h1>
+      <p>Preencha todos os dados conforme constam no seu passaporte. Estas informações serão usadas exatamente no preenchimento da sua aplicação oficial.</p>
+    </div>
+  </div>
+  <div class="main">
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">👥</div>
+        <div>
+          <div class="card-title">Viajantes</div>
+          <div class="card-subtitle">Seleccione a quantidade</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <input type="hidden" name="Quantidade_Viajantes" id="travCount" value="1">
+        <div class="travellers-row">
+          <button type="button" class="traveller-btn active" onclick="setTravellers(1,this)">Apenas eu</button>
+          <button type="button" class="traveller-btn" onclick="setTravellers(2,this)">Eu e mais 1 pessoa</button>
+          <button type="button" class="traveller-btn" onclick="setTravellers(3,this)">3 ou mais pessoas</button>
+        </div>
+        <div class="notice" style="margin-top:0"><strong>Importante:</strong> os dados abaixo referem-se ao Viajante 1. Para casais ou famílias, a nossa equipe entrará em contacto para coletar os dados dos demais viajantes individualmente.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">👤</div>
+        <div>
+          <div class="card-title">Dados Pessoais</div>
+          <div class="card-subtitle">Conforme passaporte</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="field-group">
+          <div class="field"><label>Sobrenome <span class="req">*</span></label><input type="text" name="Sobrenome" required /></div>
+          <div class="field"><label>Nome(s) <span class="req">*</span></label><input type="text" name="Nome" required /></div>
+        </div>
+        <div class="field-group">
+          <div class="field"><label>Nome em idioma nativo</label><input type="text" name="Nome_Idioma_Nativo" /></div>
+          <div class="field"><label>Outros nomes usados</label><input type="text" name="Outros_Nomes" placeholder="Se sim, listar" /></div>
+        </div>
+        <div class="field-group three">
+          <div class="field"><label>Sexo <span class="req">*</span></label><select name="Sexo" required><option value="">Seleccione</option><option>Feminino</option><option>Masculino</option></select></div>
+          <div class="field"><label>Data de nascimento <span class="req">*</span></label><input type="date" name="Data_Nascimento" required /></div>
+          <div class="field"><label>Estado civil <span class="req">*</span></label><select name="Estado_Civil" required><option value="">Seleccione</option><option>Solteiro(a)</option><option>Casado(a)</option><option>União estável</option><option>Divorciado(a)</option><option>Viúvo(a)</option></select></div>
+        </div>
+        <div class="field-group">
+          <div class="field"><label>Cidade de nascimento <span class="req">*</span></label><input type="text" name="Cidade_Nascimento" required /></div>
+          <div class="field"><label>País de nascimento <span class="req">*</span></label><input type="text" name="Pais_Nascimento" required /></div>
+        </div>
+        <div class="field-group">
+          <div class="field"><label>Nacionalidade <span class="req">*</span></label><select name="Nacionalidade" required><option value="">Seleccione</option><option selected>Brasileira</option><option>Australiana</option><option>Outra</option></select></div>
+          <div class="field"><label>Outra nacionalidade</label><input type="text" name="Outra_Nacionalidade" /></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">📍</div>
+        <div>
+          <div class="card-title">Contacto e Endereço</div>
+          <div class="card-subtitle">Endereço residencial e dados de contacto</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="field-group full">
+          <div class="field"><label>Endereço completo <span class="req">*</span></label><input type="text" name="Endereco" required /></div>
+        </div>
+        <div class="field-group three">
+          <div class="field"><label>Cidade <span class="req">*</span></label><input type="text" name="Cidade" required /></div>
+          <div class="field"><label>Estado <span class="req">*</span></label><input type="text" name="Estado" placeholder="Ex: NSW" required /></div>
+          <div class="field"><label>Postcode <span class="req">*</span></label><input type="text" name="Postcode" required /></div>
+        </div>
+        <div class="field-group">
+          <div class="field"><label>País <span class="req">*</span></label><select name="Pais_Residencia" required><option value="">Seleccione</option><option selected>Austrália</option><option>Brasil</option><option>Outro</option></select></div>
+          <div class="field"><label>Endereço correspondência igual?</label><select name="Mesmo_Endereco"><option>Sim</option><option>Não</option></select></div>
+        </div>
+        <div class="field-group">
+          <div class="field"><label>Telefone <span class="req">*</span></label><input type="tel" name="Telefone" required /></div>
+          <div class="field"><label>Telefone secundário</label><input type="tel" name="Telefone_Secundario" /></div>
+        </div>
+        <div class="field-group">
+          <div class="field"><label>E-mail <span class="req">*</span></label><input type="email" name="Email" required /></div>
+          <div class="field"><label>Rede social</label><input type="text" name="Rede_Social" placeholder="Instagram" /></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">📘</div>
+        <div>
+          <div class="card-title">Passaporte</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="field-group">
+          <div class="field"><label>Número do passaporte <span class="req">*</span></label><input type="text" name="Numero_Passaporte" required /></div>
+          <div class="field"><label>País emissor <span class="req">*</span></label><input type="text" name="Pais_Emissor" required /></div>
+        </div>
+        <div class="field-group three">
+          <div class="field"><label>Cidade emissão</label><input type="text" name="Cidade_Emissao" /></div>
+          <div class="field"><label>Data emissão <span class="req">*</span></label><input type="date" name="Data_Emissao" required /></div>
+          <div class="field"><label>Data validade <span class="req">*</span></label><input type="date" name="Data_Validade" required /></div>
+        </div>
+        <div class="field-group full">
+          <div class="field"><label>Já perdeu passaporte?</label><select name="Passaporte_Perdido"><option>Não</option><option>Sim</option></select></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">✈️</div>
+        <div>
+          <div class="card-title">Informações da Viagem</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="field-group">
+          <div class="field"><label>Propósito <span class="req">*</span></label><select name="Proposito" required><option value="">Seleccione</option><option selected>Turismo (B2)</option><option>Negócios (B1)</option><option>Turismo e Negócios</option><option>Visitar familiares</option><option>Tratamento médico</option></select></div>
+          <div class="field"><label>Cidade da entrevista <span class="req">*</span></label><select name="Cidade_Entrevista" required><option value="">Seleccione</option><option selected>Sydney</option><option>Melbourne</option><option>Perth</option></select></div>
+        </div>
+        <div class="field-group">
+          <div class="field"><label>Data prevista chegada EUA <span class="req">*</span></label><input type="date" name="Data_Chegada_EUA" required /></div>
+          <div class="field"><label>Tempo de permanência <span class="req">*</span></label><input type="text" name="Tempo_Permanencia" placeholder="Ex: 10 dias" required /></div>
+        </div>
+        <div class="field-group full">
+          <div class="field"><label>Endereço nos EUA <span class="req">*</span></label><input type="text" name="Endereco_EUA" required /></div>
+        </div>
+        <div class="field-group">
+          <div class="field"><label>Quem paga a viagem? <span class="req">*</span></label><select name="Quem_Paga" required><option value="">Seleccione</option><option>Eu mesmo(a)</option><option>Empregador</option><option>Familiar nos EUA</option><option>Familiar Brasil/Austrália</option></select></div>
+          <div class="field"><label>Viaja com outros?</label><select name="Viaja_Com_Outros" onchange="document.getElementById('companions-row').style.display=this.value==='Sim'?'grid':'none'"><option>Não</option><option>Sim</option></select></div>
+        </div>
+        <div class="field-group full" id="companions-row" style="display:none">
+          <div class="field"><label>Quem viaja com você?</label><textarea name="Acompanhantes"></textarea></div>
+        </div>
+        <div class="field-group full">
+          <div class="field"><label>Descreva o motivo da viagem <span class="req">*</span></label><textarea name="Motivo_Viagem" required></textarea></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">🇺🇸</div>
+        <div>
+          <div class="card-title">Histórico com os EUA</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="field-group">
+          <div class="field"><label>Já esteve nos EUA? <span class="req">*</span></label><select name="Esteve_EUA" required onchange="document.getElementById('stays-detail').style.display=this.value==='Sim'?'block':'none'"><option value="">Seleccione</option><option>Não</option><option>Sim</option></select></div>
+          <div class="field"><label>Já teve visto americano? <span class="req">*</span></label><select name="Visto_Anterior" required onchange="document.getElementById('prev-visa-detail').style.display=this.value==='Sim'?'block':'none'"><option value="">Seleccione</option><option>Não</option><option>Sim</option></select></div>
+        </div>
+        <div id="stays-detail" style="display:none" class="field-group full">
+          <div class="field"><label>Datas das estadias anteriores</label><textarea name="Estadias_Anteriores"></textarea></div>
+        </div>
+        <div id="prev-visa-detail" style="display:none">
+          <div class="field-group">
+            <div class="field"><label>Data emissão último visto</label><input type="date" name="Data_Ultimo_Visto" /></div>
+            <div class="field"><label>Número do visto</label><input type="text" name="Numero_Visto" /></div>
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field"><label>Já teve visto recusado? <span class="req">*</span></label><select name="Recusa_Anterior" required onchange="document.getElementById('refusal-detail').style.display=this.value==='Sim'?'block':'none'"><option value="">Seleccione</option><option>Não</option><option>Sim</option></select></div>
+          <div class="field"><label>Foi impedido de entrar?</label><select name="Impedimento_Entrada"><option>Não</option><option>Sim</option></select></div>
+        </div>
+        <div id="refusal-detail" style="display:none" class="field-group full">
+          <div class="field"><label>Detalhes da recusa</label><textarea name="Detalhes_Recusa"></textarea></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">📞</div>
+        <div>
+          <div class="card-title">Contacto nos EUA</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="field-group">
+          <div class="field"><label>Nome do contacto <span class="req">*</span></label><input type="text" name="Contato_EUA_Nome" required /></div>
+          <div class="field"><label>Relação <span class="req">*</span></label><select name="Contato_EUA_Relacao" required><option value="">Seleccione</option><option>Hotel</option><option>Amigo(a)</option><option>Familiar</option><option>Parceiro de negócios</option></select></div>
+        </div>
+        <div class="field-group full">
+          <div class="field"><label>Endereço completo <span class="req">*</span></label><input type="text" name="Contato_EUA_Endereco" required /></div>
+        </div>
+        <div class="field-group">
+          <div class="field"><label>Telefone</label><input type="tel" name="Contato_EUA_Telefone" /></div>
+          <div class="field"><label>E-mail</label><input type="email" name="Contato_EUA_Email" /></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">👨‍👩‍👧</div>
+        <div>
+          <div class="card-title">Informações Familiares</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="subsection-label">Pai</div>
+        <div class="field-group three">
+          <div class="field"><label>Sobrenome <span class="req">*</span></label><input type="text" name="Pai_Sobrenome" required /></div>
+          <div class="field"><label>Nome <span class="req">*</span></label><input type="text" name="Pai_Nome" required /></div>
+          <div class="field"><label>Nascimento</label><input type="date" name="Pai_Nascimento" /></div>
+        </div>
+        <div class="field-group full">
+          <div class="field"><label>Pai está nos EUA?</label><select name="Pai_EUA"><option>Não</option><option>Sim</option></select></div>
+        </div>
+        <div class="subsection-label">Mãe</div>
+        <div class="field-group three">
+          <div class="field"><label>Sobrenome <span class="req">*</span></label><input type="text" name="Mae_Sobrenome" required /></div>
+          <div class="field"><label>Nome <span class="req">*</span></label><input type="text" name="Mae_Nome" required /></div>
+          <div class="field"><label>Nascimento</label><input type="date" name="Mae_Nascimento" /></div>
+        </div>
+        <div class="field-group full">
+          <div class="field"><label>Mãe está nos EUA?</label><select name="Mae_EUA"><option>Não</option><option>Sim</option></select></div>
+        </div>
+        <div class="subsection-label">Cônjuge</div>
+        <div class="field-group">
+          <div class="field"><label>Nome completo</label><input type="text" name="Conjuge_Nome" /></div>
+          <div class="field"><label>Data de nascimento</label><input type="date" name="Conjuge_Nascimento" /></div>
+        </div>
+        <div class="field-group">
+          <div class="field"><label>Nacionalidade</label><input type="text" name="Conjuge_Nacionalidade" /></div>
+          <div class="field"><label>Cidade de nascimento</label><input type="text" name="Conjuge_Cidade" /></div>
+        </div>
+        <div class="subsection-label">Parentes nos EUA</div>
+        <div class="field-group full">
+          <div class="field"><label>Possui parentes nos EUA? <span class="req">*</span></label><select name="Parentes_EUA" required onchange="document.getElementById('relatives-detail').style.display=this.value==='Sim'?'block':'none'"><option value="">Seleccione</option><option>Não</option><option>Sim</option></select></div>
+        </div>
+        <div id="relatives-detail" style="display:none" class="field-group full">
+          <div class="field"><label>Detalhes dos parentes</label><textarea name="Detalhes_Parentes_EUA"></textarea></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">💼</div>
+        <div>
+          <div class="card-title">Emprego</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="subsection-label">Ocupação Actual</div>
+        <div class="field-group">
+          <div class="field"><label>Ocupação <span class="req">*</span></label><select name="Ocupacao_Principal" required><option value="">Seleccione</option><option>Empregado(a)</option><option>Autônomo(a)</option><option>Estudante</option><option>Empresário(a)</option><option>Aposentado(a)</option><option>Desempregado(a)</option><option>Dona de casa</option></select></div>
+          <div class="field"><label>Cargo</label><input type="text" name="Cargo" /></div>
+        </div>
+        <div class="field-group">
+          <div class="field"><label>Empregador <span class="req">*</span></label><input type="text" name="Empregador_Nome" required /></div>
+          <div class="field"><label>Telefone empregador</label><input type="tel" name="Empregador_Telefone" /></div>
+        </div>
+        <div class="field-group full">
+          <div class="field"><label>Endereço empregador <span class="req">*</span></label><input type="text" name="Empregador_Endereco" required /></div>
+        </div>
+        <div class="field-group">
+          <div class="field"><label>Início no emprego</label><input type="date" name="Empregador_Inicio" /></div>
+          <div class="field"><label>Salário mensal</label><input type="text" name="Salario" placeholder="AUD 6000" /></div>
+        </div>
+        <div class="field-group full">
+          <div class="field"><label>Descrição das funções <span class="req">*</span></label><textarea name="Descricao_Funcoes" required></textarea></div>
+        </div>
+
+        <div class="subsection-label"><span>Empregos Anteriores</span><span style="font-size:10px;color:var(--graphite-light);font-weight:500;letter-spacing:0">opcional</span></div>
+        <div id="jobsContainer">
+          <div class="repeat-block" data-job="1">
+            <div class="repeat-block-header"><div class="repeat-block-title">Emprego anterior 1</div></div>
+            <div class="field-group">
+              <div class="field"><label>Empregador</label><input type="text" name="Emprego_Anterior_1_Nome" /></div>
+              <div class="field"><label>Cargo</label><input type="text" name="Emprego_Anterior_1_Cargo" /></div>
+            </div>
+            <div class="field-group">
+              <div class="field"><label>Início</label><input type="date" name="Emprego_Anterior_1_Inicio" /></div>
+              <div class="field"><label>Saída</label><input type="date" name="Emprego_Anterior_1_Saida" /></div>
+            </div>
+            <div class="field-group full">
+              <div class="field"><label>Descrição das funções</label><textarea name="Emprego_Anterior_1_Funcoes"></textarea></div>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="add-btn" onclick="addJob()">+ Adicionar outro emprego anterior</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">🎓</div>
+        <div>
+          <div class="card-title">Educação</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div id="educationContainer">
+          <div class="repeat-block" data-edu="1">
+            <div class="repeat-block-header"><div class="repeat-block-title">Curso ou instituição 1</div></div>
+            <div class="field-group">
+              <div class="field"><label>Instituição <span class="req">*</span></label><input type="text" name="Educacao_1_Instituicao" required /></div>
+              <div class="field"><label>Curso ou nível</label><input type="text" name="Educacao_1_Curso" /></div>
+            </div>
+            <div class="field-group">
+              <div class="field"><label>Início</label><input type="date" name="Educacao_1_Inicio" /></div>
+              <div class="field"><label>Conclusão</label><input type="date" name="Educacao_1_Conclusao" /></div>
+            </div>
+            <div class="field-group">
+              <div class="field"><label>Cidade</label><input type="text" name="Educacao_1_Cidade" /></div>
+              <div class="field"><label>País</label><input type="text" name="Educacao_1_Pais" /></div>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="add-btn" onclick="addEducation()">+ Adicionar outro curso ou instituição</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">🇦🇺</div>
+        <div>
+          <div class="card-title">Status Migratório na Austrália</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="field-group">
+          <div class="field"><label>Tipo de visto <span class="req">*</span></label><select name="Visto_Australiano_Tipo" required><option value="">Seleccione</option><option>Cidadão australiano</option><option>Permanent Resident</option><option>Student (500)</option><option>Graduate (485)</option><option>Skilled (190/189/491)</option><option>Partner (820/309)</option><option>WHV (462/417)</option><option>Bridging Visa</option><option>Tourist (600)</option><option>Outro</option></select></div>
+          <div class="field"><label>Validade <span class="req">*</span></label><input type="date" name="Visto_Australiano_Validade" required /></div>
+        </div>
+        <div class="field-group full">
+          <div class="field"><label>Tempo na Austrália <span class="req">*</span></label><input type="text" name="Tempo_Australia" placeholder="Ex: 3 anos" required /></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">🌍</div>
+        <div>
+          <div class="card-title">Histórico de Viagens</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="field-group full">
+          <div class="field"><label>Países visitados nos últimos 5 anos <span class="req">*</span></label><textarea name="Paises_Visitados" required></textarea></div>
+        </div>
+        <div class="field-group">
+          <div class="field"><label>Idiomas <span class="req">*</span></label><input type="text" name="Idiomas" required /></div>
+          <div class="field"><label>Serviu o exército?</label><select name="Servico_Militar"><option>Não</option><option>Sim</option></select></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">🔒</div>
+        <div>
+          <div class="card-title">Background</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="field-group">
+          <div class="field"><label>Antecedentes criminais?</label><select name="Antecedentes_Criminais"><option>Não</option><option>Sim</option></select></div>
+          <div class="field"><label>Doença infecto-contagiosa?</label><select name="Doenca_Infecciosa"><option>Não</option><option>Sim</option></select></div>
+        </div>
+        <div class="field-group">
+          <div class="field"><label>Já foi deportado?</label><select name="Deportacao"><option>Não</option><option>Sim</option></select></div>
+          <div class="field"><label>Overstay em algum visto?</label><select name="Overstay"><option>Não</option><option>Sim</option></select></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <button type="button" class="btn-secondary" onclick="goTo(1)">← Voltar</button>
+      <button type="button" class="btn-primary" onclick="goTo(3)">Próxima etapa →</button>
+    </div>
+    <div class="footer"><strong>KMP Consulting</strong> · Sydney, Australia<br>vistos@kmpconsulting.com.au</div>
+  </div>
+</div>
+
+<!-- PAGE 3: DOCUMENTOS -->
+<div class="page" id="page3">
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">Etapa 3 de 4</div>
+      <h1>Envio de <em>Documentos</em></h1>
+      <p>Faça o upload dos arquivos, assine digitalmente e envie o seu formulário.</p>
+    </div>
+  </div>
+  <div class="main">
+
+    <div class="warning-box" style="margin-bottom:22px"><strong>Importante sobre os arquivos:</strong> cada arquivo tem limite de 4 MB. Se o passaporte ou foto tiverem mais de um viajante, envie o do Viajante 1 aqui. Para os demais, a nossa equipe entrará em contacto para receber por e-mail directamente.</div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">📘</div>
+        <div>
+          <div class="card-title">Passaporte</div>
+          <div class="card-subtitle">Página de dados do Viajante 1</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="req-box">
+          <div class="req-box-title">Requisitos</div>
+          <ul class="req-list">
+            <li>Página de dados com foto, nome, número e validade</li>
+            <li>Arquivo nítido, sem reflexos</li>
+            <li>Passaporte válido por 6 meses após a viagem</li>
+            <li>Formatos: PDF, JPG ou PNG · máx. 4 MB</li>
+          </ul>
+        </div>
+        <div class="upload-zone" id="uz-passport">
+          <input type="file" name="Passaporte" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileUpload(this,'fn-passport','uz-passport')" />
+          <div style="font-size:22px;color:#CCC;margin-bottom:8px">📁</div>
+          <div class="upload-label">Clique para seleccionar ou arraste aqui</div>
+          <div class="upload-hint">Arquivo único de até 4 MB</div>
+          <span class="upload-accepted">PDF · JPG · PNG</span>
+          <div class="uploaded-name" id="fn-passport"></div>
+          <div class="upload-error" id="err-passport"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">📸</div>
+        <div>
+          <div class="card-title">Foto com Fundo Branco</div>
+          <div class="card-subtitle">Foto do Viajante 1</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="req-box">
+          <div class="req-box-title">Especificações</div>
+          <ul class="req-list">
+            <li>Fundo totalmente branco, sem sombras</li>
+            <li>Rosto centralizado, expressão neutra</li>
+            <li>Sem óculos, chapéu ou acessórios</li>
+            <li>Foto recente, resolução mínima 600x600 px</li>
+            <li>Formatos: JPG ou PNG · máx. 4 MB</li>
+          </ul>
+        </div>
+        <div class="upload-zone" id="uz-photo">
+          <input type="file" name="Foto_Fundo_Branco" accept=".jpg,.jpeg,.png" onchange="handleFileUpload(this,'fn-photo','uz-photo')" />
+          <div style="font-size:22px;color:#CCC;margin-bottom:8px">📸</div>
+          <div class="upload-label">Clique para seleccionar ou arraste aqui</div>
+          <div class="upload-hint">Arquivo único de até 4 MB</div>
+          <span class="upload-accepted">JPG · PNG</span>
+          <div class="uploaded-name" id="fn-photo"></div>
+          <div class="upload-error" id="err-photo"></div>
+        </div>
+        <div class="notice"><strong>Atenção:</strong> Esta foto é para a finalização da aplicação e não substitui a foto oficial da embaixada.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">💬</div>
+        <div>
+          <div class="card-title">Informações Adicionais</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="field-group full">
+          <div class="field"><label>Observações ou dúvidas</label><textarea name="Observacoes"></textarea></div>
+        </div>
+        <div class="field-group">
+          <div class="field"><label>Como conheceu a KMP?</label><select name="Como_Conheceu"><option value="">Seleccione</option><option>Indicação</option><option>Instagram</option><option>Google</option><option>YouTube</option><option>WhatsApp</option><option>Outro</option></select></div>
+          <div class="field"><label>Delivery do passaporte?</label><select name="Delivery"><option value="">Seleccione</option><option>Sim (+ AUD 52)</option><option>Não</option></select></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">✍️</div>
+        <div>
+          <div class="card-title">Assinatura Digital</div>
+          <div class="card-subtitle">Confirme a veracidade das informações</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="field-group">
+          <div class="field"><label>Nome completo <span class="req">*</span></label><input type="text" name="Assinatura_Nome" id="signatureName" required /></div>
+          <div class="field"><label>Data <span class="req">*</span></label><input type="date" name="Assinatura_Data" id="signatureDate" required /></div>
+        </div>
+        <div class="signature-box" style="margin-top:14px">
+          <label style="display:block;margin-bottom:10px">Assine no campo abaixo <span class="req">*</span></label>
+          <div class="signature-canvas-wrap">
+            <canvas id="signaturePad" class="signature-canvas"></canvas>
+            <div class="signature-placeholder" id="signaturePlaceholder">Assine aqui com o dedo ou o mouse</div>
+          </div>
+          <input type="hidden" name="Assinatura_Confirmada" id="signatureConfirmed" value="">
+          <div class="signature-actions">
+            <span class="signature-hint">Use o dedo (mobile) ou o mouse (desktop).</span>
+            <button type="button" class="clear-signature" onclick="clearSignature()">Limpar assinatura</button>
+          </div>
+        </div>
+        <label class="signature-checkbox">
+          <input type="checkbox" id="signatureConfirm" name="Declaracao_Confirmada" value="Sim" required>
+          <span class="signature-checkbox-label"><strong>Declaro que todas as informações são verdadeiras</strong> e autorizo a KMP Consulting a utilizá-las para fins da minha aplicação de visto americano.</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <button type="button" class="btn-secondary" onclick="goTo(2)">← Voltar</button>
+      <button type="submit" class="btn-primary" id="submitBtn">Enviar Formulário →</button>
+    </div>
+    <p class="submit-note">A nossa equipe entrará em contacto em até 48 horas úteis.</p>
+    <div class="footer"><strong>KMP Consulting</strong> · Sydney, Australia<br>vistos@kmpconsulting.com.au</div>
+  </div>
+</div>
+
+<!-- PAGE 4: CONFIRMAÇÃO -->
+<div class="page" id="page4">
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">Etapa 4 de 4 · Formulário enviado</div>
+      <h1>Recebemos tudo.<br><em>Obrigada!</em></h1>
+      <p>A nossa equipe entrará em contacto em até 48 horas úteis pelo WhatsApp ou e-mail cadastrado.</p>
+    </div>
+  </div>
+  <div class="main">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">✅</div>
+        <div>
+          <div class="card-title">O que acontece agora?</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;align-items:flex-start;gap:14px;padding:13px 15px;border:1px solid var(--border);border-radius:9px">
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--orange-pale);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;color:var(--orange);font-weight:700;margin-top:1px">1</div>
+            <div style="font-size:13px;color:var(--graphite);line-height:1.5"><strong>Revisão dos documentos</strong><br><span style="color:var(--graphite-mid);font-size:12px">A nossa equipe verifica todos os arquivos.</span></div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:14px;padding:13px 15px;border:1px solid var(--border);border-radius:9px">
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--orange-pale);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;color:var(--orange);font-weight:700;margin-top:1px">2</div>
+            <div style="font-size:13px;color:var(--graphite);line-height:1.5"><strong>Preenchimento da aplicação</strong><br><span style="color:var(--graphite-mid);font-size:12px">Preenchemos e enviamos para a sua aprovação.</span></div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:14px;padding:13px 15px;border:1px solid var(--border);border-radius:9px">
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--orange-pale);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;color:var(--orange);font-weight:700;margin-top:1px">3</div>
+            <div style="font-size:13px;color:var(--graphite);line-height:1.5"><strong>Agendamento da entrevista</strong><br><span style="color:var(--graphite-mid);font-size:12px">Realizamos o agendamento no consulado.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="nav-row">
+      <a href="https://wa.me/610451051806" target="_blank" style="flex:1;background:#25D366;color:white;border:none;border-radius:10px;padding:15px 32px;font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none">Falar com a equipe no WhatsApp</a>
+    </div>
+    <div class="footer"><strong>KMP Consulting</strong> · Sydney, Australia<br>vistos@kmpconsulting.com.au</div>
+  </div>
+</div>
+
+</form>
+<script>
+  const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4 MB
+
+  function goTo(n) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page' + n).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    for (let i = 1; i <= 4; i++) {
+      const snum = document.getElementById('snum' + i);
+      const slabel = document.getElementById('slabel' + i);
+      if (!snum) continue;
+      if (i < n) {
+        snum.style.background = '#F27B20'; snum.style.color = '#fff'; snum.textContent = '✓'; snum.classList.remove('inactive');
+        slabel.style.color = '#F27B20'; slabel.classList.add('active');
+      } else if (i === n) {
+        snum.style.background = '#F27B20'; snum.style.color = '#fff'; snum.textContent = i; snum.classList.remove('inactive');
+        slabel.classList.add('active'); slabel.style.color = '#2C2C2C';
+      } else {
+        snum.style.background = '#E0E0E0'; snum.style.color = '#888'; snum.textContent = i; snum.classList.add('inactive');
+        slabel.classList.remove('active'); slabel.style.color = '#888';
+      }
+    }
+    if (n === 3) setTimeout(initSignaturePad, 100);
+  }
+
+  function setTravellers(n, btn) {
+    document.querySelectorAll('.traveller-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('travCount').value = n === 3 ? '3 ou mais' : n;
+  }
+
+  function handleFileUpload(input, nameEl, zoneEl, btnEnableId, noteId) {
+    const name = document.getElementById(nameEl);
+    const errEl = document.getElementById('err-' + nameEl.replace('fn-', ''));
+    const zone = document.getElementById(zoneEl);
+    zone.classList.remove('has-file', 'has-error');
+    name.style.display = 'none';
+    if (errEl) errEl.style.display = 'none';
+
+    if (input.files.length === 0) {
+      if (btnEnableId) document.getElementById(btnEnableId).disabled = true;
+      if (noteId) document.getElementById(noteId).style.display = 'block';
+      return;
+    }
+    const file = input.files[0];
+    if (file.size > MAX_FILE_SIZE) {
+      input.value = '';
+      zone.classList.add('has-error');
+      if (errEl) {
+        errEl.textContent = 'Arquivo muito grande (' + (file.size/1024/1024).toFixed(1) + ' MB). Máximo permitido: 4 MB.';
+        errEl.style.display = 'block';
+      }
+      if (btnEnableId) document.getElementById(btnEnableId).disabled = true;
+      if (noteId) document.getElementById(noteId).style.display = 'block';
+      return;
+    }
+    name.textContent = '✓ ' + file.name + ' (' + (file.size/1024/1024).toFixed(2) + ' MB)';
+    name.style.display = 'block';
+    zone.classList.add('has-file');
+    if (btnEnableId) document.getElementById(btnEnableId).disabled = false;
+    if (noteId) document.getElementById(noteId).style.display = 'none';
+  }
+
+  let jobCount = 1;
+  function addJob() {
+    jobCount++;
+    const container = document.getElementById('jobsContainer');
+    const block = document.createElement('div');
+    block.className = 'repeat-block';
+    block.innerHTML = `
+      <div class="repeat-block-header">
+        <div class="repeat-block-title">Emprego anterior ${jobCount}</div>
+        <button type="button" class="remove-btn" onclick="this.closest('.repeat-block').remove()">Remover</button>
+      </div>
+      <div class="field-group">
+        <div class="field"><label>Empregador</label><input type="text" name="Emprego_Anterior_${jobCount}_Nome" /></div>
+        <div class="field"><label>Cargo</label><input type="text" name="Emprego_Anterior_${jobCount}_Cargo" /></div>
+      </div>
+      <div class="field-group">
+        <div class="field"><label>Início</label><input type="date" name="Emprego_Anterior_${jobCount}_Inicio" /></div>
+        <div class="field"><label>Saída</label><input type="date" name="Emprego_Anterior_${jobCount}_Saida" /></div>
+      </div>
+      <div class="field-group full">
+        <div class="field"><label>Descrição das funções</label><textarea name="Emprego_Anterior_${jobCount}_Funcoes"></textarea></div>
+      </div>`;
+    container.appendChild(block);
+  }
+
+  let eduCount = 1;
+  function addEducation() {
+    eduCount++;
+    const container = document.getElementById('educationContainer');
+    const block = document.createElement('div');
+    block.className = 'repeat-block';
+    block.innerHTML = `
+      <div class="repeat-block-header">
+        <div class="repeat-block-title">Curso ou instituição ${eduCount}</div>
+        <button type="button" class="remove-btn" onclick="this.closest('.repeat-block').remove()">Remover</button>
+      </div>
+      <div class="field-group">
+        <div class="field"><label>Instituição</label><input type="text" name="Educacao_${eduCount}_Instituicao" /></div>
+        <div class="field"><label>Curso ou nível</label><input type="text" name="Educacao_${eduCount}_Curso" /></div>
+      </div>
+      <div class="field-group">
+        <div class="field"><label>Início</label><input type="date" name="Educacao_${eduCount}_Inicio" /></div>
+        <div class="field"><label>Conclusão</label><input type="date" name="Educacao_${eduCount}_Conclusao" /></div>
+      </div>
+      <div class="field-group">
+        <div class="field"><label>Cidade</label><input type="text" name="Educacao_${eduCount}_Cidade" /></div>
+        <div class="field"><label>País</label><input type="text" name="Educacao_${eduCount}_Pais" /></div>
+      </div>`;
+    container.appendChild(block);
+  }
+
+  // SIGNATURE PAD
+  let signatureCanvas, signatureCtx, isDrawing = false, hasSignature = false;
+  let lastX = 0, lastY = 0;
+
+  function initSignaturePad() {
+    signatureCanvas = document.getElementById('signaturePad');
+    if (!signatureCanvas || signatureCanvas.dataset.initialized) return;
+    signatureCanvas.dataset.initialized = 'true';
+    signatureCtx = signatureCanvas.getContext('2d');
+    const rect = signatureCanvas.getBoundingClientRect();
+    signatureCanvas.width = rect.width;
+    signatureCanvas.height = rect.height;
+    signatureCtx.strokeStyle = '#2C2C2C';
+    signatureCtx.lineWidth = 2;
+    signatureCtx.lineCap = 'round';
+    signatureCtx.lineJoin = 'round';
+
+    signatureCanvas.addEventListener('mousedown', startDraw);
+    signatureCanvas.addEventListener('mousemove', draw);
+    signatureCanvas.addEventListener('mouseup', endDraw);
+    signatureCanvas.addEventListener('mouseleave', endDraw);
+    signatureCanvas.addEventListener('touchstart', handleTouch);
+    signatureCanvas.addEventListener('touchmove', handleTouch);
+    signatureCanvas.addEventListener('touchend', endDraw);
+
+    const dateInput = document.getElementById('signatureDate');
+    if (dateInput && !dateInput.value) dateInput.value = new Date().toISOString().split('T')[0];
+  }
+
+  function getPos(e) {
+    const rect = signatureCanvas.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    return { x: clientX - rect.left, y: clientY - rect.top };
+  }
+  function startDraw(e) {
+    isDrawing = true;
+    hasSignature = true;
+    document.getElementById('signaturePlaceholder').style.display = 'none';
+    const pos = getPos(e);
+    lastX = pos.x; lastY = pos.y;
+  }
+  function draw(e) {
+    if (!isDrawing) return;
+    e.preventDefault();
+    const pos = getPos(e);
+    signatureCtx.beginPath();
+    signatureCtx.moveTo(lastX, lastY);
+    signatureCtx.lineTo(pos.x, pos.y);
+    signatureCtx.stroke();
+    lastX = pos.x; lastY = pos.y;
+  }
+  function endDraw() {
+    if (isDrawing) {
+      isDrawing = false;
+      document.getElementById('signatureConfirmed').value = 'Assinatura capturada em ' + new Date().toISOString();
+    }
+  }
+  function handleTouch(e) {
+    e.preventDefault();
+    if (e.type === 'touchstart') startDraw(e);
+    else if (e.type === 'touchmove') draw(e);
+  }
+  function clearSignature() {
+    if (!signatureCtx) return;
+    signatureCtx.clearRect(0, 0, signatureCanvas.width, signatureCanvas.height);
+    document.getElementById('signaturePlaceholder').style.display = 'block';
+    document.getElementById('signatureConfirmed').value = '';
+    hasSignature = false;
+  }
+
+  // BUILD FORMATTED SUMMARY (readable in email + PDF)
+  function buildSummary() {
+    const form = document.getElementById('kmpForm');
+    const groups = [
+      { title: '=== DADOS PESSOAIS ===', fields: ['Sobrenome','Nome','Nome_Idioma_Nativo','Outros_Nomes','Sexo','Data_Nascimento','Estado_Civil','Cidade_Nascimento','Pais_Nascimento','Nacionalidade','Outra_Nacionalidade'] },
+      { title: '=== CONTACTO E ENDEREÇO ===', fields: ['Endereco','Cidade','Estado','Postcode','Pais_Residencia','Mesmo_Endereco','Telefone','Telefone_Secundario','Email','Rede_Social'] },
+      { title: '=== PASSAPORTE ===', fields: ['Numero_Passaporte','Pais_Emissor','Cidade_Emissao','Data_Emissao','Data_Validade','Passaporte_Perdido'] },
+      { title: '=== VIAGEM ===', fields: ['Proposito','Cidade_Entrevista','Data_Chegada_EUA','Tempo_Permanencia','Endereco_EUA','Quem_Paga','Viaja_Com_Outros','Acompanhantes','Motivo_Viagem'] },
+      { title: '=== HISTÓRICO EUA ===', fields: ['Esteve_EUA','Estadias_Anteriores','Visto_Anterior','Data_Ultimo_Visto','Numero_Visto','Recusa_Anterior','Detalhes_Recusa','Impedimento_Entrada'] },
+      { title: '=== CONTACTO NOS EUA ===', fields: ['Contato_EUA_Nome','Contato_EUA_Relacao','Contato_EUA_Endereco','Contato_EUA_Telefone','Contato_EUA_Email'] },
+      { title: '=== FAMÍLIA ===', fields: ['Pai_Sobrenome','Pai_Nome','Pai_Nascimento','Pai_EUA','Mae_Sobrenome','Mae_Nome','Mae_Nascimento','Mae_EUA','Conjuge_Nome','Conjuge_Nascimento','Conjuge_Nacionalidade','Conjuge_Cidade','Parentes_EUA','Detalhes_Parentes_EUA'] },
+      { title: '=== EMPREGO ACTUAL ===', fields: ['Ocupacao_Principal','Cargo','Empregador_Nome','Empregador_Telefone','Empregador_Endereco','Empregador_Inicio','Salario','Descricao_Funcoes'] },
+      { title: '=== STATUS AUSTRÁLIA ===', fields: ['Visto_Australiano_Tipo','Visto_Australiano_Validade','Tempo_Australia'] },
+      { title: '=== HISTÓRICO DE VIAGENS ===', fields: ['Paises_Visitados','Idiomas','Servico_Militar'] },
+      { title: '=== BACKGROUND ===', fields: ['Antecedentes_Criminais','Doenca_Infecciosa','Deportacao','Overstay'] },
+      { title: '=== INFORMAÇÕES ADICIONAIS ===', fields: ['Observacoes','Como_Conheceu','Delivery','Quantidade_Viajantes'] },
+      { title: '=== ASSINATURA ===', fields: ['Assinatura_Nome','Assinatura_Data','Assinatura_Confirmada','Declaracao_Confirmada'] },
+    ];
+
+    let summary = '';
+    groups.forEach(g => {
+      summary += '\n' + g.title + '\n';
+      g.fields.forEach(f => {
+        const el = form.elements[f];
+        if (el && el.value) summary += f.replace(/_/g,' ') + ': ' + el.value + '\n';
+      });
+    });
+
+    // Add repeating jobs
+    const jobs = form.querySelectorAll('[data-job], .repeat-block');
+    let jobText = '';
+    document.querySelectorAll('#jobsContainer .repeat-block').forEach((block, idx) => {
+      const n = idx + 1;
+      const nome = form.elements['Emprego_Anterior_' + n + '_Nome'];
+      if (nome && nome.value) {
+        jobText += '\nEmprego anterior ' + n + ':\n';
+        ['Nome','Cargo','Inicio','Saida','Funcoes'].forEach(k => {
+          const fld = form.elements['Emprego_Anterior_' + n + '_' + k];
+          if (fld && fld.value) jobText += '  ' + k + ': ' + fld.value + '\n';
+        });
+      }
+    });
+    if (jobText) summary += '\n=== EMPREGOS ANTERIORES ===' + jobText;
+
+    // Add repeating education
+    let eduText = '';
+    document.querySelectorAll('#educationContainer .repeat-block').forEach((block, idx) => {
+      const n = idx + 1;
+      const inst = form.elements['Educacao_' + n + '_Instituicao'];
+      if (inst && inst.value) {
+        eduText += '\nCurso ou instituição ' + n + ':\n';
+        ['Instituicao','Curso','Inicio','Conclusao','Cidade','Pais'].forEach(k => {
+          const fld = form.elements['Educacao_' + n + '_' + k];
+          if (fld && fld.value) eduText += '  ' + k + ': ' + fld.value + '\n';
+        });
+      }
+    });
+    if (eduText) summary += '\n=== EDUCAÇÃO ===' + eduText;
+
+    return summary;
+  }
+
+  document.getElementById('kmpForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+
+    if (!hasSignature) {
+      alert('Por favor, assine no campo de assinatura digital para finalizar.');
+      return;
+    }
+    if (!document.getElementById('signatureConfirm').checked) {
+      alert('Por favor, confirme a declaração de veracidade das informações.');
+      return;
+    }
+
+    // Populate summary before send
+    document.getElementById('resumoCompleto').value = buildSummary();
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="loading"></span> Enviando...';
+    try {
+      const formData = new FormData(this);
+      const response = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: formData });
+      const result = await response.json();
+      if (result.success) {
+        goTo(4);
+      } else {
+        console.error('Web3Forms error:', result);
+        alert('Houve um problema no envio: ' + (result.message || 'erro desconhecido') + '. Por favor, tente novamente ou entre em contacto pelo WhatsApp.');
+        btn.disabled = false;
+        btn.innerHTML = 'Enviar Formulário →';
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Houve um problema no envio. Verifique sua conexão e tente novamente, ou entre em contacto pelo WhatsApp.');
+      btn.disabled = false;
+      btn.innerHTML = 'Enviar Formulário →';
+    }
+  });
+</script>
 </body>
 </html>
