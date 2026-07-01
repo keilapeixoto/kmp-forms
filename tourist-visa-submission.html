@@ -487,7 +487,8 @@
     /* Área de impressão (comprovante em PDF) */
     #print-area { display: none; }
     @media print {
-      body { background: #fff !important; }
+      html, body { height: auto !important; }
+      body { background: #fff !important; min-height: 0 !important; }
       .topbar, #app { display: none !important; }
       #print-area { display: block !important; }
       .print-doc { max-width: 100%; padding: 0; font-family: 'Outfit', sans-serif; color: #1a1a1a; }
@@ -498,6 +499,7 @@
       .print-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
       .print-date { font-size: 12px; color: #6b7280; margin-bottom: 18px; }
       .print-table { width: 100%; border-collapse: collapse; }
+      .print-table tr { break-inside: avoid; page-break-inside: avoid; }
       .print-table td { padding: 7px 10px; border-bottom: 1px solid #e5e7eb; font-size: 12.5px; vertical-align: top; }
       .print-table td.pl { font-weight: 600; width: 38%; color: #6b7280; }
       .print-table td.pv { color: #1a1a1a; }
@@ -534,7 +536,7 @@ const SECTIONS = [
 
 const WEB3FORMS_KEY = "eb911200-f515-4a77-afbf-61c4f99be8cf";
 const DRAFT_KEY = "kmp_form600_draft";
-const FORM_VERSION = "2026.06.29"; // selo de versão para conferir o deploy
+const FORM_VERSION = "2026.06.29c"; // selo de versão para conferir o deploy
 
 let step = 0;
 let f = {};
@@ -790,9 +792,7 @@ function renderStep() {
         input("enderecoAustralia","Hotel, casa de amigo/familiar / Hotel, friend's house, etc."))}
       ${q(label(41,"Cidades ou regiões que pretende visitar","Cities or regions you plan to visit") +
         input("cidadesVisitar","Ex: Sydney, Melbourne, Gold Coast"))}
-      ${q(label(42,"Você tem passagem aérea comprada?","Have you purchased airline tickets?") +
-        radio("passagemComprada",["SIM/YES","NÃO/NO"]))}
-      ${q(label(43,"Alguém está te acompanhando nesta viagem?","Is anyone travelling with you?") +
+      ${q(label(42,"Alguém está te acompanhando nesta viagem?","Is anyone travelling with you?") +
         radio("acompanhante",["SIM/YES","NÃO/NO"]) +
         conditional(f.acompanhante === "SIM/YES",
           input("acompanhanteDetalhe","Nome(s) e relação / Name(s) and relationship")))}
@@ -800,66 +800,66 @@ function renderStep() {
 
     case 5: return `
       ${divider("Situação Profissional / Employment")}
-      ${q(label(44,"Situação profissional atual","Current employment status",true) +
+      ${q(label(43,"Situação profissional atual","Current employment status",true) +
         select("situacao",["Empregado(a)/Employed","Autônomo(a)/Self-employed","Empresário(a)/Business owner","Aposentado(a)/Retired","Estudante/Student","Do lar/Homemaker","Desempregado(a)/Unemployed"]))}
       ${row2(
-        q(label(45,"Nome da empresa / instituição","Employer/company name") + input("empresa","")),
-        q(label(46,"Cargo / função","Job title/position") + input("cargo",""))
+        q(label(44,"Nome da empresa / instituição","Employer/company name") + input("empresa","")),
+        q(label(45,"Cargo / função","Job title/position") + input("cargo",""))
       )}
-      ${q(label(47,"Endereço da empresa","Employer's address") + input("endEmpresa",""))}
-      ${q(label(48,"Telefone da empresa","Employer's phone") + input("telEmpresa","(00) 0000-0000"))}
+      ${q(label(46,"Endereço da empresa","Employer's address") + input("endEmpresa",""))}
+      ${q(label(47,"Telefone da empresa","Employer's phone") + input("telEmpresa","(00) 0000-0000"))}
       ${divider("Informações Financeiras / Financial Details")}
-      ${q(label(49,"Quem custeará sua viagem?","Who will pay for your visit to Australia?",true) +
+      ${q(label(48,"Quem custeará sua viagem?","Who will pay for your visit to Australia?",true) +
         select("quemPaga",["Eu mesmo(a)/Self","Cônjuge/parceiro(a)/Spouse/Partner","Pais/Parents","Empresa/Employer","Patrocinador na Austrália/Sponsor in Australia","Outro/Other"]))}
-      ${q(label(50,"Renda mensal aproximada (R$)","Approximate monthly income (BRL)",true) +
+      ${q(label(49,"Renda mensal aproximada (R$)","Approximate monthly income (BRL)",true) +
         select("renda",["Até R$ 3.000","R$ 3.001 a R$ 6.000","R$ 6.001 a R$ 10.000","R$ 10.001 a R$ 20.000","Acima de R$ 20.000"]))}
-      ${q(label(51,"Valor estimado em fundos disponíveis para a viagem","Estimated funds available for the trip") +
+      ${q(label(50,"Valor estimado em fundos disponíveis para a viagem","Estimated funds available for the trip") +
         input("fundos","Ex: R$ 25.000 / AUD 7.000"))}
     `;
 
     case 6: return `
-      ${q(label(52,"Você já visitou a Austrália antes?","Have you previously visited Australia?",true) +
+      ${q(label(51,"Você já visitou a Austrália antes?","Have you previously visited Australia?",true) +
         radio("jaVisitouAustralia",["SIM/YES","NÃO/NO"]) +
         conditional(f.jaVisitouAustralia === "SIM/YES",
           textarea("jaVisitouAustraliaDetalhe","Datas, duração, tipo de visto / Dates, length of stay, visa type")))}
-      ${q(label(53,"Você já solicitou visto para a Austrália antes?","Have you previously applied for a visa to Australia?",true) +
+      ${q(label(52,"Você já solicitou visto para a Austrália antes?","Have you previously applied for a visa to Australia?",true) +
         radio("jaSolicitouVisto",["SIM/YES","NÃO/NO"]) +
         conditional(f.jaSolicitouVisto === "SIM/YES",
           textarea("jaSolicitouVistoDetalhe","Tipo de visto, data, resultado / Visa type, date, outcome")))}
-      ${q(label(54,"Você já solicitou visto de residência permanente na Austrália nos últimos 5 anos?","Have you applied for permanent residence in Australia in the last 5 years?") +
+      ${q(label(53,"Você já solicitou visto de residência permanente na Austrália nos últimos 5 anos?","Have you applied for permanent residence in Australia in the last 5 years?") +
         radio("residenciaPerm",["SIM/YES","NÃO/NO"]) +
         conditional(f.residenciaPerm === "SIM/YES",
           input("residenciaPermDetalhe","Detalhes / Details")))}
-      ${q(label(55,"Quais países você já visitou nos últimos 10 anos?","Which countries have you visited in the last 10 years?") +
+      ${q(label(54,"Quais países você já visitou nos últimos 10 anos?","Which countries have you visited in the last 10 years?") +
         textarea("paisesVisitados","Liste os países e datas aproximadas / List countries and approximate dates",4))}
-      ${q(label(56,"Você (ou qualquer pessoa incluída nesta aplicação) possui ou já possuiu visto para a Austrália ou qualquer outro país?","Have you, or any person included in this application, held or currently hold a visa to Australia or any other country?",true) +
+      ${q(label(55,"Você (ou qualquer pessoa incluída nesta aplicação) possui ou já possuiu visto para a Austrália ou qualquer outro país?","Have you, or any person included in this application, held or currently hold a visa to Australia or any other country?",true) +
         hint("Em quais países você (e seu partner, se houver) já teve ou tem visto?") +
         textarea("vistosAnteriores","Descreva / Describe",4))}
     `;
 
     case 7: return `
       ${divider("Declaração de Saúde / Health Declaration")}
-      ${q(label(57,"Você (ou qualquer pessoa incluída nesta aplicação) tem alguma condição de saúde que possa requerer tratamento médico durante a estadia na Austrália?","Do you, or any person included in this application, have any health concerns that may require treatment during the stay?",true) +
+      ${q(label(56,"Você (ou qualquer pessoa incluída nesta aplicação) tem alguma condição de saúde que possa requerer tratamento médico durante a estadia na Austrália?","Do you, or any person included in this application, have any health concerns that may require treatment during the stay?",true) +
         radio("saude",["SIM/YES","NÃO/NO"]) +
         conditional(f.saude === "SIM/YES",
           textarea("saudeDetalhe","Descreva / Describe")))}
-      ${q(label(58,"Você pretende trabalhar ou prestar serviços profissionais na Austrália durante sua estadia?","Do you intend to work or provide professional services in Australia during your stay?",true) +
+      ${q(label(57,"Você pretende trabalhar ou prestar serviços profissionais na Austrália durante sua estadia?","Do you intend to work or provide professional services in Australia during your stay?",true) +
         radio("trabalharAustralia",["SIM/YES","NÃO/NO"]))}
       ${divider("Declaração de Caráter / Character Declaration")}
-      ${q(label(59,"Você (ou qualquer pessoa incluída nesta aplicação) já foi condenado(a) por algum crime em qualquer país?","Have you, or any person included in this application, ever been convicted of a crime in any country?",true) +
+      ${q(label(58,"Você (ou qualquer pessoa incluída nesta aplicação) já foi condenado(a) por algum crime em qualquer país?","Have you, or any person included in this application, ever been convicted of a crime in any country?",true) +
         radio("crime",["SIM/YES","NÃO/NO"]) +
         conditional(f.crime === "SIM/YES",
           textarea("crimeDetalhe","Descreva: crime, país, data, pena / Describe: offence, country, date, sentence")))}
-      ${q(label(60,"Você (ou qualquer pessoa incluída nesta aplicação) já foi acusado(a) de algum crime pendente?","Have you, or any person included in this application, been charged with any offence awaiting legal action?",true) +
+      ${q(label(59,"Você (ou qualquer pessoa incluída nesta aplicação) já foi acusado(a) de algum crime pendente?","Have you, or any person included in this application, been charged with any offence awaiting legal action?",true) +
         radio("acusacao",["SIM/YES","NÃO/NO"]) +
         conditional(f.acusacao === "SIM/YES",
           textarea("acusacaoDetalhe","Descreva / Describe")))}
-      ${q(label(61,"Você ou qualquer pessoa incluída nesta aplicação, já descumpriu condições de visto ou excedeu o período autorizado de permanência em qualquer país?","Has the applicant, or any person included in this application, ever not complied with visa conditions or overstayed in Australia or any other country?",true) +
+      ${q(label(60,"Você ou qualquer pessoa incluída nesta aplicação, já descumpriu condições de visto ou excedeu o período autorizado de permanência em qualquer país?","Has the applicant, or any person included in this application, ever not complied with visa conditions or overstayed in Australia or any other country?",true) +
         hint("Você (ou seu partner, se houver) já descumpriram as condições de algum visto na Austrália ou em outro país?") +
         radio("descumpriu",["SIM/YES","NÃO/NO"]) +
         conditional(f.descumpriu === "SIM/YES",
           textarea("descumpriuDetalhe","Descreva / Describe")))}
-      ${q(label(62,"Você ou qualquer pessoa incluída nesta aplicação, já teve um pedido de visto recusado ou cancelado em qualquer país?","Has the applicant, or any person included in this application, ever had a visa application refused or cancelled in any country?",true) +
+      ${q(label(61,"Você ou qualquer pessoa incluída nesta aplicação, já teve um pedido de visto recusado ou cancelado em qualquer país?","Has the applicant, or any person included in this application, ever had a visa application refused or cancelled in any country?",true) +
         radio("recusado",["SIM/YES","NÃO/NO"]) +
         conditional(f.recusado === "SIM/YES",
           textarea("recusadoDetalhe","Descreva / Describe")))}
@@ -872,11 +872,11 @@ function renderStep() {
       </div>
       ${divider("Upload de Documentos / Document Upload")}
       ${fileUpload("passaporte","Cópia do passaporte (página de dados) / Passport bio page")}
-      ${fileUpload("foto","Foto 3x4 ou 5x7 (fundo branco) / Passport photo (white background)")}
-      ${fileUpload("renda","Comprovante de renda / Proof of income")}
-      ${fileUpload("extrato","Extrato bancário (últimos 3 meses) / Bank statement (last 3 months)")}
+      ${fileUpload("renda","Comprovante de renda ou holerite, do solicitante ou do sponsor (parente de primeiro grau) / Proof of income or payslip, from the applicant or sponsor (first degree relative)")}
+      ${fileUpload("extrato","Extrato bancário dos últimos 3 meses, do solicitante ou do sponsor (parente de primeiro grau). Holerite também aceito / Bank statement (last 3 months), from the applicant or sponsor. Payslip also accepted")}
       ${fileUpload("vinculo","Comprovante de vínculo (trabalho/estudo) / Proof of ties (work/study)")}
       ${fileUpload("itinerario","Itinerário de viagem, se houver / Travel itinerary, if applicable")}
+      ${fileUpload("outros","Outros documentos que queira incluir / Any other documents you wish to include")}
       ${divider("Assinatura / Signature")}
       ${q(label(null,"Assinatura","Signature",true) +
         hint("Digite seu nome completo como assinatura digital / Type your full name as digital signature") +
@@ -938,7 +938,6 @@ function buildSummaryPairs() {
     ["Tempo de permanência", f.tempoPermanencia],
     ["Endereço na Austrália", f.enderecoAustralia],
     ["Cidades a visitar", f.cidadesVisitar],
-    ["Passagem comprada", f.passagemComprada],
     ["Acompanhante na viagem", f.acompanhante === "SIM/YES" ? f.acompanhanteDetalhe : null],
     // Trabalho e finanças
     ["Situação profissional", f.situacao],
@@ -972,11 +971,11 @@ function buildSummaryPairs() {
 function buildFilePairs() {
   const FILE_LABELS = {
     passaporte: "Documento(s): Passaporte",
-    foto: "Documento(s): Foto",
-    renda: "Documento(s): Comprovante de renda",
+    renda: "Documento(s): Comprovante de renda/holerite",
     extrato: "Documento(s): Extrato bancário",
     vinculo: "Documento(s): Comprovante de vínculo",
     itinerario: "Documento(s): Itinerário de viagem",
+    outros: "Documento(s): Outros",
   };
   return Object.keys(FILE_LABELS).map(id => {
     const v = f[`file_${id}`];
