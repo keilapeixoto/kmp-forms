@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KMP Consulting | Programa Elevate | Proposta Comercial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange: #F27B20;
+    --graphite: #2C2C2C;
+    --bg: #F8F7F5;
+    --soft: #EDEAE5;
+    --line: #E0DCD5;
+    --muted: #6B6B6B;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 300;
+    color: var(--graphite);
+    background: var(--bg);
+    font-size: 15px;
+    line-height: 1.75;
+  }
+  h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif; font-weight: 600; line-height: 1.2; }
+
+  .page {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 64px 56px;
+    background: var(--bg);
+  }
+
+  /* ---------- Cover ---------- */
+  .cover {
+    min-height: 96vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+  }
+  .cover .lockup {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 700;
+    font-size: 34px;
+    letter-spacing: 0.5px;
+  }
+  .cover .lockup span { color: var(--orange); }
+  .cover-center { margin: auto 0; padding: 60px 0; }
+  .cover-eyebrow {
+    font-size: 12px;
+    letter-spacing: 3.5px;
+    text-transform: uppercase;
+    color: var(--orange);
+    font-weight: 500;
+    margin-bottom: 22px;
+  }
+  .cover h1 {
+    font-size: 58px;
+    font-weight: 600;
+    margin-bottom: 18px;
+  }
+  .cover .subtitle {
+    font-size: 19px;
+    font-weight: 300;
+    color: var(--muted);
+    max-width: 560px;
+    margin-bottom: 44px;
+  }
+  .cover-meta {
+    border-top: 1px solid var(--line);
+    padding-top: 28px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 40px;
+    font-size: 14px;
+  }
+  .cover-meta .label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 3px;
+  }
+  .cover-tagline {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-style: italic;
+    color: var(--graphite);
+  }
+  .cover-tagline em { color: var(--orange); font-style: italic; }
+
+  /* ---------- Editable field ---------- */
+  .editable {
+    display: inline-block;
+    min-width: 180px;
+    border-bottom: 1.5px dashed var(--orange);
+    padding: 0 4px;
+    outline: none;
+    font-weight: 400;
+  }
+  .edit-hint {
+    background: #FDF1E7;
+    border-left: 3px solid var(--orange);
+    padding: 12px 18px;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 36px;
+  }
+
+  /* ---------- Sections ---------- */
+  section { margin-bottom: 56px; }
+  .section-number {
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--orange);
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+  section h2 {
+    font-size: 32px;
+    margin-bottom: 20px;
+  }
+  section h3 {
+    font-size: 22px;
+    margin: 28px 0 12px;
+  }
+  section h4 {
+    font-size: 18px;
+    margin: 22px 0 8px;
+    color: var(--graphite);
+  }
+  p { margin-bottom: 14px; }
+  p.lead { font-size: 17px; font-weight: 400; }
+  strong { font-weight: 500; }
+
+  ul.clean { list-style: none; margin: 14px 0 20px; }
+  ul.clean li {
+    padding: 9px 0 9px 26px;
+    position: relative;
+    border-bottom: 1px solid var(--line);
+  }
+  ul.clean li:last-child { border-bottom: none; }
+  ul.clean li::before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 18px;
+    width: 7px;
+    height: 7px;
+    background: var(--orange);
+    border-radius: 50%;
+  }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 0 44px; }
+  @media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+
+  .callout {
+    background: #FFFFFF;
+    border-left: 4px solid var(--orange);
+    padding: 22px 26px;
+    margin: 24px 0;
+  }
+  .callout p:last-child { margin-bottom: 0; }
+
+  .quiet-box {
+    background: var(--soft);
+    padding: 22px 26px;
+    margin: 24px 0;
+    font-size: 14px;
+  }
+  .quiet-box p:last-child { margin-bottom: 0; }
+
+  /* ---------- Phase blocks ---------- */
+  .phase {
+    background: #FFFFFF;
+    padding: 26px 30px;
+    margin-bottom: 18px;
+    border: 1px solid var(--line);
+    break-inside: avoid;
+  }
+  .phase .phase-tag {
+    font-size: 11px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--orange);
+    font-weight: 500;
+  }
+  .phase h3 { margin: 6px 0 10px; }
+  .phase ul.clean li { border-bottom: none; padding: 4px 0 4px 24px; }
+  .phase ul.clean li::before { top: 13px; }
+
+  /* ---------- Pillars ---------- */
+  .pillar-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 640px) { .pillar-grid { grid-template-columns: 1fr; } }
+  .pillar {
+    background: #FFFFFF;
+    border: 1px solid var(--line);
+    padding: 20px 22px;
+    break-inside: avoid;
+  }
+  .pillar .num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 30px;
+    font-weight: 600;
+    color: var(--orange);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .pillar h4 { margin: 0 0 6px; font-size: 17px; font-family: 'Outfit', sans-serif; font-weight: 500; }
+  .pillar p { font-size: 13.5px; color: var(--muted); margin: 0; line-height: 1.6; }
+
+  /* ---------- Tables ---------- */
+  table { width: 100%; border-collapse: collapse; margin: 18px 0 24px; font-size: 14px; }
+  th {
+    text-align: left;
+    font-weight: 500;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 2px solid var(--graphite);
+    padding: 10px 12px 8px;
+  }
+  td { padding: 11px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+
+  /* ---------- Investment cards ---------- */
+  .invest-card {
+    background: #FFFFFF;
+    border: 1px solid var(--line);
+    margin-bottom: 28px;
+    break-inside: avoid;
+  }
+  .invest-card.featured { border: 2px solid var(--orange); position: relative; }
+  .invest-card.featured .flag {
+    position: absolute;
+    top: -13px;
+    left: 30px;
+    background: var(--orange);
+    color: #FFFFFF;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 500;
+    padding: 4px 14px;
+  }
+  .invest-head {
+    padding: 28px 32px 20px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .invest-head h3 { margin: 0; font-size: 26px; }
+  .invest-head .duration {
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .invest-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 34px;
+    font-weight: 600;
+    color: var(--orange);
+    white-space: nowrap;
+  }
+  .invest-price small {
+    font-family: 'Outfit', sans-serif;
+    font-size: 12px;
+    color: var(--muted);
+    display: block;
+    text-align: right;
+    letter-spacing: 1px;
+  }
+  .invest-body { padding: 24px 32px 28px; }
+  .invest-body h4 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--orange);
+    margin: 18px 0 8px;
+  }
+  .invest-body h4:first-child { margin-top: 0; }
+  .invest-body ul.clean { margin: 6px 0 8px; }
+  .invest-body ul.clean li { border-bottom: none; padding: 4px 0 4px 24px; font-size: 14px; }
+  .invest-body ul.clean li::before { top: 13px; width: 6px; height: 6px; }
+
+  /* ---------- Footer ---------- */
+  .doc-footer {
+    border-top: 1px solid var(--line);
+    margin-top: 60px;
+    padding-top: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .doc-footer .lockup-sm {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--graphite);
+  }
+  .doc-footer .lockup-sm span { color: var(--orange); }
+
+  .signature-block { margin-top: 44px; }
+  .signature-line {
+    width: 300px;
+    border-bottom: 1px solid var(--graphite);
+    margin-bottom: 8px;
+    height: 44px;
+  }
+
+  /* ---------- Print ---------- */
+  .page-break { break-before: page; }
+  @media print {
+    body { background: #FFFFFF; font-size: 12.5px; }
+    .page { max-width: 100%; padding: 0; background: #FFFFFF; }
+    .cover { min-height: 92vh; }
+    .edit-hint { display: none; }
+    .editable { border-bottom: none; min-width: 0; }
+    .no-print { display: none; }
+    section { margin-bottom: 34px; }
+    section h2 { font-size: 26px; }
+    .phase, .pillar, .invest-card, .callout, .quiet-box, table { break-inside: avoid; }
+    a { color: inherit; text-decoration: none; }
+    @page { size: A4; margin: 18mm 16mm; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- 1. CAPA -->
+  <div class="cover">
+    <div class="lockup">kmp consulting<span>.</span></div>
+
+    <div class="cover-center">
+      <div class="cover-eyebrow">Proposta Comercial Confidencial</div>
+      <h1>Programa Elevate</h1>
+      <p class="subtitle">Transformação operacional e desenvolvimento de capacidade interna para agências de educação internacional na Austrália</p>
+
+      <div class="cover-meta">
+        <div>
+          <span class="label">Preparada para</span>
+          <span class="editable" contenteditable="true">[Nome da Agência]</span>
+        </div>
+        <div>
+          <span class="label">Preparada por</span>
+          Keila Mayara Peixoto, KMP Consulting
+        </div>
+        <div>
+          <span class="label">Local e data</span>
+          Sydney, Austrália, julho de 2026
+        </div>
+        <div>
+          <span class="label">Validade da proposta</span>
+          30 dias a partir da data de emissão
+        </div>
+      </div>
+    </div>
+
+    <div class="cover-tagline">Estratégia que conecta. <em>Futuro que transforma.</em></div>
+  </div>
+
+  <div class="page-break"></div>
+
+  <div class="edit-hint no-print">Os campos com linha pontilhada laranja são editáveis. Clique sobre o nome da agência para digitar diretamente no documento antes de imprimir ou salvar em PDF. Esta caixa não aparece na impressão.</div>
+
+  <!-- 2. TITULO -->
+  <section>
+    <div class="section-number">Apresentação do programa</div>
+    <h2>Programa Elevate: estrutura, confiança e crescimento sustentável</h2>
+    <p class="lead">Um programa completo de transformação operacional desenhado para fortalecer os três pilares centrais de uma agência de educação internacional: o suporte administrativo de vistos, o departamento comercial e o student support.</p>
+  </section>
+
+  <!-- 3. INTRODUCAO -->
+  <section>
+    <div class="section-number">Seção 01</div>
+    <h2>Introdução</h2>
+    <p>A KMP Consulting agradece a confiança da <span class="editable" contenteditable="true">[Nome da Agência]</span> ao compartilhar de forma aberta os desafios atuais de sua operação. Esta proposta é resultado de uma escuta atenta e de uma leitura estratégica do momento em que a agência se encontra.</p>
+    <p>O setor de educação internacional na Austrália vive um período de transformação regulatória, maior exigência dos estudantes e competição crescente. Nesse cenário, as agências que prosperam não são necessariamente as maiores, mas aquelas que operam com processos claros, equipes seguras e uma experiência de cliente consistente do primeiro contato até a formatura.</p>
+    <p>Esta proposta apresenta um programa estruturado de desenvolvimento de capacidade interna, conduzido por Keila Mayara Peixoto, consultora com dezesseis anos de experiência acumulada em gestão comercial, liderança de equipes e educação internacional, incluindo atuação como diretora regional e diretora de vendas em agência de grande porte na Austrália, com responsabilidade direta sobre equipes comerciais, redes de agentes e departamentos de suporte ao estudante.</p>
+    <p>O objetivo não é entregar treinamentos isolados. O objetivo é construir, junto com a liderança da agência, uma operação mais segura, integrada e preparada para crescer.</p>
+  </section>
+
+  <!-- 4. CONTEXTO -->
+  <section>
+    <div class="section-number">Seção 02</div>
+    <h2>Contexto observado</h2>
+    <p>Após o primeiro contato com a liderança da agência, foi possível identificar um cenário comum a operações em fase de crescimento: a demanda evoluiu mais rápido do que a estrutura interna.</p>
+    <p>No departamento responsável pelos processos de vistos e suporte administrativo, uma funcionária nova assumiu responsabilidades sensíveis sem que existissem processos documentados, critérios claros de encaminhamento ou preparação para conversas delicadas com clientes. Ela demonstra boa vontade, mas ainda apresenta insegurança natural de quem não recebeu a estrutura necessária para atuar com confiança.</p>
+    <p>No departamento comercial, a equipe domina a venda de cursos de inglês e cursos VET, mas ainda opera de forma predominantemente transacional. Existe uma oportunidade clara e ainda pouco explorada de atuar de forma consultiva e de ampliar o portfólio para produtos de Higher Education, que oferecem maior valor por matrícula, ciclos de relacionamento mais longos e maior fidelização.</p>
+    <p>No student support, o atendimento acontece de forma reativa. Não existe hoje uma jornada estruturada de acompanhamento do estudante antes da viagem, na chegada e ao longo do curso, o que limita retenção, renovação e indicações.</p>
+    <div class="callout">
+      <p>Nenhum desses pontos representa uma falha das pessoas envolvidas. Eles representam a ausência de estrutura, processos e desenvolvimento. E é exatamente isso que este programa se propõe a construir.</p>
+    </div>
+  </section>
+
+  <!-- 5. DESAFIOS -->
+  <section>
+    <div class="section-number">Seção 03</div>
+    <h2>Principais desafios identificados</h2>
+    <div class="two-col">
+      <div>
+        <h4>Vistos e suporte administrativo</h4>
+        <ul class="clean">
+          <li>Insegurança da funcionária nova diante de situações sensíveis</li>
+          <li>Dificuldade em comunicar uma recusa de visto com preparo e empatia</li>
+          <li>Gestão de clientes ansiosos sem protocolo definido</li>
+          <li>Organização de documentos sem padrão ou conferência inicial</li>
+          <li>Controle de prazos dependente da memória individual</li>
+          <li>Preparação administrativa de respostas a requests sem estrutura</li>
+          <li>Registro de informações incompleto ou inconsistente</li>
+          <li>Ausência de critérios claros sobre quando encaminhar uma questão a um profissional devidamente qualificado</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Departamento comercial</h4>
+        <ul class="clean">
+          <li>Atuação transacional, limitada a cursos de inglês e VET</li>
+          <li>Pouco conhecimento sobre produtos de Higher Education</li>
+          <li>Qualificação de leads sem método</li>
+          <li>Objeções financeiras tratadas com desconto em vez de valor</li>
+          <li>Follow ups irregulares e sem cadência definida</li>
+          <li>Handover entre departamentos sem padrão</li>
+        </ul>
+        <h4>Student support</h4>
+        <ul class="clean">
+          <li>Atendimento reativo, acionado apenas quando o problema aparece</li>
+          <li>Ausência de jornada estruturada do estudante</li>
+          <li>Situações de vulnerabilidade sem protocolo de encaminhamento</li>
+          <li>Retenção, renovação e indicação sem estratégia ativa</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. RISCOS -->
+  <section>
+    <div class="section-number">Seção 04</div>
+    <h2>Riscos de manter a operação atual sem intervenção</h2>
+    <p>Manter o cenário atual não significa manter os resultados atuais. Significa aceitar uma exposição crescente a riscos operacionais, reputacionais e comerciais.</p>
+    <ul class="clean">
+      <li><strong>Risco reputacional.</strong> Uma recusa de visto mal comunicada ou um cliente ansioso mal conduzido se transforma rapidamente em avaliação negativa, reclamação pública e perda de indicações em uma comunidade altamente conectada.</li>
+      <li><strong>Risco operacional.</strong> Prazos perdidos, documentos desorganizados e registros incompletos geram retrabalho, atrasos em processos e desgaste com clientes e instituições parceiras.</li>
+      <li><strong>Risco de conformidade.</strong> Sem critérios claros de encaminhamento, existe o risco de a equipe administrativa ultrapassar, mesmo sem intenção, os limites do que pode ser tratado internamente, quando determinadas questões devem ser conduzidas exclusivamente por profissional devidamente autorizado.</li>
+      <li><strong>Risco de pessoas.</strong> Funcionários inseguros e sem suporte tendem a cometer mais erros, adoecer emocionalmente e deixar a empresa, levando consigo o conhecimento acumulado.</li>
+      <li><strong>Risco comercial.</strong> Enquanto a equipe permanece concentrada em produtos de menor valor, concorrentes estruturados capturam os estudantes de Higher Education, que representam maior receita e relacionamentos mais longos.</li>
+      <li><strong>Risco de crescimento.</strong> Sem processos documentados, cada novo funcionário reinicia o ciclo de insegurança, e o crescimento da agência passa a depender exclusivamente da presença constante da liderança.</li>
+    </ul>
+  </section>
+
+  <!-- 7. OPORTUNIDADES -->
+  <section>
+    <div class="section-number">Seção 05</div>
+    <h2>Oportunidades de melhoria</h2>
+    <p>Os mesmos pontos que hoje representam vulnerabilidades são, quando estruturados, os maiores diferenciais competitivos que a agência pode construir.</p>
+    <ul class="clean">
+      <li>Transformar o departamento de vistos em uma operação administrativa organizada, previsível e reconhecida pelos clientes pela clareza da comunicação</li>
+      <li>Elevar o departamento comercial de vendedor de cursos para consultor educacional, com domínio de todo o portfólio</li>
+      <li>Abrir a frente de Higher Education, com maior ticket médio, ciclos mais longos e posicionamento premium</li>
+      <li>Construir um student support proativo que gera retenção, renovação e indicações de forma sistemática</li>
+      <li>Integrar os departamentos com handovers claros, eliminando a sensação de recomeço que o cliente sente a cada transferência</li>
+      <li>Formar líderes internos capazes de manter e evoluir a operação com autonomia</li>
+    </ul>
+  </section>
+
+  <div class="page-break"></div>
+
+  <!-- 8. OBJETIVOS -->
+  <section>
+    <div class="section-number">Seção 06</div>
+    <h2>Objetivos do programa</h2>
+    <ul class="clean">
+      <li>Estruturar administrativamente o departamento de vistos e suporte, com processos, checklists, padrões de registro e protocolos de comunicação</li>
+      <li>Desenvolver a segurança e a competência da equipe para conduzir conversas sensíveis com preparo, empatia e clareza sobre os limites de sua atuação</li>
+      <li>Estabelecer critérios objetivos de encaminhamento para profissional devidamente qualificado sempre que uma questão exigir análise ou aconselhamento migratório</li>
+      <li>Transformar o departamento comercial em uma equipe consultiva, com método de qualificação, domínio de produtos e gestão estruturada de funil</li>
+      <li>Capacitar a equipe para apresentar e vender produtos de Higher Education com confiança e profundidade</li>
+      <li>Estruturar o student support como uma jornada completa, do pre departure à renovação e indicação</li>
+      <li>Integrar os três departamentos com fluxos, responsabilidades e indicadores compartilhados</li>
+      <li>Desenvolver a liderança interna para sustentar a operação após o encerramento do programa</li>
+    </ul>
+  </section>
+
+  <!-- 9. METODOLOGIA -->
+  <section>
+    <div class="section-number">Seção 07</div>
+    <h2>Metodologia de trabalho</h2>
+    <p>A metodologia da KMP Consulting parte de um princípio simples: capacidade interna não se transfere por palestra, se constrói por prática estruturada. O trabalho combina diagnóstico profundo, desenho de processos junto com a equipe, desenvolvimento prático com simulações e cenários reais, implementação acompanhada e monitoramento com indicadores.</p>
+    <p>Todo o conhecimento gerado permanece na agência, documentado em uma base de conhecimento própria, para que o programa deixe como legado uma operação autônoma, e não uma dependência da consultora.</p>
+  </section>
+
+  <!-- 10. FASES -->
+  <section>
+    <div class="section-number">Seção 08</div>
+    <h2>Fases de implantação</h2>
+
+    <div class="phase">
+      <div class="phase-tag">Fase 1</div>
+      <h3>Diagnóstico</h3>
+      <ul class="clean">
+        <li>Entrevistas estruturadas com a liderança</li>
+        <li>Conversas individuais com colaboradores de cada departamento</li>
+        <li>Análise da jornada do cliente do primeiro contato ao encerramento do caso</li>
+        <li>Identificação de riscos operacionais, reputacionais e de conformidade</li>
+        <li>Análise dos processos existentes, formais e informais</li>
+        <li>Identificação de gargalos e pontos de retrabalho</li>
+        <li>Definição de prioridades com a direção</li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <div class="phase-tag">Fase 2</div>
+      <h3>Desenho da operação</h3>
+      <ul class="clean">
+        <li>Criação ou revisão de processos por departamento</li>
+        <li>Definição de responsabilidades por função</li>
+        <li>Critérios de handover entre comercial, vistos e student support</li>
+        <li>Padrões de atendimento e de comunicação com clientes</li>
+        <li>Procedimentos de escalonamento e encaminhamento</li>
+        <li>Definição de indicadores por área</li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <div class="phase-tag">Fase 3</div>
+      <h3>Desenvolvimento da equipe</h3>
+      <ul class="clean">
+        <li>Treinamentos por departamento e por tema</li>
+        <li>Workshops práticos e colaborativos</li>
+        <li>Role plays de situações reais, incluindo comunicação de recusa e gestão de clientes ansiosos</li>
+        <li>Simulações de consulta educacional e apresentação de Higher Education</li>
+        <li>Estudos de caso do próprio setor</li>
+        <li>Análise de cenários reais da agência, preservada a confidencialidade</li>
+        <li>Desenvolvimento individual de líderes</li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <div class="phase-tag">Fase 4</div>
+      <h3>Implementação</h3>
+      <ul class="clean">
+        <li>Aplicação dos novos processos no dia a dia da operação</li>
+        <li>Utilização de modelos de comunicação, scripts e checklists</li>
+        <li>Adoção dos procedimentos operacionais documentados</li>
+        <li>Padrões de registro de informações no CRM e nos sistemas internos</li>
+        <li>Acompanhamento próximo da equipe durante a transição</li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <div class="phase-tag">Fase 5</div>
+      <h3>Monitoramento</h3>
+      <ul class="clean">
+        <li>Reuniões periódicas com a liderança</li>
+        <li>Auditorias por amostragem de casos, registros e comunicações</li>
+        <li>Revisão dos indicadores definidos na fase de desenho</li>
+        <li>Identificação de falhas recorrentes e suas causas</li>
+        <li>Ajustes nos processos com base em evidências</li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <div class="phase-tag">Fase 6</div>
+      <h3>Continuidade</h3>
+      <ul class="clean">
+        <li>Transferência estruturada de conhecimento para a equipe</li>
+        <li>Formação de líderes internos como guardiões dos processos</li>
+        <li>Consolidação da base de conhecimento da agência</li>
+        <li>Programa de onboarding para novos funcionários</li>
+        <li>Plano de continuidade para sustentar a evolução após o programa</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="page-break"></div>
+
+  <!-- 11. PILARES -->
+  <section>
+    <div class="section-number">Seção 09</div>
+    <h2>Pilares do programa</h2>
+    <div class="pillar-grid">
+      <div class="pillar"><div class="num">1</div><h4>Diagnóstico operacional e gestão de riscos</h4><p>Mapeamento completo da operação, identificação de vulnerabilidades e priorização das intervenções com base em risco e impacto.</p></div>
+      <div class="pillar"><div class="num">2</div><h4>Estruturação do departamento de vistos e suporte administrativo</h4><p>Processos, checklists, controle de prazos, padrões de registro e protocolos de comunicação para uma operação administrativa segura.</p></div>
+      <div class="pillar"><div class="num">3</div><h4>Desenvolvimento do departamento comercial</h4><p>Método de consulta educacional, qualificação de leads, gestão de funil e vendas consultivas em todo o portfólio.</p></div>
+      <div class="pillar"><div class="num">4</div><h4>Desenvolvimento de vendas de Higher Education</h4><p>Módulo específico para identificar, apresentar e converter estudantes de bacharelados, graduate certificates, graduate diplomas e mestrados.</p></div>
+      <div class="pillar"><div class="num">5</div><h4>Estruturação de student support</h4><p>Jornada completa do estudante, do pre departure aos primeiros noventa dias e ao longo de todo o ciclo acadêmico.</p></div>
+      <div class="pillar"><div class="num">6</div><h4>Integração entre departamentos</h4><p>Handovers claros, matriz de responsabilidades e fluxo único da jornada do cliente entre comercial, vistos e support.</p></div>
+      <div class="pillar"><div class="num">7</div><h4>Liderança e gestão de desempenho</h4><p>Desenvolvimento de líderes internos, rotinas de gestão, feedback estruturado e acompanhamento de desempenho.</p></div>
+      <div class="pillar"><div class="num">8</div><h4>Experiência do cliente</h4><p>Padrões de comunicação, gestão de expectativas, condução de situações sensíveis e consistência em todos os pontos de contato.</p></div>
+      <div class="pillar"><div class="num">9</div><h4>Processos, CRM e documentação</h4><p>Procedimentos operacionais documentados, padrões de registro, biblioteca de modelos e base de conhecimento viva.</p></div>
+      <div class="pillar"><div class="num">10</div><h4>Indicadores e melhoria contínua</h4><p>Definição, medição e revisão de indicadores por departamento, com ciclos regulares de ajuste e evolução.</p></div>
+    </div>
+  </section>
+
+  <!-- 12. ENTREGAS -->
+  <section>
+    <div class="section-number">Seção 10</div>
+    <h2>Entregas por departamento</h2>
+
+    <h3>Vistos e suporte administrativo</h3>
+    <p>O trabalho neste departamento é de natureza administrativa, organizacional e de desenvolvimento de equipe. O programa estrutura:</p>
+    <ul class="clean">
+      <li>Organização de novos casos e conferência inicial de documentação</li>
+      <li>Checklists por tipo de processo e por etapa</li>
+      <li>Controle de prazos com rotina de revisão e alertas</li>
+      <li>Follow up estruturado de documentos pendentes</li>
+      <li>Comunicação de pendências com modelos claros e cordiais</li>
+      <li>Rotina de atualização proativa de clientes sobre o andamento dos casos</li>
+      <li>Preparação administrativa de respostas a requests, com organização de documentos e matriz de evidências</li>
+      <li>Controle de qualidade antes de cada envio</li>
+      <li>Padrões de registro de informações em cada interação</li>
+      <li>Protocolos de comunicação de atrasos e de gestão de expectativas</li>
+      <li>Protocolo completo de comunicação de recusa de visto, incluindo preparo emocional, roteiro da conversa e gestão da reação do cliente</li>
+      <li>Gestão de reclamações com registro, resposta e aprendizado</li>
+      <li>Rotina de encerramento de casos e arquivamento</li>
+      <li>Critérios objetivos de encaminhamento para profissional devidamente qualificado</li>
+    </ul>
+    <div class="quiet-box">
+      <p><strong>Nota de escopo.</strong> Este programa não inclui, em nenhuma hipótese, análise de elegibilidade, interpretação de legislação migratória ou aconselhamento sobre vistos. Qualquer questão dessa natureza deverá ser conduzida por profissional devidamente autorizado. O papel do programa é justamente garantir que a equipe administrativa reconheça esses momentos com clareza e faça o encaminhamento correto, no tempo correto.</p>
+    </div>
+
+    <h3>Departamento comercial</h3>
+    <ul class="clean">
+      <li>Estrutura de consulta educacional, da abertura ao fechamento</li>
+      <li>Método de qualificação de leads com perguntas estratégicas</li>
+      <li>Análise do perfil acadêmico e profissional do cliente</li>
+      <li>Avaliação da capacidade financeira e dos objetivos de longo prazo</li>
+      <li>Conhecimento estruturado de produtos: ELICOS, VET e Higher Education</li>
+      <li>Domínio de pathways, requisitos acadêmicos, requisitos de inglês e intakes</li>
+      <li>Scholarships, ofertas condicionais e créditos acadêmicos</li>
+      <li>Construção de proposta de valor por perfil de cliente</li>
+      <li>Biblioteca de objeções, com foco especial em objeções financeiras</li>
+      <li>Cadência de follow ups e recuperação de leads inativos</li>
+      <li>Técnicas de conversão sem pressão, alinhadas ao posicionamento da agência</li>
+      <li>Handover padronizado para vistos e student support</li>
+      <li>Padrões de registro no CRM em cada etapa do funil</li>
+    </ul>
+
+    <h3>Higher Education, módulo específico</h3>
+    <ul class="clean">
+      <li>Como identificar potenciais estudantes de Higher Education na base atual e em novos leads</li>
+      <li>Como apresentar o valor de Higher Education além do preço</li>
+      <li>Como explicar as diferenças entre bacharelados, graduate certificates, graduate diplomas e mestrados</li>
+      <li>Como apresentar retorno acadêmico e profissional de cada qualificação</li>
+      <li>Como conduzir a conversa de preço com segurança, sem recorrer a desconto como primeiro recurso</li>
+      <li>Como apresentar instituições e diferenciar propostas</li>
+      <li>Como organizar documentos acadêmicos para aplicações</li>
+      <li>Como acompanhar aplicações e manter o cliente informado</li>
+      <li>Como desenvolver relacionamento de longo prazo com universidades e instituições de ensino superior</li>
+    </ul>
+
+    <h3>Student support</h3>
+    <ul class="clean">
+      <li>Jornada de pre departure, com orientações e checklist de preparação</li>
+      <li>Protocolo de chegada e recepção do estudante</li>
+      <li>Acompanhamento estruturado nos primeiros trinta, sessenta e noventa dias</li>
+      <li>Orientações sobre acomodação, transporte, conta bancária, telefonia e OSHC</li>
+      <li>Suporte à adaptação cultural</li>
+      <li>Orientação para busca de trabalho e construção de currículo no padrão australiano</li>
+      <li>Apoio em dificuldades acadêmicas e na comunicação com instituições</li>
+      <li>Gestão de reclamações com escuta, registro e resolução</li>
+      <li>Protocolo para situações de vulnerabilidade e emergências, com encaminhamento para serviços adequados, incluindo apoio de saúde mental</li>
+      <li>Estratégia ativa de retenção e renovação</li>
+      <li>Programa de indicação estruturado</li>
+      <li>Calendário de eventos e construção de comunidade</li>
+      <li>Pesquisa de satisfação com ciclos regulares de escuta</li>
+    </ul>
+
+    <h3>Ferramentas e materiais que poderão ser desenvolvidos</h3>
+    <div class="two-col">
+      <ul class="clean">
+        <li>Procedimentos operacionais por departamento</li>
+        <li>Scripts de atendimento e de conversas sensíveis</li>
+        <li>Modelos de email e de mensagens</li>
+        <li>Checklists por processo e por etapa</li>
+        <li>Matriz de responsabilidades</li>
+        <li>Matriz de escalonamento e encaminhamento</li>
+        <li>Fluxo visual da jornada do cliente</li>
+      </ul>
+      <ul class="clean">
+        <li>Biblioteca de objeções comerciais</li>
+        <li>Estrutura de consulta educacional</li>
+        <li>Formulários de qualificação e de registro</li>
+        <li>Modelos de follow up com cadência definida</li>
+        <li>Painel de indicadores por área</li>
+        <li>Agenda de reuniões e rituais de gestão</li>
+        <li>Plano de onboarding para novos funcionários</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="page-break"></div>
+
+  <!-- 13. INDICADORES -->
+  <section>
+    <div class="section-number">Seção 11</div>
+    <h2>Indicadores de sucesso</h2>
+    <p>O programa será acompanhado por indicadores objetivos, definidos junto com a liderança na fase de diagnóstico e revisados ao longo de todo o trabalho.</p>
+    <table>
+      <tr><th>Dimensão</th><th>Indicadores</th></tr>
+      <tr><td><strong>Operação</strong></td><td>Tempo de resposta ao cliente, qualidade dos documentos enviados, redução de retrabalho, cumprimento de prazos, cumprimento dos processos definidos</td></tr>
+      <tr><td><strong>Cliente</strong></td><td>Satisfação do cliente, volume e natureza das reclamações, indicações geradas</td></tr>
+      <tr><td><strong>Comercial</strong></td><td>Conversão de leads, conversão específica de Higher Education, recuperação de leads inativos</td></tr>
+      <tr><td><strong>Relacionamento</strong></td><td>Retenção de estudantes, renovação de matrículas e de serviços</td></tr>
+      <tr><td><strong>Equipe</strong></td><td>Nível de segurança da equipe, medido por autoavaliação estruturada no início, no meio e no fim do programa</td></tr>
+    </table>
+  </section>
+
+  <!-- 14. RESPONSABILIDADES CONSULTORA -->
+  <section>
+    <div class="section-number">Seção 12</div>
+    <h2>Responsabilidades da consultora</h2>
+    <ul class="clean">
+      <li>Conduzir o diagnóstico com profundidade, confidencialidade e respeito à equipe</li>
+      <li>Desenhar processos, protocolos e materiais alinhados à realidade da agência</li>
+      <li>Preparar e conduzir treinamentos, workshops, role plays e simulações</li>
+      <li>Acompanhar a implementação e apoiar a equipe durante a transição</li>
+      <li>Realizar auditorias por amostragem e revisar indicadores conforme o pacote contratado</li>
+      <li>Reportar avanços, riscos e recomendações à liderança com transparência</li>
+      <li>Transferir conhecimento de forma estruturada, garantindo autonomia ao final do programa</li>
+      <li>Manter sigilo absoluto sobre informações da agência, de seus clientes e de sua equipe</li>
+    </ul>
+  </section>
+
+  <!-- 15. RESPONSABILIDADES AGENCIA -->
+  <section>
+    <div class="section-number">Seção 13</div>
+    <h2>Responsabilidades da agência</h2>
+    <ul class="clean">
+      <li>Designar um ponto focal da liderança para acompanhar o programa</li>
+      <li>Garantir a disponibilidade da equipe para entrevistas, treinamentos e sessões práticas</li>
+      <li>Fornecer acesso às informações e aos processos necessários ao diagnóstico</li>
+      <li>Implementar no dia a dia os processos e padrões definidos em conjunto</li>
+      <li>Manter contrato ou acesso a profissional devidamente autorizado para as questões que exigirem aconselhamento migratório</li>
+      <li>Participar das reuniões de acompanhamento e das revisões de indicadores</li>
+      <li>Realizar os pagamentos conforme o cronograma acordado</li>
+    </ul>
+  </section>
+
+  <!-- 16. LIMITES DE ESCOPO -->
+  <section>
+    <div class="section-number">Seção 14</div>
+    <h2>Limites do escopo</h2>
+    <p>Para garantir clareza e proteger ambas as partes, os seguintes itens não fazem parte do escopo deste programa e, quando necessários, poderão ser cotados separadamente:</p>
+    <ul class="clean">
+      <li>Análise de elegibilidade, interpretação de legislação migratória ou qualquer forma de aconselhamento sobre vistos, que deverão ser conduzidos exclusivamente por profissional devidamente autorizado</li>
+      <li>Execução de atividades operacionais do dia a dia da agência</li>
+      <li>Gestão direta de funcionários da agência</li>
+      <li>Revisão individual de todos os casos em andamento</li>
+      <li>Implantação técnica de sistemas, CRM ou ferramentas de tecnologia</li>
+      <li>Criação ilimitada de documentos, além dos volumes previstos em cada pacote</li>
+      <li>Trabalhos adicionais não descritos nesta proposta</li>
+    </ul>
+  </section>
+
+  <div class="page-break"></div>
+
+  <!-- 17. INVESTIMENTO -->
+  <section>
+    <div class="section-number">Seção 15</div>
+    <h2>Opções de investimento</h2>
+    <p>O programa é oferecido em três formatos, desenhados para diferentes momentos e ambições. Todos compartilham a mesma metodologia e o mesmo padrão de qualidade. A diferença está na profundidade, na duração e no nível de acompanhamento.</p>
+
+    <!-- OPTION 1 -->
+    <div class="invest-card">
+      <div class="invest-head">
+        <div>
+          <h3>Foundation Program</h3>
+          <div class="duration">Três meses</div>
+        </div>
+        <div class="invest-price">AUD 10.000<small>investimento total</small></div>
+      </div>
+      <div class="invest-body">
+        <h4>Objetivo</h4>
+        <p>Estabilizar as áreas de maior risco e dar segurança imediata à equipe, com foco prioritário no departamento de vistos e suporte administrativo.</p>
+        <h4>Escopo e principais entregas</h4>
+        <ul class="clean">
+          <li>Diagnóstico inicial e identificação de riscos prioritários</li>
+          <li>Treinamentos prioritários para as situações de maior exposição</li>
+          <li>Estruturação inicial do departamento de vistos e suporte administrativo</li>
+          <li>Treinamento sobre preparação administrativa de requests</li>
+          <li>Treinamento completo sobre comunicação de recusa e gestão da reação do cliente</li>
+          <li>Introdução ao desenvolvimento comercial consultivo</li>
+          <li>Introdução à estruturação de student support</li>
+          <li>Modelos essenciais de comunicação e checklists prioritários</li>
+          <li>Plano de ação de noventa dias para continuidade interna</li>
+        </ul>
+        <h4>Frequência e volumes incluídos</h4>
+        <ul class="clean">
+          <li>Até seis sessões ao vivo</li>
+          <li>Até oito modelos de comunicação</li>
+          <li>Até três processos documentados</li>
+          <li>Uma reunião final de encerramento com a liderança</li>
+        </ul>
+        <h4>Resultado esperado</h4>
+        <p>Equipe administrativa mais segura, riscos imediatos sob controle e um caminho claro para os noventa dias seguintes.</p>
+        <h4>Perfil mais indicado</h4>
+        <p>Agências que precisam resolver vulnerabilidades urgentes antes de investir em um programa mais amplo, ou que desejam conhecer a metodologia da KMP Consulting em um primeiro ciclo.</p>
+      </div>
+    </div>
+
+    <!-- OPTION 2 -->
+    <div class="invest-card featured">
+      <div class="flag">Recomendado</div>
+      <div class="invest-head">
+        <div>
+          <h3>Growth and Implementation Program</h3>
+          <div class="duration">Seis meses</div>
+        </div>
+        <div class="invest-price">AUD 20.000<small>investimento total</small></div>
+      </div>
+      <div class="invest-body">
+        <h4>Objetivo</h4>
+        <p>Transformar os três departamentos de forma integrada, implementar os novos processos na prática e desenvolver a liderança para sustentar os resultados.</p>
+        <h4>Escopo e principais entregas</h4>
+        <ul class="clean">
+          <li>Diagnóstico completo dos três departamentos</li>
+          <li>Mapeamento integral da jornada do cliente</li>
+          <li>Desenvolvimento estruturado de vistos e suporte, comercial e student support</li>
+          <li>Treinamento completo de vendas consultivas</li>
+          <li>Módulo completo de Higher Education</li>
+          <li>Processos de handover entre departamentos</li>
+          <li>Procedimentos operacionais documentados</li>
+          <li>Biblioteca de modelos de comunicação e ferramentas</li>
+          <li>Definição e acompanhamento de indicadores por área</li>
+          <li>Coaching individual para líderes</li>
+          <li>Auditorias mensais por amostragem</li>
+          <li>Role plays e simulações de cenários reais</li>
+          <li>Reuniões mensais com a direção</li>
+        </ul>
+        <h4>Frequência e volumes incluídos</h4>
+        <ul class="clean">
+          <li>Até doze sessões ao vivo</li>
+          <li>Até vinte modelos e ferramentas</li>
+          <li>Até dez processos documentados</li>
+          <li>Auditorias mensais por amostragem</li>
+          <li>Suporte consultivo durante os seis meses</li>
+        </ul>
+        <h4>Resultado esperado</h4>
+        <p>Operação integrada, equipe confiante nos três departamentos, funil comercial estruturado, frente de Higher Education ativa e indicadores em rotina de acompanhamento.</p>
+        <h4>Perfil mais indicado</h4>
+        <p>Agências que identificaram vulnerabilidades em mais de um departamento e desejam uma transformação consistente, com implementação acompanhada e resultados mensuráveis.</p>
+      </div>
+    </div>
+
+    <!-- OPTION 3 -->
+    <div class="invest-card">
+      <div class="invest-head">
+        <div>
+          <h3>Strategic Transformation Partnership</h3>
+          <div class="duration">Doze meses</div>
+        </div>
+        <div class="invest-price">AUD 30.000<small>investimento total</small></div>
+      </div>
+      <div class="invest-body">
+        <h4>Objetivo</h4>
+        <p>Estabelecer uma parceria estratégica de longo prazo, consolidando a transformação e institucionalizando a melhoria contínua como cultura da agência.</p>
+        <h4>Escopo e principais entregas</h4>
+        <ul class="clean">
+          <li>Tudo o que está previsto no programa de seis meses</li>
+          <li>Acompanhamento estratégico ao longo de doze meses</li>
+          <li>Revisões trimestrais de processos e resultados</li>
+          <li>Programa contínuo de treinamento da equipe</li>
+          <li>Desenvolvimento aprofundado de líderes</li>
+          <li>Treinamento estruturado de novos funcionários</li>
+          <li>Programa train the trainer para multiplicadores internos</li>
+          <li>Construção e manutenção da base de conhecimento</li>
+          <li>Auditorias periódicas por amostragem</li>
+          <li>Revisão contínua de indicadores</li>
+          <li>Estratégias de retenção, renovação e expansão de Higher Education</li>
+          <li>Evolução contínua da experiência do cliente</li>
+          <li>Planejamento anual junto com a direção</li>
+        </ul>
+        <h4>Frequência e volumes incluídos</h4>
+        <ul class="clean">
+          <li>Até quatro horas de reuniões e treinamentos por mês</li>
+          <li>Uma reunião estratégica mensal com a direção</li>
+          <li>Uma auditoria trimestral por amostragem</li>
+          <li>Atualizações periódicas dos materiais desenvolvidos</li>
+        </ul>
+        <h4>Resultado esperado</h4>
+        <p>Agência com cultura de excelência consolidada, líderes formados, novos funcionários integrados com rapidez e uma operação que evolui de forma autônoma e sustentável.</p>
+        <h4>Perfil mais indicado</h4>
+        <p>Agências com visão de crescimento estruturado, que desejam um parceiro estratégico ao lado da direção durante um ciclo anual completo.</p>
+      </div>
+    </div>
+
+    <div class="quiet-box">
+      <p><strong>Condições comuns às três opções.</strong> Atividades operacionais do dia a dia, gestão direta de funcionários, revisão de todos os casos, implantação técnica de sistemas, criação ilimitada de documentos e trabalhos adicionais não estão incluídos em nenhum dos pacotes e poderão ser cotados separadamente. Todo o trabalho respeita integralmente os limites de escopo descritos na seção anterior.</p>
+    </div>
+  </section>
+
+  <!-- 18. PROXIMOS PASSOS -->
+  <section>
+    <div class="section-number">Seção 16</div>
+    <h2>Próximos passos</h2>
+    <ul class="clean">
+      <li>Reunião de alinhamento para esclarecer dúvidas sobre esta proposta e confirmar o pacote escolhido</li>
+      <li>Assinatura do acordo de serviços e do termo de confidencialidade</li>
+      <li>Pagamento da primeira parcela conforme o cronograma acordado</li>
+      <li>Agendamento das entrevistas de diagnóstico com liderança e equipe</li>
+      <li>Início oficial do programa, com apresentação do plano de trabalho à equipe</li>
+    </ul>
+    <p>Para agendar a reunião de alinhamento, entre em contato com a nossa equipe pelos canais indicados ao final deste documento.</p>
+  </section>
+
+  <!-- 19. TERMOS GERAIS -->
+  <section>
+    <div class="section-number">Seção 17</div>
+    <h2>Termos gerais</h2>
+    <ul class="clean">
+      <li>Esta proposta é válida por 30 dias a partir da data de emissão</li>
+      <li>Os valores estão expressos em dólares australianos e não incluem GST, quando aplicável</li>
+      <li>O cronograma de pagamentos será definido no acordo de serviços</li>
+      <li>Sessões canceladas com menos de 48 horas de antecedência poderão ser contabilizadas no volume do pacote</li>
+      <li>Todos os materiais desenvolvidos durante o programa passam a integrar o acervo da agência para uso interno</li>
+      <li>A metodologia, os formatos e as estruturas de trabalho permanecem propriedade intelectual da KMP Consulting</li>
+      <li>Ambas as partes se comprometem com confidencialidade integral sobre informações de clientes, equipe e operação</li>
+      <li>O acordo de serviços será regido pelas leis de New South Wales, Austrália</li>
+    </ul>
+  </section>
+
+  <!-- 20. ENCERRAMENTO -->
+  <section>
+    <div class="section-number">Seção 18</div>
+    <h2>Encerramento</h2>
+    <p class="lead">Toda agência de educação internacional chega a um momento em que o crescimento passa a depender menos de esforço e mais de estrutura.</p>
+    <p>A <span class="editable" contenteditable="true">[Nome da Agência]</span> chegou a esse momento em uma posição privilegiada: identificou suas vulnerabilidades antes que elas se transformassem em crises, e decidiu agir. Essa é, na experiência da KMP Consulting, a característica mais consistente das agências que se tornam referência em seus mercados.</p>
+    <p>O Programa Elevate não entrega apenas treinamentos. Ele entrega uma equipe que sabe o que fazer, como fazer e quando pedir apoio. Entrega processos que protegem a reputação construída ao longo de anos. Entrega uma frente comercial capaz de conversar de igual para igual com estudantes de Higher Education. E entrega, acima de tudo, autonomia: ao final do programa, a capacidade construída pertence à agência, à sua liderança e à sua equipe.</p>
+
+    <h3>Recomendação profissional</h3>
+    <p>Considerando que as necessidades identificadas atravessam os três departamentos, e que o momento pede não apenas correção de riscos, mas construção de capacidade comercial e de experiência do estudante, a recomendação da KMP Consulting é o <strong>Growth and Implementation Program</strong>, de seis meses.</p>
+    <p>Ele é o único formato que combina, em um mesmo ciclo, a estabilização do departamento de vistos, o desenvolvimento comercial completo, o módulo de Higher Education e a estruturação do student support, com implementação acompanhada e auditorias mensais. O Foundation Program segue sendo uma excelente porta de entrada para agências que precisam priorizar riscos imediatos, e a Strategic Transformation Partnership é o caminho natural para quem deseja consolidar a transformação em um ciclo anual. Para o cenário apresentado, o programa de seis meses oferece o equilíbrio mais preciso entre profundidade, ritmo e retorno.</p>
+    <p>Será um privilégio construir essa transformação ao lado da <span class="editable" contenteditable="true">[Nome da Agência]</span>.</p>
+
+    <div class="signature-block">
+      <div class="signature-line"></div>
+      <p><strong>Keila Mayara Peixoto</strong><br>
+      KMP Consulting<br>
+      Sydney, Austrália</p>
+    </div>
+  </section>
+
+  <div class="doc-footer">
+    <div class="lockup-sm">kmp consulting<span>.</span></div>
+    <div>Estratégia que conecta. Futuro que transforma.</div>
+    <div>vistos@kmpconsulting.com.au &nbsp;|&nbsp; WhatsApp +61 0451 051 806</div>
+  </div>
+
+</div>
+
+</body>
+</html>
