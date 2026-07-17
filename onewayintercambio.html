@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Programa Elevate · KMP Consulting</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#2C2C2C;
+    --ink-2:#353535;
+    --card:#3A3A3A;
+    --gold:#F27B20;
+    --gold-light:#F59A55;
+    --cream:#F8F7F5;
+    --cream-2:#FFFFFF;
+    --muted:#C9C4BD;
+    --muted-2:#6B6B6B;
+    --line:rgba(242,123,32,0.22);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ink);
+    color:var(--cream);
+    font-family:'Outfit',sans-serif;
+    font-weight:300;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:'Cormorant Garamond',serif;
+    font-weight:500;
+    letter-spacing:0.01em;
+  }
+  .eyebrow{
+    font-family:'Outfit',sans-serif;
+    font-size:0.72rem;
+    letter-spacing:0.22em;
+    text-transform:uppercase;
+    color:var(--gold-light);
+    font-weight:500;
+  }
+  .wrap{max-width:1120px; margin:0 auto; padding:0 32px;}
+  a{color:inherit; text-decoration:none;}
+
+  /* NAV */
+  nav{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    backdrop-filter:blur(10px);
+    background:rgba(23,23,18,0.82);
+    border-bottom:1px solid var(--line);
+  }
+  nav .wrap{display:flex; align-items:center; justify-content:space-between; height:72px;}
+  .logo{font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.25rem; color:var(--cream);}
+  .navlinks{display:flex; gap:36px; font-size:0.85rem; color:var(--muted);}
+  .navlinks a:hover{color:var(--gold-light);}
+  .nav-cta{
+    border:1px solid var(--gold); color:var(--gold-light);
+    padding:9px 20px; border-radius:2px; font-size:0.82rem;
+    transition:all .25s ease;
+  }
+  .nav-cta:hover{background:var(--gold); color:#FFFFFF;}
+  @media(max-width:760px){ .navlinks{display:none;} }
+
+  /* HERO */
+  header.hero{
+    min-height:100vh; display:flex; align-items:center;
+    position:relative; overflow:hidden;
+    padding:140px 0 80px;
+    background:
+      radial-gradient(ellipse 900px 500px at 85% 15%, rgba(242,123,32,0.14), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 10% 90%, rgba(242,123,32,0.08), transparent 60%),
+      var(--ink);
+  }
+  .hero-grid{display:grid; grid-template-columns:1.15fr 0.85fr; gap:56px; align-items:end;}
+  @media(max-width:900px){ .hero-grid{grid-template-columns:1fr;} }
+  .hero h1{
+    font-size:clamp(2.6rem, 5.4vw, 4.6rem);
+    line-height:1.04;
+    color:var(--cream);
+    margin:22px 0 26px;
+  }
+  .hero h1 em{color:var(--gold-light); font-style:italic;}
+  .hero p.lede{
+    font-size:1.08rem; color:var(--muted); max-width:44ch; margin-bottom:34px;
+  }
+  .cta-row{display:flex; gap:16px; flex-wrap:wrap;}
+  .btn-primary{
+    background:var(--gold); color:#FFFFFF; font-weight:600; font-size:0.92rem;
+    padding:15px 30px; border-radius:2px; display:inline-block;
+    transition:transform .25s ease, box-shadow .25s ease;
+  }
+  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 12px 28px rgba(242,123,32,0.30);}
+  .btn-ghost{
+    border:1px solid var(--line); color:var(--cream); font-size:0.92rem;
+    padding:15px 30px; border-radius:2px; display:inline-block; transition:border-color .25s ease;
+  }
+  .btn-ghost:hover{border-color:var(--gold);}
+
+  .hero-panel{
+    background:var(--card); border:1px solid var(--line); border-radius:6px;
+    padding:36px 32px;
+  }
+  .hero-panel .quote{font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.3rem; color:var(--cream); line-height:1.4;}
+  .hero-panel .quote-attr{margin-top:16px; font-size:0.8rem; color:var(--muted-2);}
+  .stat-row{display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:30px; border-top:1px solid var(--line); padding-top:26px;}
+  .stat-num{font-family:'Cormorant Garamond',serif; font-size:2.1rem; color:var(--gold-light); font-weight:600;}
+  .stat-label{font-size:0.72rem; color:var(--muted-2); margin-top:2px;}
+
+  /* SECTION SHELL */
+  section{padding:110px 0;}
+  .section-head{max-width:640px; margin-bottom:56px;}
+  .section-head h2{font-size:clamp(1.9rem,3.4vw,2.7rem); color:var(--cream); margin-top:14px;}
+  .section-head p{color:var(--muted); margin-top:16px; font-size:1.02rem;}
+  .light{background:var(--cream); color:var(--ink);}
+  .light .eyebrow{color:var(--gold);}
+  .light .section-head h2{color:var(--ink);}
+  .light .section-head p{color:var(--muted-2);}
+
+  /* DIAGNOSIS */
+  .diag-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:22px;}
+  @media(max-width:820px){.diag-grid{grid-template-columns:1fr;}}
+  .diag-card{
+    background:var(--cream-2); border-radius:6px; padding:30px 26px;
+    border:1px solid rgba(44,44,44,0.08); box-shadow:0 2px 12px rgba(44,44,44,0.04);
+  }
+  .diag-num{font-family:'Cormorant Garamond',serif; color:var(--gold); font-size:1.6rem; font-weight:600;}
+  .diag-card h3{font-size:1.15rem; color:var(--ink); margin:12px 0 10px; font-weight:500;}
+  .diag-card p{font-size:0.92rem; color:var(--muted-2);}
+
+  /* TOGGLE SIGNATURE ELEMENT */
+  .toggle-wrap{
+    background:var(--ink-2); border:1px solid var(--line); border-radius:8px;
+    padding:44px; margin-top:8px;
+  }
+  .toggle-switch{
+    display:inline-flex; background:var(--card); border-radius:30px; padding:4px;
+    border:1px solid var(--line); margin-bottom:36px;
+  }
+  .toggle-switch button{
+    font-family:'Outfit',sans-serif; font-size:0.85rem; padding:11px 26px; border-radius:26px;
+    background:transparent; border:none; color:var(--muted); cursor:pointer; transition:all .3s ease;
+  }
+  .toggle-switch button.active{background:var(--gold); color:#FFFFFF; font-weight:600;}
+  .toggle-panel{display:none; animation:fade .4s ease;}
+  .toggle-panel.active{display:grid; grid-template-columns:1fr 1fr; gap:40px;}
+  @media(max-width:760px){.toggle-panel.active{grid-template-columns:1fr;}}
+  @keyframes fade{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+  .toggle-panel h4{font-family:'Cormorant Garamond',serif; font-size:1.5rem; margin-bottom:12px;}
+  .toggle-panel.reactive h4{color:var(--muted);}
+  .toggle-panel.predictable h4{color:var(--gold-light);}
+  .toggle-panel p{color:var(--muted); font-size:0.98rem;}
+
+  /* METHOD */
+  .method-rail{display:grid; grid-template-columns:repeat(6,1fr); gap:14px;}
+  @media(max-width:900px){.method-rail{grid-template-columns:repeat(3,1fr);}}
+  @media(max-width:560px){.method-rail{grid-template-columns:repeat(2,1fr);}}
+  .method-step{
+    background:var(--cream-2); border-radius:6px; padding:22px 16px; min-height:190px;
+    position:relative; border:1px solid rgba(44,44,44,0.08);
+  }
+  .method-step .n{font-family:'Cormorant Garamond',serif; font-size:1.7rem; color:var(--gold); font-weight:600;}
+  .method-step h4{font-size:0.98rem; margin:10px 0 8px; color:var(--ink);}
+  .method-step p{font-size:0.78rem; color:var(--muted-2);}
+
+  /* HE / STUDENT split */
+  .split{display:grid; grid-template-columns:1fr 1fr; gap:2px; background:var(--line);}
+  @media(max-width:820px){.split{grid-template-columns:1fr;}}
+  .split-panel{background:var(--ink); padding:60px 48px;}
+  .split-panel.alt{background:var(--ink-2);}
+  .split-panel .eyebrow{margin-bottom:14px;}
+  .split-panel h3{font-size:1.7rem; color:var(--cream); margin-bottom:16px;}
+  .split-panel p{color:var(--muted); font-size:0.95rem; margin-bottom:18px;}
+  .split-panel ul{list-style:none;}
+  .split-panel li{
+    font-size:0.92rem; color:var(--cream); padding:10px 0; border-top:1px solid var(--line);
+  }
+  .split-panel li:first-of-type{border-top:none;}
+
+  /* ROI */
+  .roi-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:24px;}
+  @media(max-width:820px){.roi-grid{grid-template-columns:1fr;}}
+  .roi-card{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:36px 30px;}
+  .roi-num{font-family:'Cormorant Garamond',serif; font-size:3.2rem; color:var(--gold-light); font-weight:600;}
+  .roi-card h4{margin:6px 0 12px; font-size:1.05rem; color:var(--cream);}
+  .roi-card p{color:var(--muted); font-size:0.9rem;}
+
+  /* PRICING */
+  .price-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:22px;}
+  @media(max-width:900px){.price-grid{grid-template-columns:1fr;}}
+  .price-card{
+    background:var(--card); border:1px solid var(--line); border-radius:8px; padding:34px 28px;
+    display:flex; flex-direction:column;
+  }
+  .price-card.rec{border-color:var(--gold); background:linear-gradient(180deg, rgba(242,123,32,0.10), var(--card) 40%);}
+  .rec-tag{font-size:0.68rem; letter-spacing:0.18em; color:var(--gold-light); font-weight:600; margin-bottom:14px;}
+  .price-card h3{font-size:1.5rem; color:var(--cream);}
+  .price-card .dur{font-size:0.82rem; color:var(--muted-2); margin:4px 0 18px;}
+  .price-card .amount{font-family:'Cormorant Garamond',serif; font-size:2.3rem; color:var(--gold-light); font-weight:600; margin-bottom:14px;}
+  .price-card .desc{font-size:0.88rem; color:var(--muted); margin-bottom:20px; flex-grow:1;}
+  .price-card ul{list-style:none; margin-bottom:24px;}
+  .price-card li{font-size:0.84rem; color:var(--cream); padding:6px 0; padding-left:16px; position:relative;}
+  .price-card li::before{content:"—"; position:absolute; left:0; color:var(--gold);}
+  .price-card .cta{
+    text-align:center; padding:12px; border-radius:2px; border:1px solid var(--line); font-size:0.85rem;
+    transition:all .25s ease;
+  }
+  .price-card.rec .cta{background:var(--gold); color:#FFFFFF; border-color:var(--gold); font-weight:600;}
+  .price-card .cta:hover{border-color:var(--gold);}
+
+  /* CLOSING */
+  .closing{
+    background:linear-gradient(180deg, var(--ink), var(--ink-2));
+    text-align:center; padding:130px 0;
+  }
+  .closing h2{font-size:clamp(2.1rem,4vw,3.2rem); color:var(--cream); max-width:16ch; margin:18px auto 30px;}
+  .closing p{color:var(--muted); max-width:50ch; margin:0 auto 40px; font-size:1.02rem;}
+  .contact-row{display:flex; gap:28px; justify-content:center; flex-wrap:wrap; margin-top:44px; font-size:0.9rem; color:var(--muted);}
+  .contact-row a{color:var(--gold-light); border-bottom:1px solid transparent; transition:border-color .2s ease;}
+  .contact-row a:hover{border-color:var(--gold-light);}
+
+  footer{
+    border-top:1px solid var(--line); padding:36px 0; text-align:center;
+    color:var(--muted-2); font-size:0.78rem;
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="logo">kmp consulting.</div>
+    <div class="navlinks">
+      <a href="#diagnostico">Diagnóstico</a>
+      <a href="#metodo">Método</a>
+      <a href="#investimento">Investimento</a>
+      <a href="#contato">Contato</a>
+    </div>
+    <a href="#contato" class="nav-cta">Agendar alinhamento</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">Programa Elevate · One Way Intercâmbio</span>
+      <h1>Conhecimento individual<br>vira capacidade<br><em>organizacional.</em></h1>
+      <p class="lede">Vistos, comercial e student support estruturados com diagnóstico profundo, processos desenhados junto com quem executa e implementação acompanhada. Uma equipe com domínio de diferentes setores educacionais diversifica o portfólio e desenvolve jornadas de maior valor.</p>
+      <div class="cta-row">
+        <a href="#contato" class="btn-primary">Agendar reunião de alinhamento</a>
+        <a href="#investimento" class="btn-ghost">Ver opções de investimento</a>
+      </div>
+    </div>
+    <div class="hero-panel">
+      <p class="quote">"O legado é autonomia, não dependência."</p>
+      <p class="quote-attr">Keila Mayara Peixoto · KMP Consulting</p>
+
+    </div>
+  </div>
+</header>
+
+<section id="diagnostico" class="light">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Diagnóstico</span>
+      <h2>Três áreas concentram as vulnerabilidades hoje.</h2>
+      <p>A demanda evoluiu mais rápido que a estrutura interna. Nenhum destes pontos é falha das pessoas, é ausência de estrutura.</p>
+    </div>
+    <div class="diag-grid">
+      <div class="diag-card">
+        <div class="diag-num">01</div>
+        <h3>Vistos e suporte administrativo</h3>
+        <p>Equipe nova em uma área sensível, sem processos documentados nem critérios de encaminhamento.</p>
+      </div>
+      <div class="diag-card">
+        <div class="diag-num">02</div>
+        <h3>Comercial consultivo</h3>
+        <p>Domínio de ELICOS e VET, conhecimento limitado de Higher Education e trades. Consultas concentradas em preço e duração, sem investigação do histórico e dos objetivos do estudante.</p>
+      </div>
+      <div class="diag-card">
+        <div class="diag-num">03</div>
+        <h3>Student support</h3>
+        <p>Atendimento reativo, sem jornada estruturada antes, durante e após o embarque.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">A oportunidade</span>
+      <h2>De operação reativa para operação previsível.</h2>
+      <p>Compare os dois cenários e veja o que muda na prática, todos os dias, para a equipe da One Way Intercâmbio.</p>
+    </div>
+    <div class="toggle-wrap">
+      <div class="toggle-switch">
+        <button class="active" data-target="reactive">Hoje: reativa</button>
+        <button data-target="predictable">Com o programa: previsível</button>
+      </div>
+      <div class="toggle-panel reactive active" id="panel-reactive">
+        <div>
+          <h4>Como está</h4>
+          <p>Respostas improvisadas, informação que se perde entre departamentos e suporte acionado apenas quando o problema já aconteceu.</p>
+        </div>
+        <div>
+          <h4>O que isso custa</h4>
+          <p>Retrabalho contínuo, exposição de conformidade, e uma equipe que erra mais porque nunca teve critério documentado para se apoiar.</p>
+        </div>
+      </div>
+      <div class="toggle-panel predictable" id="panel-predictable">
+        <div>
+          <h4>Como fica</h4>
+          <p>Critérios claros, materiais prontos, rotina de indicadores e uma equipe preparada para conduzir clientes com segurança, em qualquer situação.</p>
+        </div>
+        <div>
+          <h4>O que isso gera</h4>
+          <p>Retenção maior, Higher Education ativa como frente comercial, e uma liderança com visibilidade real sobre a operação, não sobre a memória das pessoas.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="metodo" class="light">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Método</span>
+      <h2>Seis fases, um único ciclo integrado.</h2>
+      <p>Um ciclo prático e mensurável, sem transformar o programa em manual teórico.</p>
+    </div>
+    <div class="method-rail">
+      <div class="method-step"><div class="n">1</div><h4>Diagnosticar</h4><p>Entender a operação real, analisar casos e identificar riscos e oportunidades.</p></div>
+      <div class="method-step"><div class="n">2</div><h4>Desenhar</h4><p>Construir processos, responsabilidades, handovers e pontos de controle.</p></div>
+      <div class="method-step"><div class="n">3</div><h4>Treinar</h4><p>Desenvolver a equipe com simulações e casos reais da agência.</p></div>
+      <div class="method-step"><div class="n">4</div><h4>Implementar</h4><p>Acompanhar o uso dos processos na rotina e corrigir o que não funcionar.</p></div>
+      <div class="method-step"><div class="n">5</div><h4>Medir</h4><p>Indicadores para identificar evolução, retrabalho e pontos de atenção.</p></div>
+      <div class="method-step"><div class="n">6</div><h4>Continuidade</h4><p>Base de conhecimento e liderança preparada para sustentar a operação.</p></div>
+    </div>
+
+    <div style="margin-top:56px; max-width:760px;">
+      <h3 style="font-size:1.5rem; color:var(--ink); margin-bottom:14px;">Como o programa acontece na prática</h3>
+      <p style="color:var(--muted-2); font-size:0.98rem; margin-bottom:26px;">O trabalho não começa com um treinamento genérico nem com a entrega de modelos prontos. Primeiro, a KMP Consulting entra na realidade da One Way Intercâmbio para compreender como as decisões são tomadas, como as informações circulam entre os departamentos e onde estão os principais pontos de risco, retrabalho e perda de oportunidades.</p>
+
+      <h4 style="font-family:'Cormorant Garamond',serif; font-size:1.15rem; color:var(--gold); margin-bottom:8px;">1 · Diagnosticar</h4>
+      <p style="color:var(--muted-2); font-size:0.94rem; margin-bottom:20px;">Entrevistas com a liderança e os responsáveis por cada área, com análise de atendimentos comerciais, registros no CRM, handovers, cartas GS, conjuntos documentais e mensagens enviadas aos estudantes. Ao final, a liderança recebe um diagnóstico executivo com riscos, gargalos e ordem de prioridade para a implementação.</p>
+
+      <h4 style="font-family:'Cormorant Garamond',serif; font-size:1.15rem; color:var(--gold); margin-bottom:8px;">2 · Desenhar</h4>
+      <p style="color:var(--muted-2); font-size:0.94rem; margin-bottom:20px;">Os processos são construídos junto com quem os executa, compatíveis com o tamanho da equipe, as ferramentas disponíveis e o volume de estudantes. O handover entre comercial e vistos é definido, as responsabilidades e prazos ficam claros, os critérios de encaminhamento a profissional autorizado são estabelecidos e a jornada de student support é planejada.</p>
+
+      <h4 style="font-family:'Cormorant Garamond',serif; font-size:1.15rem; color:var(--gold); margin-bottom:8px;">3 · Treinar</h4>
+      <p style="color:var(--muted-2); font-size:0.94rem; margin-bottom:20px;">Simulações com perfis próximos aos estudantes que a One Way Intercâmbio recebe. O comercial aprende a aprofundar a conversa, investigar o histórico e apresentar alternativas com clareza. A área de vistos treina revisão criteriosa de cartas, documentos e inconsistências. O support treina contatos proativos, registro e encaminhamento correto de cada situação.</p>
+
+      <h4 style="font-family:'Cormorant Garamond',serif; font-size:1.15rem; color:var(--gold); margin-bottom:8px;">4 · Implementar</h4>
+      <p style="color:var(--muted-2); font-size:0.94rem; margin-bottom:20px;">A equipe usa os novos handovers, checklists e procedimentos em casos reais, com acompanhamento da KMP. Casos selecionados são analisados em conjunto, dúvidas são resolvidas e os materiais são ajustados conforme os problemas aparecem fora do papel. Muitos ajustes só surgem quando o procedimento entra na operação, e é por isso que esta fase existe.</p>
+
+      <h4 style="font-family:'Cormorant Garamond',serif; font-size:1.15rem; color:var(--gold); margin-bottom:8px;">5 · Medir</h4>
+      <p style="color:var(--muted-2); font-size:0.94rem; margin-bottom:20px;">Indicadores simples por área: conversão por consultor e por produto, handovers incompletos, retrabalho, tempo de resposta e renovações identificadas antecipadamente. A liderança aprende a interpretar o que os números mostram e onde intervir, não apenas a reportar.</p>
+
+      <h4 style="font-family:'Cormorant Garamond',serif; font-size:1.15rem; color:var(--gold); margin-bottom:8px;">6 · Continuidade</h4>
+      <p style="color:var(--muted-2); font-size:0.94rem;">Base de conhecimento organizada, responsáveis definidos por processo, rotina de auditorias e treinamentos e plano de onboarding para novos profissionais. O programa termina quando a agência sustenta a evolução sozinha. O legado é autonomia, não dependência.</p>
+    </div>
+  </div>
+</section>
+
+<section class="light">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Comercial consultivo</span>
+      <h2>Perfil, semente e ocupação.</h2>
+      <p>A venda de maior valor não é sobre o curso mais caro. É sobre o caminho certo para o estudante certo.</p>
+    </div>
+    <div class="diag-grid" style="grid-template-columns:1fr 1fr;">
+      <div class="diag-card">
+        <h3>Venda consultiva e leitura de contexto</h3>
+        <p style="margin-bottom:10px;">Metodologia de venda consultiva com conhecimento aprofundado do mercado educacional australiano. A equipe é treinada para investigar de forma estruturada o histórico acadêmico, profissional e financeiro e os objetivos de carreira do estudante, apresentando diferentes caminhos educacionais além da ideia inicial.</p>
+        <p>Para oportunidades que não se concretizam de imediato, uma cadência estruturada de follow ups mantém o relacionamento ativo até o momento da decisão.</p>
+      </div>
+      <div class="diag-card">
+        <h3>Portfólio além de ELICOS e VET</h3>
+        <p style="margin-bottom:10px;">Trades e Higher Education trabalhados com segurança, criando jornadas educacionais mais longas e de maior valor, com melhor aproveitamento da base atual e menos competição por preço.</p>
+        <p>A equipe é capacitada para compreender o contexto geral das jornadas educacionais e profissionais, reconhecer quando existe necessidade de orientação especializada e encaminhar ao profissional autorizado.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="split">
+  <div class="split-panel">
+    <span class="eyebrow">Operação de vistos</span>
+    <h3>Continuidade e controle após o fechamento</h3>
+    <p>Uma venda não termina na confirmação da matrícula. A receita se consolida quando o processo é conduzido com organização, coerência documental e critérios claros.</p>
+    <ul>
+      <li>Diagnóstico da estrutura atual: como as aplicações são preparadas, quais documentos são incluídos e por qual motivo, como os requests são administrados e como prazos e documentação adicional são controlados</li>
+      <li>Handover padronizado no momento do fechamento da venda, com checklist de informações obrigatórias e registro centralizado</li>
+      <li>Qualidade documental: preparação e revisão de cartas GS, matriz de evidências, verificação de consistência e controle de qualidade antes da submissão</li>
+      <li>Critérios de encaminhamento dos casos que exigem aconselhamento migratório a Agentes de Migração registrados</li>
+    </ul>
+  </div>
+  <div class="split-panel alt">
+    <span class="eyebrow">Student support</span>
+    <h3>A jornada completa do estudante</h3>
+    <p>Uma jornada de acompanhamento estruturada, da preparação pré embarque à renovação, orientada a retenção e indicação.</p>
+    <ul>
+      <li>Reunião pré embarque e follow ups de 30, 60 e 90 dias</li>
+      <li>Auditoria de follow ups, resolução de casos com parceiros e tempo de resposta</li>
+      <li>Avaliação de implementação de CRM integrado ao WhatsApp para o pós venda, otimizando o tempo da equipe em esclarecimentos recorrentes</li>
+    </ul>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Gestão comercial</span>
+      <h2>Da contagem de números ao diagnóstico de gargalos.</h2>
+      <p>Liderança que resolve, não apenas acompanha.</p>
+    </div>
+    <div class="diag-grid" style="background:transparent;">
+      <div class="diag-card" style="background:var(--card); border-color:var(--line);">
+        <div class="diag-num">01</div>
+        <h3 style="color:var(--cream);">Acompanhamento hoje</h3>
+        <p style="color:var(--muted);">Auditoria de como a gestão acompanha vendas: números reportados ou causas reais entendidas.</p>
+      </div>
+      <div class="diag-card" style="background:var(--card); border-color:var(--line);">
+        <div class="diag-num">02</div>
+        <h3 style="color:var(--cream);">Coaching de gargalos</h3>
+        <p style="color:var(--muted);">Liderança treinada para identificar o que trava o time, não só cobrar resultado.</p>
+      </div>
+      <div class="diag-card" style="background:var(--card); border-color:var(--line);">
+        <div class="diag-num">03</div>
+        <h3 style="color:var(--cream);">Treinamento contínuo</h3>
+        <p style="color:var(--muted);">Rotina de treinamentos frequentes, construída a partir das dores que o próprio time relata.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Entregas</span>
+      <h2>O que fica com a agência, em detalhe.</h2>
+      <p>Tudo documentado. Nada dependente da consultora após o encerramento.</p>
+    </div>
+    <div class="roi-grid">
+      <div class="roi-card">
+        <h4 style="font-family:'Cormorant Garamond',serif; font-size:1.4rem; color:var(--gold-light);">Processos</h4>
+        <ul style="list-style:none; margin-top:14px;">
+          <li style="padding:10px 0; border-top:1px solid var(--line); font-size:0.88rem;"><strong style="color:var(--cream); font-weight:500;">Procedimentos por departamento</strong><br><span style="color:var(--muted-2); font-size:0.8rem;">documentação formal do passo a passo de cada rotina crítica da operação</span></li>
+          <li style="padding:10px 0; border-top:1px solid var(--line); font-size:0.88rem;"><strong style="color:var(--cream); font-weight:500;">Fluxo visual da jornada do cliente</strong><br><span style="color:var(--muted-2); font-size:0.8rem;">representação completa da jornada, do primeiro contato à renovação</span></li>
+          <li style="padding:10px 0; border-top:1px solid var(--line); font-size:0.88rem;"><strong style="color:var(--cream); font-weight:500;">Matriz de responsabilidades</strong><br><span style="color:var(--muted-2); font-size:0.8rem;">definição formal de responsabilidades por função e etapa do processo</span></li>
+          <li style="padding:10px 0; border-top:1px solid var(--line); font-size:0.88rem;"><strong style="color:var(--cream); font-weight:500;">Matriz de escalonamento</strong><br><span style="color:var(--muted-2); font-size:0.8rem;">critérios objetivos para elevação de casos, incluindo encaminhamento a Agentes de Migração registrados</span></li>
+        </ul>
+      </div>
+      <div class="roi-card">
+        <h4 style="font-family:'Cormorant Garamond',serif; font-size:1.4rem; color:var(--gold-light);">Comunicação</h4>
+        <ul style="list-style:none; margin-top:14px;">
+          <li style="padding:10px 0; border-top:1px solid var(--line); font-size:0.88rem;"><strong style="color:var(--cream); font-weight:500;">Scripts de conversas sensíveis</strong><br><span style="color:var(--muted-2); font-size:0.8rem;">estruturas de comunicação profissional para recusas, atrasos e pendências</span></li>
+          <li style="padding:10px 0; border-top:1px solid var(--line); font-size:0.88rem;"><strong style="color:var(--cream); font-weight:500;">Modelos de email e mensagens</strong><br><span style="color:var(--muted-2); font-size:0.8rem;">comunicações padronizadas para cada etapa da jornada do cliente</span></li>
+          <li style="padding:10px 0; border-top:1px solid var(--line); font-size:0.88rem;"><strong style="color:var(--cream); font-weight:500;">Biblioteca de objeções comerciais</strong><br><span style="color:var(--muted-2); font-size:0.8rem;">argumentação estruturada para as objeções mais frequentes</span></li>
+          <li style="padding:10px 0; border-top:1px solid var(--line); font-size:0.88rem;"><strong style="color:var(--cream); font-weight:500;">Estrutura de consulta educacional</strong><br><span style="color:var(--muted-2); font-size:0.8rem;">roteiro consultivo com investigação de contexto e objetivos</span></li>
+        </ul>
+      </div>
+      <div class="roi-card">
+        <h4 style="font-family:'Cormorant Garamond',serif; font-size:1.4rem; color:var(--gold-light);">Gestão</h4>
+        <ul style="list-style:none; margin-top:14px;">
+          <li style="padding:10px 0; border-top:1px solid var(--line); font-size:0.88rem;"><strong style="color:var(--cream); font-weight:500;">Checklists por processo e etapa</strong><br><span style="color:var(--muted-2); font-size:0.8rem;">verificação padronizada que elimina a dependência de memória individual</span></li>
+          <li style="padding:10px 0; border-top:1px solid var(--line); font-size:0.88rem;"><strong style="color:var(--cream); font-weight:500;">Painel de indicadores por área</strong><br><span style="color:var(--muted-2); font-size:0.8rem;">visibilidade objetiva do desempenho de cada área</span></li>
+          <li style="padding:10px 0; border-top:1px solid var(--line); font-size:0.88rem;"><strong style="color:var(--cream); font-weight:500;">Rituais de gestão e reuniões</strong><br><span style="color:var(--muted-2); font-size:0.8rem;">cadência formal de reuniões e acompanhamento da operação</span></li>
+          <li style="padding:10px 0; border-top:1px solid var(--line); font-size:0.88rem;"><strong style="color:var(--cream); font-weight:500;">Plano de onboarding de novos</strong><br><span style="color:var(--muted-2); font-size:0.8rem;">integração estruturada que preserva o padrão operacional a cada contratação</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="investimento" class="light">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Investimento</span>
+      <h2>Três caminhos possíveis.</h2>
+      <p>Três níveis progressivos, cada um construído sobre o anterior. O Foundation ensina o time a analisar, organizar e lidar com diferentes cenários. O Growth transforma esse conhecimento em fluxo, método de revisão e critérios operacionais. O Strategic cria controle de qualidade e prepara a liderança para sustentar a operação.</p>
+    </div>
+    <div class="price-grid">
+
+      <div class="price-card" style="background:var(--cream-2); border-color:rgba(44,44,44,0.10);">
+        <h3 style="color:var(--ink);">Foundation</h3>
+        <div class="dur">Capacitação essencial · 3 meses · Até 6 encontros</div>
+        <div class="amount">AUD 10.000</div>
+        <div class="desc" style="color:var(--muted-2);">Avaliar o conhecimento da equipe e fortalecer as competências das três áreas, com atenção especial a vistos, hoje o ponto mais sensível da operação.</div>
+        <ul>
+          <li style="color:var(--ink-2);">Avaliação do conhecimento atual e matriz de competências por departamento</li>
+          <li style="color:var(--ink-2);">Identificação das principais lacunas e riscos</li>
+          <li style="color:var(--ink-2);">Treinamento dedicado ao time de vistos: coleta e organização de informações, coerência entre curso, trajetória e documentação, qualidade das declarações GS, análise administrativa de evidências financeiras, gestão de pendências e comunicação de recusas</li>
+          <li style="color:var(--ink-2);">Treinamento comercial consultivo e de student support</li>
+          <li style="color:var(--ink-2);">Simulações com casos próximos à realidade da One Way Intercâmbio</li>
+          <li style="color:var(--ink-2);">Relatório executivo e plano de desenvolvimento para os 90 dias seguintes</li>
+        </ul>
+        <p style="font-size:0.82rem; color:var(--muted-2); font-style:italic; margin-bottom:18px;">Resultado esperado: uma área de vistos com maior segurança para organizar informações, avaliar a consistência dos processos e lidar com situações sensíveis.</p>
+        <a href="#contato" class="cta" style="color:var(--ink); border-color:rgba(44,44,44,0.25);">Falar sobre este pacote</a>
+      </div>
+
+      <div class="price-card rec">
+        <div class="rec-tag">RECOMENDADO</div>
+        <h3>Growth</h3>
+        <div class="dur">Estruturação dos fluxos essenciais · 4 meses · Até 8 encontros</div>
+        <div class="amount">AUD 15.000</div>
+        <div class="desc">Transformar o conhecimento desenvolvido nos treinamentos em uma forma mais clara e consistente de trabalhar.</div>
+        <ul>
+          <li>Tudo o que está previsto no Foundation</li>
+          <li>Diagnóstico dos principais gargalos operacionais</li>
+          <li>Estrutura da consulta educacional e handover padronizado entre comercial e vistos</li>
+          <li>Método de análise administrativa, roteiro de revisão e critérios de controle de qualidade antes da submissão</li>
+          <li>Matriz de responsabilidades e escalonamento, e fluxo para pendências e solicitações adicionais</li>
+          <li>Jornada essencial de student support</li>
+          <li>Três fluxos prioritários documentados e até oito materiais entre checklists, roteiros, formulários e modelos</li>
+          <li>Treinamento para aplicação dos novos fluxos e análise orientada de até três casos por amostragem</li>
+        </ul>
+        <p style="font-size:0.82rem; color:var(--muted); font-style:italic; margin-bottom:18px;">Resultado esperado: uma área de vistos com critérios comuns de revisão, responsabilidades claras e menor dependência da experiência individual de uma única profissional.</p>
+        <a href="#contato" class="cta">Agendar alinhamento</a>
+      </div>
+
+      <div class="price-card" style="background:var(--cream-2); border-color:rgba(44,44,44,0.10);">
+        <h3 style="color:var(--ink);">Strategic</h3>
+        <div class="dur">Transformação e autonomia · 6 meses · Até 14 encontros</div>
+        <div class="amount">AUD 25.000</div>
+        <div class="desc" style="color:var(--muted-2);">Estruturar as áreas prioritárias, desenvolver a liderança e consolidar padrões de qualidade sustentáveis internamente após o programa.</div>
+        <ul>
+          <li style="color:var(--ink-2);">Tudo o que está previsto no Growth</li>
+          <li style="color:var(--ink-2);">Coaching da liderança e auditoria da jornada completa do cliente</li>
+          <li style="color:var(--ink-2);">Avaliação da qualidade da gestão comercial</li>
+          <li style="color:var(--ink-2);">Estrutura de controle de qualidade para vistos: auditoria por amostragem, indicadores de retrabalho e rotina de revisão conduzida pela própria liderança</li>
+          <li style="color:var(--ink-2);">Documentação de até seis processos prioritários e até quinze materiais</li>
+          <li style="color:var(--ink-2);">Painel de indicadores, rotina de acompanhamento e recomendações de CRM</li>
+          <li style="color:var(--ink-2);">Base de conhecimento, plano de onboarding e plano anual de treinamento</li>
+          <li style="color:var(--ink-2);">Relatório executivo de evolução, riscos e prioridades</li>
+        </ul>
+        <p style="font-size:0.82rem; color:var(--muted-2); font-style:italic; margin-bottom:18px;">O diferencial não é a KMP assumir a revisão dos casos. É deixar a liderança capaz de acompanhar a qualidade sem depender permanentemente da consultoria.</p>
+        <a href="#contato" class="cta" style="color:var(--ink); border-color:rgba(44,44,44,0.25);">Falar sobre este pacote</a>
+      </div>
+    </div>
+    <div style="margin-top:28px; background:var(--cream-2); border:1px solid var(--gold); border-radius:8px; padding:22px 28px; display:flex; gap:14px; align-items:center; flex-wrap:wrap;">
+      <span style="font-family:'Outfit',sans-serif; font-size:0.7rem; letter-spacing:0.2em; color:var(--gold); font-weight:700;">BÔNUS</span>
+      <span style="color:var(--ink); font-size:0.95rem;">Grupo de apoio no WhatsApp durante o programa, com canal direto para dúvidas, alinhamento contínuo e resolução rápida entre os encontros.</span>
+    </div>
+  </div>
+</section>
+
+<section id="contato" class="closing">
+  <div class="wrap">
+    <span class="eyebrow">Próximo passo</span>
+    <h2>Do interesse ao início do programa.</h2>
+    <p>Uma reunião de alinhamento para revisar escopo, prioridades e cronograma com a liderança da One Way Intercâmbio.</p>
+    <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Reuni%C3%A3o%20de%20alinhamento%20%C2%B7%20Programa%20Elevate%20%C2%B7%20One%20Way%20Interc%C3%A2mbio&details=Reuni%C3%A3o%20de%20alinhamento%20para%20revisar%20escopo%2C%20prioridades%20e%20cronograma%20do%20Programa%20Elevate%20com%20a%20KMP%20Consulting.&add=keila.peixoto%40kmpconsulting.com.au" target="_blank" rel="noopener" class="btn-primary">Agendar reunião de alinhamento</a>
+    <div class="contact-row">
+      <a href="mailto:keila.peixoto@kmpconsulting.com.au">keila.peixoto@kmpconsulting.com.au</a>
+      <span>WhatsApp +61 451 051 806</span>
+      <span>Proposta válida por 30 dias</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  kmp consulting. &nbsp;·&nbsp; Estratégia que conecta. Futuro que transforma. &nbsp;·&nbsp; Sydney, Austrália
+</footer>
+
+<script>
+  document.querySelectorAll('.toggle-switch button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.toggle-switch button').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.toggle-panel').forEach(p=>p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('panel-'+btn.dataset.target).classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>
