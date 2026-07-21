@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mentoria Keila Peixoto — Documento de Entrega</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --azul-escuro:#1e3a5f;
+    --azul-primario:#1a56db;
+    --azul-medio:#3b82f6;
+    --azul-claro:#93c5fd;
+    --azul-suave:#dbeafe;
+    --texto:#1f2937;
+    --texto-suave:#4b5563;
+    --branco:#ffffff;
+    --cinza-borda:#e5e7eb;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:'Inter',sans-serif;
+    background:#ffffff;
+    color:var(--texto);
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  /* Barra de progresso decorativa */
+  .progress-bar{
+    position:fixed;top:0;left:0;width:100%;height:5px;z-index:1000;
+    background:linear-gradient(90deg,var(--azul-escuro),var(--azul-primario),var(--azul-medio),var(--azul-claro),var(--azul-primario));
+    background-size:300% 100%;
+    animation:slideGradient 6s linear infinite;
+  }
+  @keyframes slideGradient{0%{background-position:0% 50%;}100%{background-position:300% 50%;}}
+
+  .container{max-width:860px;margin:0 auto;padding:0 24px;}
+
+  /* Header */
+  header{
+    text-align:center;padding:70px 24px 50px;
+  }
+  header .badge{
+    display:inline-block;background:var(--azul-suave);color:var(--azul-primario);
+    font-family:'Inter';font-weight:600;font-size:0.8rem;letter-spacing:1.5px;
+    text-transform:uppercase;padding:8px 18px;border-radius:30px;margin-bottom:24px;
+    animation:fadeIn 0.8s ease both;
+  }
+  header h1{
+    font-family:'Poppins';font-weight:800;font-size:2.4rem;color:var(--azul-escuro);
+    line-height:1.2;margin-bottom:14px;animation:slideUp 0.8s ease 0.1s both;
+  }
+  header .subtitle{
+    font-size:1.1rem;color:var(--texto-suave);font-weight:500;
+    animation:slideUp 0.8s ease 0.2s both;
+  }
+
+  /* Hero / Promessa */
+  .hero{
+    background:linear-gradient(135deg,var(--azul-escuro),var(--azul-primario));
+    color:#fff;border-radius:24px;padding:50px 44px;margin:20px 0 50px;
+    box-shadow:0 20px 50px -20px rgba(26,86,219,0.5);
+    animation:fadeIn 1s ease 0.3s both;
+  }
+  .hero .label{
+    font-size:0.8rem;letter-spacing:2px;text-transform:uppercase;
+    color:var(--azul-claro);font-weight:600;margin-bottom:14px;
+  }
+  .hero h2{
+    font-family:'Poppins';font-weight:700;font-size:1.9rem;line-height:1.3;color:#fff;
+  }
+
+  /* Seções */
+  section{margin-bottom:60px;animation:fadeIn 0.8s ease both;}
+  .section-title{
+    font-family:'Poppins';font-weight:700;font-size:1.8rem;color:var(--azul-escuro);
+    margin-bottom:8px;animation:slideUp 0.6s ease both;
+  }
+  .section-divider{
+    width:60px;height:4px;background:linear-gradient(90deg,var(--azul-primario),var(--azul-claro));
+    border-radius:4px;margin-bottom:28px;
+  }
+  .section-intro{color:var(--texto-suave);font-size:1.05rem;margin-bottom:24px;}
+
+  h3{
+    font-family:'Poppins';font-weight:600;font-size:1.3rem;color:var(--azul-primario);
+    margin:32px 0 8px;
+  }
+  h4{
+    font-family:'Poppins';font-weight:600;font-size:1.08rem;color:var(--azul-escuro);
+    margin:24px 0 6px;
+  }
+  p{margin-bottom:16px;color:var(--texto-suave);}
+  strong{color:var(--texto);font-weight:600;}
+
+  /* Cards */
+  .card{
+    background:#fff;border:1px solid var(--cinza-borda);border-radius:18px;
+    padding:30px 32px;margin-bottom:22px;
+    box-shadow:0 4px 18px -8px rgba(30,58,95,0.12);
+    transition:transform 0.3s ease,box-shadow 0.3s ease;
+    animation:fadeIn 0.7s ease both;
+  }
+  .card:hover{transform:translateY(-4px);box-shadow:0 14px 34px -12px rgba(26,86,219,0.28);}
+
+  /* Promessa cards (10 opções) */
+  .promise-grid{display:flex;flex-direction:column;gap:14px;margin-top:10px;}
+  .promise-item{
+    background:var(--branco);border:1.5px solid var(--cinza-borda);border-radius:14px;
+    padding:18px 22px;display:flex;align-items:flex-start;gap:14px;
+    transition:transform 0.25s ease,box-shadow 0.25s ease;
+  }
+  .promise-item:hover{transform:translateY(-3px);box-shadow:0 10px 26px -12px rgba(26,86,219,0.25);}
+  .promise-item .num{
+    flex-shrink:0;width:30px;height:30px;border-radius:50%;
+    background:var(--azul-suave);color:var(--azul-primario);
+    font-weight:700;font-size:0.85rem;display:flex;align-items:center;justify-content:center;
+  }
+  .promise-item.selected{
+    border:2.5px solid var(--azul-primario);background:linear-gradient(135deg,#f5f9ff,#eaf1ff);
+    box-shadow:0 8px 24px -10px rgba(26,86,219,0.35);
+  }
+  .promise-item.selected .num{background:var(--azul-primario);color:#fff;}
+  .promise-item .badge-sel{
+    display:inline-block;background:var(--azul-primario);color:#fff;font-size:0.68rem;
+    font-weight:700;letter-spacing:0.5px;padding:3px 10px;border-radius:20px;margin-left:8px;
+    vertical-align:middle;text-transform:uppercase;
+  }
+  .promise-item p{margin:0;color:var(--texto);font-weight:500;}
+
+  /* Tabelas */
+  .table-wrap{overflow-x:auto;margin:18px 0 26px;border-radius:14px;border:1px solid var(--cinza-borda);}
+  table{width:100%;border-collapse:collapse;font-size:0.95rem;min-width:520px;}
+  thead{background:var(--azul-escuro);}
+  thead th{color:#fff;font-family:'Poppins';font-weight:600;text-align:left;padding:14px 18px;font-size:0.9rem;}
+  tbody td{padding:14px 18px;border-bottom:1px solid var(--cinza-borda);color:var(--texto-suave);vertical-align:top;}
+  tbody tr:nth-child(even){background:#f8faff;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody td:first-child{font-weight:600;color:var(--texto);}
+
+  /* História */
+  .historia h3{border-left:4px solid var(--azul-medio);padding-left:14px;}
+
+  /* Lista de módulos */
+  .modulo{
+    background:linear-gradient(135deg,#fbfdff,#f3f8ff);
+    border:1px solid var(--azul-suave);border-radius:18px;padding:30px 32px;margin-bottom:24px;
+    transition:transform 0.3s ease,box-shadow 0.3s ease;animation:fadeIn 0.7s ease both;
+  }
+  .modulo:hover{transform:translateY(-4px);box-shadow:0 16px 38px -14px rgba(26,86,219,0.25);}
+  .modulo-header{display:flex;align-items:center;gap:16px;margin-bottom:18px;}
+  .modulo-num{
+    flex-shrink:0;width:46px;height:46px;border-radius:13px;
+    background:linear-gradient(135deg,var(--azul-primario),var(--azul-medio));
+    color:#fff;font-family:'Poppins';font-weight:700;font-size:1.3rem;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 6px 16px -6px rgba(26,86,219,0.5);
+  }
+  .modulo-header h3{margin:0;color:var(--azul-escuro);border:none;padding:0;}
+  .topico{margin:22px 0;padding-top:20px;border-top:1px dashed var(--azul-claro);}
+  .topico:first-of-type{border-top:none;padding-top:0;}
+  .topico-nome{font-family:'Poppins';font-weight:600;font-size:1.1rem;color:var(--azul-primario);margin-bottom:8px;}
+  .objetivo{
+    background:var(--azul-suave);border-radius:10px;padding:10px 16px;margin:12px 0;
+    font-size:0.92rem;color:var(--azul-escuro);
+  }
+  .objetivo strong{color:var(--azul-escuro);}
+  .topico ul{list-style:none;margin:10px 0 0;}
+  .topico ul li{
+    position:relative;padding-left:26px;margin-bottom:10px;color:var(--texto-suave);font-size:0.95rem;
+  }
+  .topico ul li::before{
+    content:"";position:absolute;left:0;top:9px;width:9px;height:9px;border-radius:50%;
+    background:var(--azul-medio);
+  }
+  .topico ul li strong{color:var(--texto);}
+
+  /* Pontos de viabilidade */
+  .viab-list{list-style:none;counter-reset:viab;}
+  .viab-list li{
+    position:relative;padding:14px 14px 14px 56px;margin-bottom:12px;
+    background:#fff;border:1px solid var(--cinza-borda);border-radius:12px;color:var(--texto-suave);
+  }
+  .viab-list li::before{
+    counter-increment:viab;content:counter(viab);
+    position:absolute;left:14px;top:50%;transform:translateY(-50%);
+    width:30px;height:30px;border-radius:50%;background:var(--azul-primario);color:#fff;
+    font-weight:700;font-size:0.85rem;display:flex;align-items:center;justify-content:center;
+  }
+
+  /* Estrutura mentoria (check list) */
+  .check-list{list-style:none;}
+  .check-list li{position:relative;padding-left:34px;margin-bottom:16px;color:var(--texto-suave);}
+  .check-list li::before{
+    content:"✓";position:absolute;left:0;top:0;width:22px;height:22px;border-radius:50%;
+    background:var(--azul-suave);color:var(--azul-primario);font-weight:700;font-size:0.8rem;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .check-list li strong{color:var(--azul-escuro);}
+
+  /* Cenários viabilidade */
+  .cenarios{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:22px 0;}
+  .cenario{
+    background:#fff;border:1px solid var(--cinza-borda);border-radius:16px;padding:24px 20px;text-align:center;
+    transition:transform 0.3s ease,box-shadow 0.3s ease;
+  }
+  .cenario:hover{transform:translateY(-4px);box-shadow:0 14px 30px -12px rgba(26,86,219,0.25);}
+  .cenario .nome{font-size:0.8rem;letter-spacing:1px;text-transform:uppercase;color:var(--azul-medio);font-weight:700;margin-bottom:8px;}
+  .cenario .valor{font-family:'Poppins';font-weight:800;font-size:1.5rem;color:var(--azul-escuro);}
+  .cenario .ano{font-size:0.85rem;color:var(--texto-suave);margin-top:4px;}
+
+  /* Footer */
+  footer{
+    text-align:center;padding:50px 24px;border-top:1px solid var(--cinza-borda);margin-top:40px;
+    color:var(--texto-suave);font-size:0.9rem;
+  }
+  footer .logo{font-family:'Poppins';font-weight:700;color:var(--azul-primario);font-size:1.05rem;margin-bottom:6px;}
+
+  @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+  @keyframes slideUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+  @media(max-width:680px){
+    header h1{font-size:1.8rem;}
+    .hero{padding:36px 26px;}
+    .hero h2{font-size:1.4rem;}
+    .section-title{font-size:1.45rem;}
+    .card,.modulo{padding:24px 22px;}
+    .cenarios{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+<div class="progress-bar"></div>
+
+<header>
+  <span class="badge">Documento de Entrega</span>
+  <h1>Mentoria Keila Peixoto</h1>
+  <p class="subtitle">Estratégia de visto e residência na Austrália · Metodologia O Código High Ticket</p>
+</header>
+
+<div class="container">
+
+  <!-- HERO / PROMESSA -->
+  <div class="hero">
+    <div class="label">A Promessa</div>
+    <h2>Como renovar seu visto hoje sem fechar as portas para a residência amanhã.</h2>
+  </div>
+
+  <!-- RESUMO DO PROJETO -->
+  <section>
+    <h2 class="section-title">Resumo do Projeto</h2>
+    <div class="section-divider"></div>
+
+    <div class="card">
+      <h4>A Promessa</h4>
+      <p>Como renovar seu visto hoje sem fechar as portas para a residência amanhã — transformando cada decisão de visto numa peça de uma estratégia segura rumo à residência permanente na Austrália.</p>
+
+      <h4>Cliente Ideal</h4>
+      <p>Brasileiros que querem construir uma vida na Austrália — seja quem já está com visto de estudante e precisa renovar, seja quem busca direcionamento estratégico rumo à residência — e que hoje vivem reféns das agências, afogados em informação solta e ansiosos com a burocracia.</p>
+    </div>
+
+    <h3>Estrutura da Mentoria</h3>
+    <p>Cada módulo equivale a uma sessão intensiva de mentoria ao vivo, com acompanhamento direto da Keila:</p>
+    <ul class="check-list">
+      <li><strong>MAPEAR a Situação Real do Estudante:</strong> Você vai ensinar a pessoa a entender o jogo migratório australiano, fazer o raio X do próprio perfil, ler o visto atual e identificar os riscos escondidos no histórico antes que a imigração os encontre.</li>
+      <li><strong>PROJETAR os Caminhos, os Custos e os Parceiros:</strong> Você vai ensinar a desenhar os cenários A, B e C com seus riscos, garantir que renovar hoje não feche portas amanhã, priorizar pelo bolso e conectar a pessoa aos custos e parceiros certos.</li>
+      <li><strong>ACOMPANHAR a Execução até o Visto Aprovado:</strong> Você vai ensinar a avaliar a carta de intenção, auditar a agência, validar o skill assessment e ajustar a rota até a aprovação do visto.</li>
+    </ul>
+
+    <h3>Por que este Produto é Viável</h3>
+    <ul class="viab-list">
+      <li>Demanda comprovada — cerca de 30 contatos semanais sem qualquer esforço de marketing.</li>
+      <li>Mercado em crescimento com lacuna real de orientação estratégica e humana.</li>
+      <li>Método validado de 3 passos, nascido de uma jornada vivida do zero à cidadania.</li>
+      <li>Diferenciais difíceis de copiar — procedência vivida + formação em Direito Migratório + futura licença OMARA.</li>
+      <li>ROI altíssimo — a mentoria se paga ao evitar um único erro de curso ou uma negativa de visto.</li>
+      <li>Escalável via conteúdo e anúncios, com receita adicional como hub e futura agente licenciada.</li>
+    </ul>
+
+    <h3>Metodologia de Ensino</h3>
+    <p>As sessões começam com um diagnóstico profundo, avançam para a projeção de cenários com custos e parceiros, e terminam com o acompanhamento da execução — conduzindo a pessoa do visto de hoje à residência de amanhã.</p>
+
+    <h3>Viabilidade do Produto</h3>
+    <p>Com ticket de R$ 10.000, a mentoria projeta de R$ 240 mil a R$ 960 mil por ano conforme o volume de conversão. A demanda já existe, o mercado cresce, o ROI percebido é alto e o posicionamento é difícil de copiar — porque nasce de uma jornada que Keila percorreu por inteiro.</p>
+  </section>
+
+  <!-- HISTÓRIA -->
+  <section class="historia">
+    <h2 class="section-title">História</h2>
+    <div class="section-divider"></div>
+
+    <h3>A Infância</h3>
+    <p>Keila nasceu em <strong>Jaguaribe, no interior do Ceará</strong> — e sua história começa, na verdade, antes dela. Seus pais eram daqueles nordestinos que pegaram a estrada rumo a São Paulo para "vencer a vida". Chegaram sem nada e começaram do chão mais baixo do comércio: cama, mesa e banho. Foi assim que ergueram tudo. Com o tempo, vieram os colchões, depois os imóveis — o ramo em que a mãe dela atua até hoje. Toda a família é empresária nesse setor em São Paulo. Esse foi o ar que Keila respirou desde os dois anos de idade. <strong>Empreender não era uma escolha de carreira na casa dela; era simplesmente o cenário de fundo da vida inteira.</strong></p>
+    <p>Mas seria desonesto contar essa infância só pelo lado da construção. A casa onde Keila cresceu era marcada por sofrimento. Havia traição — ela se lembra de uma vez, com quatro ou cinco anos, em que a mãe descobriu uma traição com a vizinha, e o próprio pai mandou a menina sair pelas ruas atrás dela. Keila encontrou a mãe nos fundos de casa, escondida num banheiro, chorando. <strong>Crescer vendo o sofrimento da mãe foi a marca mais profunda daqueles primeiros anos.</strong></p>
+    <p>E havia a violência. O pai batia muito, por qualquer motivo. A primeira memória que ela tem de apanhar é de quando tinha cerca de dois anos. Há cenas que não saem da cabeça: o sangue escorrendo pelo nariz, os joelhos no chão atrás da cama. Os pais só se separariam quando Keila tinha 13, 14 anos.</p>
+    <p>E é aqui que nasce o traço que mais define quem ela é hoje. Vendo a mãe ser refém, Keila tomou uma decisão silenciosa que carrega até agora: <strong>"Sou uma leoa. Ninguém sobe o tom para mim. Nenhum namorado, nenhum chefe, nenhum cliente. Nunca vou deixar fazer comigo o que fizeram com a minha mãe."</strong> Essa firmeza, que começou como defesa, virou a postura profissional de alguém que sabe se impor e nunca aceita ser tratada abaixo do que merece.</p>
+    <p>Ao lado dessa dureza, brilhava uma centelha empreendedora impossível de ignorar. Keila nunca gostou de boneca. Gostava de imitar a mãe: andava com a bolsinha do lado, o caderno na mão, e fingia ser bancária com os panfletos do banco. Um dia, a mãe lhe deu uma caixinha de chiclete. Em vez de comer, a menina decidiu: <strong>"Não, vou vender esse chiclete na porta de casa."</strong> E vendeu. O mais revelador: aquele dinheiro Keila não usou para comprar um brinquedo. <strong>Usou para pagar o próprio almoço numa viagem ao Ceará, só para não depender da mãe.</strong> O prazer de bastar a si mesma já estava ali — inteiro — aos cinco anos.</p>
+
+    <h3>A Juventude</h3>
+    <p>Aos 11 anos veio uma virada que ela só entenderia o tamanho muito depois. A mãe — que jamais dizia "não" quando o assunto era estudo — colocou Keila numa escola particular. Para uma criança vinda da escola pública, a mudança foi um choque de mundos: outras histórias, outras perspectivas de vida. <strong>"Isso agregou muito para a minha vida. Se não fosse isso, com certeza eu não teria alcançado nenhum dos objetivos que vieram depois."</strong> O ambiente, ela aprendeu cedo, transforma uma pessoa — lição que vira, anos mais tarde, parte central do que ela vende ao cliente.</p>
+    <p>Aos 12, 13 anos, veio a ruptura definitiva: a separação dos pais. E foi exatamente nessa fase que Keila encontrou a própria voz. Numa das últimas vezes em que presenciou a violência, viu o pai começar a chutar a mãe. Ela se levantou e disse: <strong>"Ei, você vai parar de chutar ela agora."</strong> Pouco depois, eles se separaram. <strong>Foi ali que ela tomou voz — para se defender e para defender quem amava.</strong></p>
+    <p>A adolescência típica, Keila não viveu. Aos 15, foi atrás do primeiro estágio, em telemarketing; aos 16, o primeiro registro em carteira. Era trabalho, trabalho, trabalho. Sonhou em ser professora, depois com Direito, mas escolheu <strong>Administração aos 17</strong>, mirando um alvo claríssimo: o banco que conhecia de cor desde criança, acompanhando a mãe no autoatendimento. Quando o professor de Direito insistia que ela trocasse de curso, ela já tinha decidido: a mãe havia pago seis meses, e ela não voltaria atrás. A faculdade lhe deu o que ela mais valoriza até hoje: <strong>maturidade precoce, responsabilidade e, principalmente, networking</strong> — aprender a se expor e a dialogar com pessoas muito mais velhas, muito cedo.</p>
+
+    <h3>A Virada de Chave</h3>
+    <p>Aos 19 anos, Keila entrou no <strong>Bradesco</strong> — e ali ficaria por quase 8 anos. As palavras são dela: <strong>"O Bradesco foi a minha escola. Me fez quem eu sou, profissionalmente falando."</strong></p>
+    <p>A cena que melhor define esse período parece roteiro de cinema. Insatisfeita na posição inicial, ela ganhou uma premiação de propósito, só para ter acesso ao <strong>diretor executivo de marketing, Luca Cavalcante</strong>. Chegou e disse: "Oi, meu nome é Keila." E ele respondeu: <strong>"Não precisa falar seu nome. Eu sei muito bem quem você é."</strong> Para reconquistar o acesso a ele, <strong>ela simplesmente ganhou a campanha do mês seguinte de novo.</strong> Num corredor, ele virou para as colegas do RH: "Sabem o nome dela? Keila. Decorem o nome dela." Cinco minutos depois, foi chamada ao quinto andar, fez um teste de perfil que deu "totalmente ela", e logo estava nos canais digitais — aos 20 anos, lidando sozinha com mais de 200 agências.</p>
+    <p>Foi nesse período que ela viveu sua obra-prima profissional: um projeto de expansão dos canais digitais em que <strong>pegou um projeto com 100 mil usuários e o entregou com 10 milhões.</strong> E havia Luca — mais do que um chefe, <strong>o mentor que apostou nela aos 19 e a foi formando, desafio após desafio.</strong> Aprendeu ali que quando alguém aposta em você, você não decepciona — e ser vista nunca é sorte, é construção deliberada.</p>
+    <p>Mas Keila nunca suportou a zona de conforto. Tendo atingido todos os seus objetivos no banco, fez a pergunta que mudaria sua vida: <strong>"Por que não aprender inglês e ir morar fora?"</strong> Uma amiga plantou a ideia da Austrália — onde dava para trabalhar, estudar e fazer dinheiro. Fiel ao seu jeito, foi até o diretor e disse: <strong>"Luca, vou para a Austrália. Me deem uma licença de um ano, ou eu saio."</strong> Deram a licença. E, para tentar segurá-la, ainda lhe deram <strong>22% de aumento.</strong> Mesmo assim, ela foi.</p>
+
+    <h3>O Crescimento Profissional</h3>
+    <p>A volta ao Brasil, um ano depois, foi o choque que confirmou que não havia mais volta: <strong>"Meu Deus, quem mudou fui eu."</strong> Luca tentou de tudo para segurá-la — aumento, bolsa de pós, possibilidade de crescer. Mas a decisão estava tomada. Ela pediu demissão e, em 2017, deixou o banco para voltar à Austrália de vez.</p>
+    <p>E então veio o fundo do poço. Em agosto de 2018, foi atingida por uma <strong>crise existencial — quase uma depressão, um burnout que a deixou dias e noites inteiras sem sair da cama.</strong> "Abdiquei de toda a minha carreira para segurar uma bandeja." Foi essa dor que a obrigou a derrubar a própria crença de que "psicólogo não ajuda" e buscar terapia. <strong>Aqui está o coração da sua procedência: ela viveu, sozinha e sem rede de apoio num país estranho, exatamente a dor que hoje resolve para os outros.</strong></p>
+    <p>A reconstrução veio em camadas. Numa escola pequena, ela já se recusou a valer menos do que achava justo ("me paga 25, não aceito 20"). Depois, em janeiro de 2019, a virada: entre <strong>66 currículos</strong>, ela conquistou a vaga de consultora na <strong>Trip Study</strong> — onde ficaria 7 anos e meio. Foi ali que seu maior talento floresceu: <strong>"Meu melhor skill da vida é problem solving. Me dá um problema que eu resolvo."</strong> Enquanto a gestão recusava os casos difíceis, Keila os pegava — montava defesas e cartas de intenção, resolvia o impossível. O <strong>boca a boca virou uma bola de neve</strong> numa comunidade de 120 mil brasileiros em Sydney.</p>
+    <p>Ela percorreu o caminho inteiro — erros, acertos e até um <strong>quase-golpe</strong> que prometia atalho. Validou 10 anos de experiência, conquistou a <strong>residência permanente</strong> (aplicada em 2022, concedida em 2023) e a <strong>cidadania australiana</strong> (aplicada em 2024, concedida em 2025). A lição ficou gravada: <strong>"Não existe atalho. É o abecedário, e você tem que seguir ele corretamente."</strong></p>
+
+    <h3>Momento Atual</h3>
+    <p>Hoje, Keila é <strong>cidadã australiana há cerca de um ano</strong> e está finalizando uma <strong>pós-graduação em Direito Migratório</strong>, com a prova de licença de agente de imigração (OMARA) à frente. Ela ocupa um espaço raro: alguém que entende profundamente o <strong>lado acadêmico</strong> do processo — a ponte entre o estudante e a residência — que os agentes tradicionais não sabem traduzir de forma humana.</p>
+    <p>Seu posicionamento é uma escolha consciente. Ela <strong>não quer uma agência tradicional</strong>. Quer ser o <strong>centro de apoio</strong> — o hub de confiança que diagnostica, planeja e guia, orquestrando parceiros de execução enquanto mantém o relacionamento e a estratégia nas próprias mãos. E a filosofia que guia tudo fecha o círculo aberto na infância: <strong>"Só vou ter filho quando puder proporcionar a mesma vida que minha mãe me proporcionou."</strong> A menina que vendia chiclete para pagar o próprio almoço virou a mulher que ajuda outras pessoas a construírem uma vida inteira do outro lado do mundo. <strong>Ela faz pelos seus estudantes exatamente o que ninguém fez por ela.</strong></p>
+
+    <h3>Pontos Importantes da Trajetória</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Momento da história</th><th>Como contribuiu para a profissional de hoje</th><th>Valor</th></tr></thead>
+        <tbody>
+          <tr><td>Família de empreendedores nordestinos que subiram do zero</td><td>Cresceu vendo que negócio se constrói do chão, sem atalho</td><td>Trabalho</td></tr>
+          <tr><td>Vendia chiclete aos 5 anos para pagar o próprio almoço</td><td>Primeira semente da autossuficiência e do prazer de não depender de ninguém</td><td>Independência</td></tr>
+          <tr><td>Infância marcada por violência e traição em casa</td><td>Forjou a "leoa" que nunca aceita ser desvalorizada</td><td>Autorrespeito</td></tr>
+          <tr><td>Aos 12 anos, defendeu a mãe do pai</td><td>Descobriu a própria voz e a coragem de tomar posição</td><td>Coragem</td></tr>
+          <tr><td>Mudança para a escola particular aos 11 anos</td><td>Aprendeu que o ambiente transforma a pessoa — lição que hoje vende</td><td>Visão</td></tr>
+          <tr><td>Escolha estratégica de Administração aos 17</td><td>Mostrou capacidade de planejar com um objetivo final claro</td><td>Estratégia</td></tr>
+          <tr><td>Conquistou acesso ao diretor Luca ganhando campanhas</td><td>Provou que ser vista é construção deliberada, não sorte</td><td>Proatividade</td></tr>
+          <tr><td>Projeto de canais digitais: de 100 mil a 10 milhões de usuários</td><td>Consolidou expertise em execução de alto impacto</td><td>Execução</td></tr>
+          <tr><td>Recusou aumento de 22% e largou tudo pela Austrália</td><td>Disposição de sair da zona de conforto por um sonho maior</td><td>Ousadia</td></tr>
+          <tr><td>Crise existencial e busca por terapia na Austrália</td><td>Viveu a solidão e o medo que hoje resolve para os clientes</td><td>Empatia</td></tr>
+          <tr><td>Recusou ganhar menos do que valia já na reconstrução</td><td>Manteve o autorrespeito no momento mais frágil</td><td>Autovalor</td></tr>
+          <tr><td>Selecionada entre 66 candidatos para a Trip Study</td><td>Validação externa da sua competência e valor de mercado</td><td>Excelência</td></tr>
+          <tr><td>Resolvia os casos de visto que a gestão recusava</td><td>Virou referência por boca a boca entre 120 mil brasileiros</td><td>Maestria técnica</td></tr>
+          <tr><td>Quase caiu num golpe de "atalho" para a residência</td><td>Cristalizou a convicção de que o caminho certo não tem atalho</td><td>Integridade</td></tr>
+          <tr><td>Conquistou residência (2023) e cidadania (2025)</td><td>Vivenciou cada etapa que hoje ensina — procedência total</td><td>Autoridade vivida</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- CLIENTE IDEAL -->
+  <section>
+    <h2 class="section-title">Cliente Ideal</h2>
+    <div class="section-divider"></div>
+
+    <div class="card">
+      <p><strong>Mariana tem 31 anos, é casada e mora em Sydney há quase dois anos.</strong> Veio para a Austrália cansada do trabalho no Brasil, esgotada de <strong>vender a hora e não ter retorno de qualidade de vida</strong>, com a primeira desculpa de "fazer só seis meses de intercâmbio". No fundo, ela queria mais do que um curso de inglês — <strong>queria largar tudo, sair do sistema, construir uma vida nova fora do Brasil.</strong></p>
+      <p>Agora o visto está vencendo, e Mariana está perdida. Ela mal sabia o que era "residência permanente" quando chegou. <strong>Está completamente à mercê do que o agente da agência diz</strong> — e o agente, na maioria das vezes, não é estratégico. Resultado: <strong>Mariana vive afogada em informação solta, ansiosa com a burocracia e com medo de tomar a decisão errada e perder tempo e dinheiro.</strong></p>
+      <p>À noite, sozinha, a cabeça dela fala alto: <em>"Não sei se isso é pra mim. Não sei se vou aguentar. Não consigo arrumar emprego, não sei se vou conseguir entrar na minha área."</em> <strong>São crenças que a paralisam — exatamente o tipo de crença que travou a própria Keila quando ela chegou, sozinha, e teve sua crise existencial num quarto em Sydney.</strong></p>
+      <p><strong>Esse produto será benéfico para Mariana porque ela não precisa de mais informação solta — ela precisa de um caminho claro, de uma estratégia sob medida e de alguém de confiança que já percorreu exatamente essa jornada e chegou à cidadania.</strong></p>
+    </div>
+
+    <h3>Dores</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Dor</th><th>Como o produto ajuda</th></tr></thead>
+      <tbody>
+        <tr><td>Falta de informação sobre o próprio visto</td><td>O diagnóstico mapeia a situação exata e revela todos os caminhos com clareza</td></tr>
+        <tr><td>Desconhecimento das regras imigratórias</td><td>Keila traduz o "juridiquês migratório" em linguagem simples e humana</td></tr>
+        <tr><td>Ficar refém do que o agente diz, sem estratégia</td><td>A mentoria entrega uma estratégia personalizada, com o raio X do cliente</td></tr>
+        <tr><td>Confusão com o excesso de informações</td><td>O planejamento organiza tudo em cenários claros, com prós e contras</td></tr>
+        <tr><td>Ansiedade constante com a burocracia</td><td>A condução passo a passo devolve a sensação de controle</td></tr>
+        <tr><td>Frustração com falsas promessas e quase-golpes</td><td>Keila mostra o caminho real e honesto, sem ilusões de atalho</td></tr>
+        <tr><td>Perder dinheiro ao escolher o curso errado</td><td>A assertividade na escolha protege o investimento da pessoa</td></tr>
+        <tr><td>Solidão e ausência de rede de apoio</td><td>A mentora vira o centro de apoio que faltou à própria Keila</td></tr>
+        <tr><td>Esgotamento de vender a própria hora</td><td>O método mostra como construir uma vida com retorno real</td></tr>
+        <tr><td>Medo de tomar a decisão errada</td><td>Cada decisão vem com os riscos explicados, aumentando a chance de acerto</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Sonhos</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Sonho</th><th>Como o produto ajuda</th></tr></thead>
+      <tbody>
+        <tr><td>Construir uma vida nova e definitiva fora do Brasil</td><td>A estratégia conecta o estágio atual à residência permanente</td></tr>
+        <tr><td>Dar educação e qualidade de vida melhor aos filhos</td><td>Keila personifica esse sonho na própria história</td></tr>
+        <tr><td>Ganhar em dólar e ter retorno pelo trabalho</td><td>O caminho legal abre as portas do mercado australiano</td></tr>
+        <tr><td>Trabalhar legalmente e ter carreira fora do Brasil</td><td>A renovação correta mantém a pessoa regular e apta a evoluir</td></tr>
+        <tr><td>Sair da violência e do esgotamento do Brasil</td><td>A mentoria viabiliza a permanência segura em outro país</td></tr>
+        <tr><td>Trabalhar e colher resultado e qualidade de vida</td><td>O planejamento equilibra estudo, trabalho e custo</td></tr>
+        <tr><td>Viver uma realidade totalmente diferente</td><td>Keila pinta e comprova essa realidade com a própria vivência</td></tr>
+        <tr><td>Conquistar a sonhada residência permanente</td><td>O método guia a trajetória acadêmica rumo à residência</td></tr>
+        <tr><td>Ter autonomia sobre o próprio futuro</td><td>A clareza estratégica devolve o protagonismo à pessoa</td></tr>
+        <tr><td>Sentir segurança e paz em vez de incerteza</td><td>O acompanhamento transforma o medo num plano concreto</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Crenças Limitantes</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Crença Limitante</th><th>Como o produto ajuda</th></tr></thead>
+      <tbody>
+        <tr><td>"Não sei se isso é pra mim, não sei se vou aguentar"</td><td>A história de Keila prova que a dúvida faz parte e pode ser atravessada</td></tr>
+        <tr><td>"Não consigo arrumar emprego na minha área"</td><td>A mentora mostra que isso é crença: "quem quer, consegue", com estratégia</td></tr>
+        <tr><td>"A Austrália só quer residentes permanentes"</td><td>Keila desmonta o mito com casos reais e o próprio caminho do zero</td></tr>
+        <tr><td>"Como vou fazer um curso se preciso trabalhar?"</td><td>O planejamento prioriza escolas e horários compatíveis com o trabalho</td></tr>
+        <tr><td>"É tarde ou difícil demais para alguém como eu"</td><td>O diagnóstico revela possibilidades que a pessoa nem sabia que tinha</td></tr>
+        <tr><td>"Preciso de um atalho mais rápido"</td><td>Keila ensina que o caminho certo é o "abecedário", seguido na ordem</td></tr>
+        <tr><td>"Não tenho dinheiro para os cursos caros"</td><td>A estratégia adapta o caminho ao orçamento, com defesa bem estruturada</td></tr>
+        <tr><td>"Tenho que dominar todo o processo sozinha"</td><td>A mentora assume o papel de centro de apoio</td></tr>
+        <tr><td>"Se ninguém me explicou, talvez não tenha solução"</td><td>A consultora resolve os casos que agências e agentes não conseguem</td></tr>
+        <tr><td>"Vou me decepcionar de novo, como com a agência"</td><td>A procedência vivida de Keila gera confiança real</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Objeções</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Objeção</th><th>Como o produto ajuda</th></tr></thead>
+      <tbody>
+        <tr><td>"Por que pagar se a agência já me atende de graça?"</td><td>A agência não é estratégica; a mentoria evita perdas muito mais caras</td></tr>
+        <tr><td>"Será que vale a pena ou é só promessa vazia?"</td><td>Keila entrega diagnóstico, planejamento e acompanhamento concretos</td></tr>
+        <tr><td>"Foi rápido demais, será que analisou meu caso?"</td><td>A divisão em 3 passos mostra o trabalho dedicado sobre as informações</td></tr>
+        <tr><td>"E se eu seguir o plano e o visto for negado?"</td><td>Cada cenário vem com risco mapeado e plano de contingência</td></tr>
+        <tr><td>"Como confiar em quem não vai executar?"</td><td>Keila deixa claro seu papel de estrategista e hub de confiança</td></tr>
+        <tr><td>"Não tenho dinheiro para investir agora"</td><td>O custo é mínimo perto do dinheiro perdido com o caminho errado</td></tr>
+        <tr><td>"Já estou há tempos no processo, dá pra ajustar?"</td><td>O encontro de execução avalia o que já anda e corrige a rota</td></tr>
+        <tr><td>"E se eu não for um caso fácil?"</td><td>Resolver casos difíceis é justamente a especialidade dela</td></tr>
+        <tr><td>"Como sei que ela entende de verdade?"</td><td>Pós em Direito Migratório, futura OMARA e 7+ anos de prática</td></tr>
+        <tr><td>"Tenho medo de me comprometer e me arrepender"</td><td>A clareza dos cenários coloca a decisão final nas mãos da pessoa</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- PROMESSA -->
+  <section>
+    <h2 class="section-title">Promessa da Mentoria</h2>
+    <div class="section-divider"></div>
+    <p class="section-intro">As 10 opções de headline trabalhadas, com a promessa escolhida em destaque.</p>
+    <div class="promise-grid">
+      <div class="promise-item selected"><span class="num">1</span><p>Como renovar seu visto hoje sem fechar as portas para a residência amanhã.<span class="badge-sel">✓ Selecionada</span></p></div>
+      <div class="promise-item"><span class="num">2</span><p>Como renovar seu visto hoje sem comprometer sua residência amanhã.</p></div>
+      <div class="promise-item"><span class="num">3</span><p>Como tomar a decisão certa no seu visto agora para não perder a residência depois.</p></div>
+      <div class="promise-item"><span class="num">4</span><p>Como renovar seu visto sem dar um passo que te afaste da residência permanente.</p></div>
+      <div class="promise-item"><span class="num">5</span><p>Como garantir que cada renovação de visto te aproxime da residência, e nunca o contrário.</p></div>
+      <div class="promise-item"><span class="num">6</span><p>Como evitar que uma escolha de curso hoje feche seu caminho para a residência amanhã.</p></div>
+      <div class="promise-item"><span class="num">7</span><p>Como renovar seu visto pensando não só em ficar, mas em construir sua residência.</p></div>
+      <div class="promise-item"><span class="num">8</span><p>Como estender seu visto hoje protegendo seu futuro de residência na Austrália.</p></div>
+      <div class="promise-item"><span class="num">9</span><p>Como não sabotar sua residência amanhã com uma renovação de visto mal planejada hoje.</p></div>
+      <div class="promise-item"><span class="num">10</span><p>Como dar o próximo passo no seu visto hoje sem fechar portas para a vida que você quer amanhã.</p></div>
+    </div>
+  </section>
+
+  <!-- METODOLOGIA -->
+  <section>
+    <h2 class="section-title">Metodologia</h2>
+    <div class="section-divider"></div>
+    <h3>Método PONTE™ — Da Renovação à Residência</h3>
+    <p>Toda pessoa que chega à mesa de Keila está num ponto da travessia: de um lado, o visto que vence; do outro, a vida que ela quer construir na Austrália. O problema é que a maioria atravessa essa distância no escuro. O <strong>Método PONTE</strong> transforma uma sequência de decisões soltas e ansiosas em uma travessia segura e estratégica, onde cada curso e cada visto são uma tábua firme rumo ao destino final. Não é dar um passo de cada vez no escuro — é enxergar a ponte inteira antes de pisar nela.</p>
+    <p>A metodologia se desenrola em três grandes momentos: primeiro Keila <strong>mapeia</strong> quem é a pessoa e onde ela está, depois <strong>projeta</strong> os caminhos possíveis com riscos, custos e parceiros, e por fim <strong>acompanha</strong> a execução para garantir que o plano saia do papel.</p>
+
+    <div class="modulo">
+      <div class="modulo-header"><div class="modulo-num">1</div><h3>MAPEAR a Situação Real do Estudante</h3></div>
+      <p>O ponto de partida de toda travessia é saber exatamente de onde se está saindo. Uma entrevista profunda captura todos os ativos, riscos e objetivos da pessoa.</p>
+      <ul class="topico-ul">
+        <li><strong>Explicação geral do cenário migratório:</strong> a pessoa entende como funciona o jogo migratório na Austrália.</li>
+        <li><strong>Raio X completo do perfil:</strong> estado civil, idade, cidade, formação e experiência — os ativos que sustentam a tese do visto.</li>
+        <li><strong>Diagnóstico do visto atual:</strong> visto, vencimento, dependentes, tempo na Austrália e se é a primeira renovação.</li>
+        <li><strong>Histórico acadêmico e de risco:</strong> cursos, nível de inglês, certificados e reports que precisam ser blindados.</li>
+      </ul>
+    </div>
+
+    <div class="modulo">
+      <div class="modulo-header"><div class="modulo-num">2</div><h3>PROJETAR os Caminhos, os Custos e os Parceiros</h3></div>
+      <p>Com o mapa em mãos, Keila projeta os cenários com total transparência — incluindo riscos, custos e os parceiros que vão executar.</p>
+      <ul class="topico-ul">
+        <li><strong>Cenários A, B e C com riscos:</strong> as melhores possibilidades para estender o visto, com prós, contras e risco mapeado, sempre pela ótica da residência.</li>
+        <li><strong>Classificação de prioridades:</strong> o exercício de preço, qualidade e flexibilidade calibra a recomendação ao momento e bolso da pessoa.</li>
+        <li><strong>Planejamento base de custos:</strong> estrutura clara do investimento (curso, taxa de visto, OSHC) numa devolutiva profissional.</li>
+        <li><strong>Conexão com parceiros de confiança:</strong> indicação de quem executa cada parte, com Keila como centro de apoio.</li>
+      </ul>
+    </div>
+
+    <div class="modulo">
+      <div class="modulo-header"><div class="modulo-num">3</div><h3>ACOMPANHAR a Execução até o Visto Aprovado</h3></div>
+      <p>A travessia só termina quando o plano vira realidade. Keila acompanha a execução como uma "secretária de luxo" do projeto.</p>
+      <ul class="topico-ul">
+        <li><strong>Avaliação da carta de intenção:</strong> revisão do documento que defende por que a pessoa merece o visto.</li>
+        <li><strong>Auditoria do processo na agência:</strong> verificação de que o parceiro inclui tudo o que é necessário.</li>
+        <li><strong>Validação do business plan / skill assessment:</strong> conferência dos elementos estratégicos do planejamento.</li>
+        <li><strong>Ajuste de rota:</strong> correções pontuais para que o plano chegue intacto à aprovação.</li>
+      </ul>
+    </div>
+
+    <p>Ao final da PONTE, a pessoa que chegou ansiosa e refém da agência sai com <strong>um caminho claro e seguro, do visto de hoje à residência de amanhã, conduzido por alguém que já atravessou exatamente essa ponte e chegou do outro lado.</strong></p>
+  </section>
+
+  <!-- MÓDULOS -->
+  <section>
+    <h2 class="section-title">Módulos do Produto</h2>
+    <div class="section-divider"></div>
+
+    <div class="modulo">
+      <div class="modulo-header"><div class="modulo-num">1</div><h3>MAPEAR a Situação Real do Estudante</h3></div>
+      <p>Primeiro você entende o terreno, depois faz o diagnóstico de quem você é, lê o visto atual e identifica os riscos escondidos — porque nenhuma estratégia segura nasce sem saber de onde você parte.</p>
+
+      <div class="topico">
+        <div class="topico-nome">Entenda o jogo migratório australiano antes de tomar qualquer decisão</div>
+        <p>A maioria toma decisões caríssimas sem entender as regras do jogo. Aqui você ganha a visão geral do sistema migratório que ninguém te explicou.</p>
+        <div class="objetivo"><strong>Objetivo:</strong> conversar sobre seu processo migratório com clareza, sem depender cegamente da agência.</div>
+        <ul>
+          <li><strong>O mapa geral do sistema:</strong> como funcionam vistos de estudante, renovações e os caminhos para a residência.</li>
+          <li><strong>Os conceitos que ninguém traduz:</strong> CoE, OSHC, skill assessment e nomination decifrados.</li>
+          <li><strong>A lógica por trás das negativas:</strong> por que a Austrália nega tantos vistos e o que isso muda no seu plano.</li>
+          <li><strong>O papel de cada peça:</strong> o que faz a escola, a agência, o agente e onde entra a estratégia.</li>
+        </ul>
+      </div>
+
+      <div class="topico">
+        <div class="topico-nome">O raio X completo do seu perfil para construir uma tese de visto forte</div>
+        <p>Todo visto aprovado é uma tese bem defendida, construída sobre os ativos certos. Você aprende a olhar a própria trajetória como matéria-prima estratégica.</p>
+        <div class="objetivo"><strong>Objetivo:</strong> enxergar seus ativos como argumentos a favor do seu visto.</div>
+        <ul>
+          <li><strong>O inventário pessoal:</strong> estado civil, idade, cidade e momento de vida que mudam as possibilidades.</li>
+          <li><strong>A formação como ativo:</strong> organizar sua trajetória acadêmica e ver para onde evoluir.</li>
+          <li><strong>A experiência que conta pontos:</strong> converter o histórico profissional brasileiro em pontuação e validação.</li>
+          <li><strong>O objetivo que guia tudo:</strong> definir com honestidade entre imigração ou evolução acadêmica.</li>
+        </ul>
+      </div>
+
+      <div class="topico">
+        <div class="topico-nome">Leia o seu visto atual e descubra o real grau de dificuldade do seu caso</div>
+        <p>Nem todo caso tem o mesmo peso. Você aprende a ler a própria situação com olhos de estrategista, medindo a complexidade antes de agir.</p>
+        <div class="objetivo"><strong>Objetivo:</strong> avaliar com precisão quão simples ou delicado é o seu processo.</div>
+        <ul>
+          <li><strong>A leitura do visto vigente:</strong> qual visto, quando vence e quanto tempo você tem para agir com calma.</li>
+          <li><strong>O fator dependentes:</strong> como cônjuge e dependentes alteram a estratégia.</li>
+          <li><strong>O tempo de permanência:</strong> por que o tempo na Austrália muda a forma como a imigração te enxerga.</li>
+          <li><strong>O peso da primeira renovação:</strong> por que ser ou não a primeira define a atenção exigida.</li>
+        </ul>
+      </div>
+
+      <div class="topico">
+        <div class="topico-nome">Os pontos de risco do seu histórico que a imigração encontra antes de você</div>
+        <p>O que você não enxerga no histórico é o que a imigração usa para negar. Você antecipa as fragilidades antes que virem problema.</p>
+        <div class="objetivo"><strong>Objetivo:</strong> identificar e blindar os pontos que poderiam comprometer a aprovação.</div>
+        <ul>
+          <li><strong>O histórico de cursos:</strong> garantir coerência na narrativa do processo.</li>
+          <li><strong>A questão dos certificados:</strong> por que a ausência é risco e como justificá-la antes da pergunta.</li>
+          <li><strong>O alerta dos reports:</strong> o que é, por que pesa e como lidar com um caso assim.</li>
+          <li><strong>O nível de inglês real:</strong> por que superestimá-lo derruba planejamentos.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="modulo">
+      <div class="modulo-header"><div class="modulo-num">2</div><h3>PROJETAR os Caminhos, os Custos e os Parceiros</h3></div>
+      <p>Você vê os caminhos com seus riscos, garante que a escolha de hoje proteja o amanhã, prioriza pelo bolso e recebe os custos e parceiros certos — porque a estratégia só vira realidade unindo o caminho certo, os números e as pessoas certas.</p>
+
+      <div class="topico">
+        <div class="topico-nome">Os cenários A, B e C de renovação com riscos e prós e contras na mesa</div>
+        <p>Decisão boa é decisão comparada. Você enxerga o leque de possibilidades, cada uma com vantagens, desvantagens e riscos lado a lado.</p>
+        <div class="objetivo"><strong>Objetivo:</strong> comparar caminhos e decidir consciente do risco de cada um.</div>
+        <ul>
+          <li><strong>O leque de possibilidades:</strong> as principais rotas para estender o visto e quando cada uma faz sentido.</li>
+          <li><strong>A lógica dos levels acadêmicos:</strong> a escala do inglês ao doutorado e como sua posição define os próximos passos.</li>
+          <li><strong>O risco por cenário:</strong> medir a probabilidade de aprovação e conhecer o plano B, incluindo apelação em corte.</li>
+          <li><strong>A equivalência Brasil-Austrália:</strong> como sua formação se encaixa no sistema australiano.</li>
+        </ul>
+      </div>
+
+      <div class="topico">
+        <div class="topico-nome">Renove hoje sem fechar as portas para a residência amanhã</div>
+        <p>O coração do método. A renovação que resolve o agora mas sabota o objetivo final é o erro mais caro. Você trata cada renovação como peça de um plano maior.</p>
+        <div class="objetivo"><strong>Objetivo:</strong> escolher renovações que avançam — e nunca atrasam — o caminho à residência.</div>
+        <ul>
+          <li><strong>A visão de longo prazo:</strong> avaliar cada decisão pela lente do objetivo final.</li>
+          <li><strong>As armadilhas que fecham portas:</strong> escolhas que parecem boas mas comprometem o futuro.</li>
+          <li><strong>A escada da residência:</strong> encadear cursos e vistos para se aproximar da nomeação.</li>
+          <li><strong>A coerência da narrativa:</strong> por que a consistência entre renovações fortalece o processo.</li>
+        </ul>
+      </div>
+
+      <div class="topico">
+        <div class="topico-nome">A classificação de prioridades que revela o caminho certo para o seu bolso</div>
+        <p>Não existe caminho certo no abstrato — existe o caminho certo para você. Um exercício simples alinha a estratégia ao seu momento financeiro.</p>
+        <div class="objetivo"><strong>Objetivo:</strong> alinhar a estratégia ao seu orçamento e ao seu verdadeiro objetivo.</div>
+        <ul>
+          <li><strong>O exercício das três palavras:</strong> ordenar preço, qualidade e flexibilidade revela o que importa.</li>
+          <li><strong>O perfil por trás da escolha:</strong> o que sua priorização diz sobre seu objetivo.</li>
+          <li><strong>O ajuste ao orçamento:</strong> adaptar o caminho (diploma, técnico, bacharelado) à sua realidade.</li>
+          <li><strong>A honestidade que protege:</strong> ser sincero evita investir no curso errado.</li>
+        </ul>
+      </div>
+
+      <div class="topico">
+        <div class="topico-nome">O planejamento de custos e os parceiros certos para executar cada etapa</div>
+        <p>Estratégia sem números e sem executores não atravessa ninguém. Você recebe a estrutura de custos e é conectado aos parceiros de confiança.</p>
+        <div class="objetivo"><strong>Objetivo:</strong> decidir o próximo passo com custos claros e executores certos.</div>
+        <ul>
+          <li><strong>A estrutura de custos completa:</strong> curso, taxa de visto e OSHC para ver o investimento total sem surpresas.</li>
+          <li><strong>A devolutiva que vira bússola:</strong> opções A, B e C com valores num documento profissional, antes da agência.</li>
+          <li><strong>A rede de parceiros de confiança:</strong> conexão com quem executa cada parte, sabendo quem faz o quê.</li>
+          <li><strong>O centro de apoio único:</strong> um só hub orquestrando tudo, em vez de múltiplos prestadores.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="modulo">
+      <div class="modulo-header"><div class="modulo-num">3</div><h3>ACOMPANHAR a Execução até o Visto Aprovado</h3></div>
+      <p>Você garante que a carta está impecável, audita a agência, valida os elementos estratégicos e ajusta a rota — porque um plano só vale quando chega intacto até a aprovação.</p>
+
+      <div class="topico">
+        <div class="topico-nome">Avalie a carta de intenção que defende seu visto perante a imigração</div>
+        <p>A carta de intenção pode aprovar ou derrubar seu pedido — e quase ninguém a revisa com olhos estratégicos.</p>
+        <div class="objetivo"><strong>Objetivo:</strong> garantir que a carta sustente seu visto com solidez.</div>
+        <ul>
+          <li><strong>A função da carta:</strong> entender que é ali que seu caso é defendido.</li>
+          <li><strong>Os elementos que não podem faltar:</strong> o que uma carta forte precisa conter.</li>
+          <li><strong>A defesa do retrocesso aparente:</strong> justificar cursos de nível menor sem levantar bandeiras vermelhas.</li>
+          <li><strong>A revisão estratégica:</strong> uma segunda leitura captura falhas que custariam o visto.</li>
+        </ul>
+      </div>
+
+      <div class="topico">
+        <div class="topico-nome">Audite a agência para garantir que nada essencial fique de fora</div>
+        <p>Confiar não dispensa conferir. Detalhes essenciais podem escapar — e é você quem arca com a consequência.</p>
+        <div class="objetivo"><strong>Objetivo:</strong> verificar se a agência executa com a completude necessária.</div>
+        <ul>
+          <li><strong>O checklist do necessário:</strong> o que a agência precisa incluir para a melhor chance de aprovação.</li>
+          <li><strong>As pontas soltas comuns:</strong> os esquecimentos mais frequentes antes que virem problema.</li>
+          <li><strong>A conferência ativa:</strong> acompanhar de perto em vez de torcer.</li>
+          <li><strong>A garantia do planejado:</strong> assegurar que a estratégia inicial está sendo executada.</li>
+        </ul>
+      </div>
+
+      <div class="topico">
+        <div class="topico-nome">Valide seu business plan e skill assessment com segurança</div>
+        <p>Os elementos técnicos convertem sua experiência em pontuação e possibilidades. Você valida essas peças para garantir que jogam a seu favor.</p>
+        <div class="objetivo"><strong>Objetivo:</strong> confirmar que os elementos estratégicos estão corretos e otimizados.</div>
+        <ul>
+          <li><strong>O que é o skill assessment:</strong> como cartas de trabalho e vínculos viram validação oficial.</li>
+          <li><strong>A conversão em pontos:</strong> como anos de experiência te colocam dentro do jogo.</li>
+          <li><strong>A validação dos documentos:</strong> conferir se a documentação sustenta seu perfil.</li>
+          <li><strong>O alinhamento com a estratégia:</strong> garantir que o plano conversa com o caminho escolhido.</li>
+        </ul>
+      </div>
+
+      <div class="topico">
+        <div class="topico-nome">Ajuste a rota para o plano chegar intacto até a aprovação</div>
+        <p>Nenhum processo segue em linha reta. A diferença está em corrigir o curso a tempo até a linha de chegada.</p>
+        <div class="objetivo"><strong>Objetivo:</strong> manter o processo no rumo certo até a aprovação do visto.</div>
+        <ul>
+          <li><strong>O acompanhamento contínuo:</strong> estar presente ao longo da execução protege o resultado.</li>
+          <li><strong>Os sinais de desvio:</strong> identificar quando algo sai do planejado.</li>
+          <li><strong>As correções pontuais:</strong> ajustes cirúrgicos sem desmontar a estratégia.</li>
+          <li><strong>A chegada do outro lado:</strong> garantir que o plano chegue intacto à aprovação, fechando a travessia.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTEÚDO REDES SOCIAIS -->
+  <section>
+    <h2 class="section-title">Conteúdos Sugeridos para Redes Sociais</h2>
+    <div class="section-divider"></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Tópico</th><th>Título para Redes Sociais</th><th>Descritivo para Vídeo</th></tr></thead>
+      <tbody>
+        <tr><td>Jogo migratório</td><td>Descubra por que tanta gente perde o visto sem nem saber o motivo</td><td>Mostre que a maioria não entende as regras e por isso decide errado. Gere o incômodo, sem ensinar o passo a passo. Convide a uma conversa estratégica.</td></tr>
+        <tr><td>Raio X do perfil</td><td>O que aprendi ouvindo centenas de estudantes na Austrália</td><td>O visto é uma tese bem defendida que começa pelos ativos certos. Fale o "o quê", não o "como". Reforce que cada perfil tem um caminho.</td></tr>
+        <tr><td>Leitura do visto</td><td>3 sinais de que o seu caso é mais delicado do que você imagina</td><td>Nem todo caso tem o mesmo peso; tratar difícil como simples leva à negativa. Provoque a reflexão. Chame para um diagnóstico real.</td></tr>
+        <tr><td>Pontos de risco</td><td>2 coisas que descobri sobre o que faz a imigração negar um visto</td><td>Existem fragilidades que a imigração encontra primeiro. Mostre o risco sem dar a solução. Convide a blindar o caso.</td></tr>
+        <tr><td>Renovação no escuro</td><td>O segredo para parar de renovar visto sem saber para onde isso leva</td><td>Renovar isolado é o erro mais comum e caro. Explique o porquê da visão de longo prazo. Conecte com ter um plano de verdade.</td></tr>
+        <tr><td>Cenários A, B, C</td><td>A melhor maneira de enxergar seus caminhos antes de decidir</td><td>Decisão boa é decisão comparada. Aborde o que muda entre os caminhos, não como executar. CTA para mapear cenários juntos.</td></tr>
+        <tr><td>Levels acadêmicos</td><td>Aprenda como funciona a escada acadêmica que define seu visto</td><td>Existe uma escala do inglês ao doutorado que define os próximos passos. Mantenha no conceitual. Indique que o encaixe é estratégico.</td></tr>
+        <tr><td>Austrália nega vistos</td><td>Descubra por que a Austrália está negando tantos vistos agora</td><td>Contextualize o endurecimento migratório. Fale o "o quê" e o "porquê", gerando urgência. Convide a planejar com segurança.</td></tr>
+        <tr><td>Renovar sem fechar portas</td><td>O que aprendi sobre renovar o visto sem matar o sonho da residência</td><td>O coração do método: a decisão de hoje pode sabotar o amanhã. Provoque sem ensinar. Chame para uma renovação que aproxima.</td></tr>
+        <tr><td>Armadilhas de curso</td><td>3 dicas para não escolher o curso que vai te afastar da residência</td><td>Escolhas que parecem boas mas comprometem o futuro. Fale o risco, não a solução. Conecte com a necessidade de orientação.</td></tr>
+        <tr><td>Classificação de prioridades</td><td>O segredo para escolher o caminho certo para o seu bolso</td><td>Ordenar preço, qualidade e flexibilidade revela o objetivo real. Mostre o porquê. Convide a descobrir o perfil numa consulta.</td></tr>
+        <tr><td>Perder dinheiro</td><td>Descubra quanto dinheiro se perde ao escolher o curso errado</td><td>A escolha errada custa caro em tempo e dinheiro. Gere o incômodo financeiro. Posicione a estratégia como proteção.</td></tr>
+        <tr><td>Planejamento de custos</td><td>A melhor maneira de enxergar o custo real do seu visto sem surpresas</td><td>A ansiedade financeira nasce do desconhecido. Aborde o "o quê". Reforce a clareza que um bom planejamento traz.</td></tr>
+        <tr><td>Parceiros de confiança</td><td>O que aprendi sobre por que você não precisa fazer tudo sozinho</td><td>Existe uma rede de parceiros e um centro de apoio único muda a experiência. Fale o conceito. Convide a ter alguém orquestrando.</td></tr>
+        <tr><td>Carta de intenção</td><td>Descubra o documento que pode aprovar ou derrubar o seu visto</td><td>A carta é onde o caso é defendido e quase ninguém revisa. Gere consciência do risco. Chame para avaliar com estratégia.</td></tr>
+        <tr><td>Auditoria da agência</td><td>3 sacadas que te ajudam a garantir que a agência não esqueça nada</td><td>Confiar não dispensa conferir; detalhes escapam. Fale o "o quê" sem dar o checklist. Conecte com o acompanhamento.</td></tr>
+        <tr><td>Skill assessment</td><td>Aprenda como sua experiência vira pontos no jogo migratório</td><td>Cartas de trabalho e vínculos viram validação e pontuação. Mantenha no conceitual. Indique que validar bem te coloca no jogo.</td></tr>
+        <tr><td>O mito do atalho</td><td>O que aprendi quase caindo num golpe de "atalho" para a residência</td><td>Não existe atalho — é o abecedário na ordem. Use a história real para gerar conexão. Convide ao caminho certo.</td></tr>
+        <tr><td>Vida nova na Austrália</td><td>Descubra por que a Austrália pode ser a vida que você procura</td><td>Pinte a qualidade de vida, trabalho com retorno e liberdade. Venda o sonho com honestidade. Conecte com quem está em dúvida.</td></tr>
+        <tr><td>A solidão do processo</td><td>2 coisas que descobri sobre fazer esse processo sem apoio nenhum</td><td>Compartilhe a vivência da solidão e do medo, gerando identificação. Fale o "o quê" emocional. Mostre o valor de um centro de apoio.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Todo o conteúdo gratuito entrega o <strong>"o quê"</strong> e o <strong>"porquê"</strong> — gera consciência, provoca o incômodo e desperta o desejo — mas nunca o <strong>"como fazer"</strong>, reservado à mentoria paga. A maior parte deve ser <strong>emocional e de procedência</strong> (a vida na Austrália, a história da Keila, a solidão, o quase-golpe), com uma parcela menor de conteúdo técnico para provar expertise. O emocional gera alcance e compartilhamento; o técnico captura quem já está pronto. Juntos, fazem o público conhecer, confiar e comprar a Keila — porque, no final, as pessoas compram a pessoa.</p>
+  </section>
+
+  <!-- VIABILIDADE -->
+  <section>
+    <h2 class="section-title">Estudo de Viabilidade Econômica</h2>
+    <div class="section-divider"></div>
+    <p>Este estudo avalia a viabilidade da mentoria de Keila, posicionada em <strong>"Como renovar seu visto hoje sem fechar as portas para a residência amanhã."</strong> A metodologia combina pesquisa de palavras-chave (SEO) com análise de mercado e concorrência. O ponto de partida é favorável: Keila já recebe <strong>cerca de 30 mensagens semanais</strong> de pessoas buscando atendimento.</p>
+
+    <h3>Identificação de Palavras-Chave Relevantes</h3>
+    <h4>Palavras-chave primárias</h4>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Palavra-chave</th><th>Volume estimado mensal</th></tr></thead>
+      <tbody>
+        <tr><td>visto de estudante Austrália</td><td>8.100</td></tr>
+        <tr><td>intercâmbio Austrália</td><td>6.600</td></tr>
+        <tr><td>morar na Austrália</td><td>5.400</td></tr>
+        <tr><td>estudar na Austrália</td><td>4.400</td></tr>
+        <tr><td>imigração Austrália</td><td>3.600</td></tr>
+        <tr><td>trabalhar na Austrália</td><td>3.300</td></tr>
+        <tr><td>residência permanente Austrália</td><td>2.900</td></tr>
+        <tr><td>renovar visto Austrália</td><td>2.400</td></tr>
+        <tr><td>cidadania australiana</td><td>2.200</td></tr>
+        <tr><td>como morar na Austrália</td><td>1.900</td></tr>
+        <tr><td>visto Austrália Brasil</td><td>1.600</td></tr>
+        <tr><td>intercâmbio Austrália preço</td><td>1.300</td></tr>
+        <tr><td>quanto custa morar na Austrália</td><td>1.100</td></tr>
+        <tr><td>morar na Austrália sendo brasileiro</td><td>1.000</td></tr>
+        <tr><td>agência de intercâmbio Austrália</td><td>880</td></tr>
+        <tr><td>estudar e trabalhar na Austrália</td><td>880</td></tr>
+        <tr><td>visto estudante Austrália trabalho</td><td>720</td></tr>
+        <tr><td>visto australiano tipos</td><td>590</td></tr>
+        <tr><td>como conseguir residência na Austrália</td><td>480</td></tr>
+        <tr><td>consultoria imigração Austrália</td><td>320</td></tr>
+      </tbody>
+    </table></div>
+
+    <h4>Palavras-chave secundárias</h4>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Palavra-chave</th><th>Volume estimado mensal</th></tr></thead>
+      <tbody>
+        <tr><td>morar fora do Brasil</td><td>2.400</td></tr>
+        <tr><td>morar em Sydney</td><td>1.900</td></tr>
+        <tr><td>custo de vida Sydney</td><td>1.600</td></tr>
+        <tr><td>visto de trabalho Austrália</td><td>1.300</td></tr>
+        <tr><td>visto 500 Austrália</td><td>880</td></tr>
+        <tr><td>skill assessment Austrália</td><td>720</td></tr>
+        <tr><td>cursos para morar na Austrália</td><td>590</td></tr>
+        <tr><td>inglês na Austrália intercâmbio</td><td>480</td></tr>
+        <tr><td>renovação visto estudante Austrália</td><td>390</td></tr>
+        <tr><td>sair do Brasil para a Austrália</td><td>320</td></tr>
+        <tr><td>visto negado Austrália</td><td>320</td></tr>
+        <tr><td>qual curso fazer na Austrália</td><td>260</td></tr>
+        <tr><td>melhores cursos Austrália imigração</td><td>260</td></tr>
+        <tr><td>diploma técnico Austrália</td><td>210</td></tr>
+        <tr><td>intercâmbio depois dos 30</td><td>170</td></tr>
+        <tr><td>carta de intenção visto Austrália</td><td>170</td></tr>
+        <tr><td>visto estudante para residência Austrália</td><td>140</td></tr>
+        <tr><td>consultoria educacional Austrália</td><td>130</td></tr>
+        <tr><td>nomination Austrália residência</td><td>110</td></tr>
+        <tr><td>cursos com pathway residência Austrália</td><td>90</td></tr>
+      </tbody>
+    </table></div>
+
+    <h4>Palavras-chave long-tail</h4>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Palavra-chave</th><th>Volume estimado mensal</th></tr></thead>
+      <tbody>
+        <tr><td>vale a pena fazer intercâmbio na Austrália</td><td>480</td></tr>
+        <tr><td>como renovar visto de estudante na Austrália</td><td>210</td></tr>
+        <tr><td>visto de estudante Austrália permite trabalhar quanto</td><td>170</td></tr>
+        <tr><td>qual curso fazer para conseguir residência na Austrália</td><td>110</td></tr>
+        <tr><td>agência de intercâmbio confiável Austrália</td><td>110</td></tr>
+        <tr><td>como morar legalmente na Austrália sendo brasileiro</td><td>110</td></tr>
+        <tr><td>curso técnico que dá residência na Austrália</td><td>90</td></tr>
+        <tr><td>como escolher o curso certo na Austrália</td><td>90</td></tr>
+        <tr><td>quanto custa renovar o visto na Austrália</td><td>70</td></tr>
+        <tr><td>como conseguir residência permanente sendo estudante Austrália</td><td>70</td></tr>
+        <tr><td>como funciona a renovação de visto na Austrália</td><td>70</td></tr>
+        <tr><td>melhor estratégia de visto para morar na Austrália</td><td>50</td></tr>
+        <tr><td>o que fazer quando o visto de estudante está vencendo</td><td>50</td></tr>
+        <tr><td>brasileiros que conseguiram cidadania australiana</td><td>50</td></tr>
+        <tr><td>como não perder dinheiro com intercâmbio na Austrália</td><td>40</td></tr>
+        <tr><td>posso transformar visto de estudante em residência</td><td>40</td></tr>
+        <tr><td>caminho do visto de estudante até a residência Austrália</td><td>30</td></tr>
+        <tr><td>vale a pena contratar consultoria de imigração Austrália</td><td>30</td></tr>
+        <tr><td>mentoria para morar na Austrália</td><td>30</td></tr>
+        <tr><td>como planejar minha vida na Austrália a longo prazo</td><td>20</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Volume de Busca e Tendências</h3>
+    <p>Há demanda alta no topo de funil (intercâmbio, morar na Austrália, visto de estudante), afunilando para termos de maior intenção (renovar visto, residência permanente, skill assessment). A migração de brasileiros segue em alta, e o <strong>endurecimento das políticas migratórias eleva a necessidade de orientação estratégica</strong>. Há sazonalidade nos ciclos de matrícula e renovação, com busca majoritariamente mobile e dentro de redes sociais.</p>
+
+    <h3>Análise da Concorrência</h3>
+    <p><strong>Diretos:</strong> agências tradicionais e consultores independentes, fortes em estrutura mas fracos em visão estratégica e personalização. <strong>Indiretos:</strong> agentes MARA, influenciadores e o conteúdo desencontrado de grupos. <strong>Diferenciais de Keila:</strong> procedência vivida (residência + cidadania do zero), formação em Direito Migratório e futura licença OMARA, especialidade em problem solving e um método claro de 3 passos. <strong>Keila é a ponte entre o consultor educacional e o agente de imigração — espaço que quase ninguém ocupa com a mesma autoridade.</strong></p>
+
+    <h3>Perfil do Público-Alvo</h3>
+    <p>Brasileiros de 25 a 40 anos, classe média e média-alta, frequentemente casais, já na Austrália ou planejando a mudança — com formação e experiência, cansados de "vender a hora" no Brasil. Decidem por indicação e prova social, consomem conteúdo no Instagram e estão dispostos a pagar mais caro pela segurança de um intermediário de confiança.</p>
+
+    <h3>Projeção de Viabilidade</h3>
+    <p>Considerando um <strong>ticket de R$ 10.000</strong> para a mentoria completa (3 encontros + acompanhamento):</p>
+    <div class="cenarios">
+      <div class="cenario"><div class="nome">Conservador</div><div class="valor">R$ 20 mil</div><div class="ano">/mês · R$ 240 mil/ano</div></div>
+      <div class="cenario"><div class="nome">Realista</div><div class="valor">R$ 40 mil</div><div class="ano">/mês · R$ 480 mil/ano</div></div>
+      <div class="cenario"><div class="nome">Otimista</div><div class="valor">R$ 80 mil</div><div class="ano">/mês · R$ 960 mil/ano</div></div>
+    </div>
+    <p><strong>ROI para o mentorado:</strong> altíssimo — uma única escolha errada de curso custa milhares de dólares e meses perdidos, sem contar o risco de uma negativa. A mentoria se paga ao evitar um único erro estratégico. <strong>Escalabilidade:</strong> alta, via conteúdo e anúncios, com receita adicional como hub (margem sobre parceiros) e, futuramente, como agente de imigração licenciada.</p>
+
+    <h3>Conclusão</h3>
+    <p>O produto é <strong>economicamente viável e estrategicamente bem posicionado</strong>: demanda comprovada (30 contatos semanais sem marketing), mercado em crescimento com lacuna real, diferenciais fortíssimos e alto ROI percebido. <strong>Keila tem em mãos não apenas um produto viável, mas um posicionamento difícil de copiar — porque ele nasce de uma jornada que ela viveu por inteiro.</strong></p>
+  </section>
+
+</div>
+
+<footer>
+  <div class="logo">O Código High Ticket</div>
+  <p>Documento desenvolvido pela Metodologia O Código High Ticket</p>
+</footer>
+
+</body>
+</html>
