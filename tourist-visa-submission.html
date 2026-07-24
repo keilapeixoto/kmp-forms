@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>KMP Consulting — Formulário Visto de Turista (Subclass 600)</title>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -536,7 +538,11 @@ const SECTIONS = [
 
 const WEB3FORMS_KEY = "eb911200-f515-4a77-afbf-61c4f99be8cf";
 const DRAFT_KEY = "kmp_form600_draft";
-const FORM_VERSION = "2026.07.02"; // selo de versão para conferir o deploy
+const FORM_VERSION = "2026.07.06"; // selo de versão para conferir o deploy
+
+// ID da aplicação, recebido pela URL quando o link é enviado a partir do KMP Hub
+// Ex: https://kmp-forms.vercel.app/turista600?app_id=abc123
+const APPLICATION_ID = new URLSearchParams(window.location.search).get("app_id") || "";
 
 let step = 0;
 let f = {};
@@ -891,92 +897,167 @@ function renderStep() {
 
 //  Submit 
 
+// Mostra sempre a resposta SIM/NÃO da pergunta. Se a resposta for SIM e houver
+// um detalhe digitado, o detalhe é anexado. Antes, perguntas respondidas com
+// NÃO desapareciam do resumo porque só o detalhe (vazio, nesse caso) era usado.
+function yn(value, detail) {
+  if (!value) return null;
+  if (value === "SIM/YES" && detail) return `${value} — ${detail}`;
+  return value;
+}
+
+// Texto integral de cada pergunta, igual ao que o cliente vê no formulário.
+// Única fonte de verdade: se o texto da pergunta mudar aqui, muda também no
+// comprovante em PDF e no e-mail, sem risco dos dois ficarem diferentes.
+const QUESTIONS = {
+  nomeCompleto: "Nome completo (conforme passaporte)",
+  outrosNomes: "Outros nomes já utilizados (nome de solteiro(a), apelido legal etc)",
+  genero: "Gênero",
+  dataNasc: "Data de nascimento",
+  cidadeNasc: "Cidade de nascimento",
+  paisNasc: "País de nascimento",
+  estadoCivil: "Estado civil",
+  nacionalidade: "Nacionalidade atual",
+  outraNacionalidade: "Você possui outra nacionalidade ou cidadania?",
+  escolaridade: "Nível de escolaridade",
+  numPassaporte: "Número do passaporte",
+  paisPassaporte: "País de emissão do passaporte",
+  nacionalidadePassaporte: "Nacionalidade conforme consta no passaporte",
+  dataEmissao: "Data de emissão do passaporte",
+  dataValidade: "Data de validade do passaporte",
+  localEmissao: "Local de emissão do passaporte",
+  outroPassaporte: "Você possui ou já possuiu outro passaporte?",
+  documentoIdentidade: "Documento nacional de identidade (RG e CPF)",
+  endereco: "Endereço residencial completo",
+  paisResidencia: "País de residência",
+  telRes: "Telefone residencial",
+  telCom: "Telefone comercial",
+  celular: "Celular",
+  email: "E-mail",
+  endCorresp: "Endereço para correspondência (se diferente do residencial)",
+  conjuge: "Dados do cônjuge/parceiro(a), se houver",
+  nascPartner: "Data de nascimento do cônjuge/parceiro(a)",
+  nacPartner: "Nacionalidade do cônjuge/parceiro(a)",
+  passaportePartner: "Nº do passaporte do cônjuge/parceiro(a)",
+  partnerViaja: "Seu cônjuge/parceiro(a) irá acompanhá-lo(a) na viagem?",
+  temFilhos: "Você tem filhos?",
+  nomeMae: "Nome da mãe",
+  nomePai: "Nome do pai",
+  familiaAustralia: "Você tem algum familiar ou amigo na Austrália?",
+  motivoViagem: "Motivo da viagem à Austrália",
+  dataChegada: "Data prevista de chegada na Austrália",
+  tempoPermanencia: "Tempo de permanência pretendido",
+  enderecoAustralia: "Endereço na Austrália onde pretende ficar",
+  cidadesVisitar: "Cidades ou regiões que pretende visitar",
+  acompanhante: "Alguém está te acompanhando nesta viagem?",
+  situacao: "Situação profissional atual",
+  empresa: "Nome da empresa / instituição",
+  cargo: "Cargo / função",
+  endEmpresa: "Endereço da empresa",
+  telEmpresa: "Telefone da empresa",
+  quemPaga: "Quem custeará sua viagem?",
+  renda: "Renda mensal aproximada (R$)",
+  fundos: "Valor estimado em fundos disponíveis para a viagem",
+  jaVisitouAustralia: "Você já visitou a Austrália antes?",
+  jaSolicitouVisto: "Você já solicitou visto para a Austrália antes?",
+  residenciaPerm: "Você já solicitou visto de residência permanente na Austrália nos últimos 5 anos?",
+  paisesVisitados: "Quais países você já visitou nos últimos 10 anos?",
+  vistosAnteriores: "Você (ou qualquer pessoa incluída nesta aplicação) possui ou já possuiu visto para a Austrália ou qualquer outro país?",
+  saude: "Você (ou qualquer pessoa incluída nesta aplicação) tem alguma condição de saúde que possa requerer tratamento médico durante a estadia na Austrália?",
+  trabalharAustralia: "Você pretende trabalhar ou prestar serviços profissionais na Austrália durante sua estadia?",
+  crime: "Você (ou qualquer pessoa incluída nesta aplicação) já foi condenado(a) por algum crime em qualquer país?",
+  acusacao: "Você (ou qualquer pessoa incluída nesta aplicação) já foi acusado(a) de algum crime pendente?",
+  descumpriu: "Você ou qualquer pessoa incluída nesta aplicação, já descumpriu condições de visto ou excedeu o período autorizado de permanência em qualquer país?",
+  recusado: "Você ou qualquer pessoa incluída nesta aplicação, já teve um pedido de visto recusado ou cancelado em qualquer país?",
+  assinatura: "Assinatura digital",
+  dataAssinatura: "Data da assinatura",
+};
+
 function buildSummaryPairs() {
   const nome = `${f.nome || ""} ${f.sobrenome || ""}`.trim() || "Solicitante";
   return [
     // Dados pessoais
-    ["Nome completo", nome],
-    ["Outros nomes", f.outrosNomes],
-    ["Gênero", f.genero],
-    ["Data de nascimento", f.dataNasc],
-    ["Cidade de nascimento", f.cidadeNasc],
-    ["País de nascimento", f.paisNasc],
-    ["Estado civil", f.estadoCivil],
-    ["Nacionalidade", f.nacionalidade],
-    ["Outra nacionalidade", f.outraNacionalidade === "SIM/YES" ? f.outraNacionalidadeDetalhe : null],
-    ["Escolaridade", f.escolaridade],
+    [QUESTIONS.nomeCompleto, nome],
+    [QUESTIONS.outrosNomes, f.outrosNomes],
+    [QUESTIONS.genero, f.genero],
+    [QUESTIONS.dataNasc, f.dataNasc],
+    [QUESTIONS.cidadeNasc, f.cidadeNasc],
+    [QUESTIONS.paisNasc, f.paisNasc],
+    [QUESTIONS.estadoCivil, f.estadoCivil],
+    [QUESTIONS.nacionalidade, f.nacionalidade],
+    [QUESTIONS.outraNacionalidade, yn(f.outraNacionalidade, f.outraNacionalidadeDetalhe)],
+    [QUESTIONS.escolaridade, f.escolaridade],
     // Passaporte
-    ["Nº Passaporte", f.numPassaporte],
-    ["País emissão passaporte", f.paisPassaporte],
-    ["Nacionalidade no passaporte", f.nacionalidadePassaporte],
-    ["Data de emissão", f.dataEmissao],
-    ["Validade passaporte", f.dataValidade],
-    ["Local de emissão", f.localEmissao],
-    ["Outro passaporte", f.outroPassaporte === "SIM/YES" ? f.outroPassaporteDetalhe : null],
-    ["RG", f.rg],
-    ["CPF", f.cpf],
+    [QUESTIONS.numPassaporte, f.numPassaporte],
+    [QUESTIONS.paisPassaporte, f.paisPassaporte],
+    [QUESTIONS.nacionalidadePassaporte, f.nacionalidadePassaporte],
+    [QUESTIONS.dataEmissao, f.dataEmissao],
+    [QUESTIONS.dataValidade, f.dataValidade],
+    [QUESTIONS.localEmissao, f.localEmissao],
+    [QUESTIONS.outroPassaporte, yn(f.outroPassaporte, f.outroPassaporteDetalhe)],
+    [QUESTIONS.documentoIdentidade, [f.rg, f.cpf].filter(Boolean).join(" · ")],
     // Contato e endereço
-    ["Endereço", `${f.endereco || ""}, ${f.cidade || ""}, ${f.estado || ""} ${f.cep || ""}`.trim()],
-    ["País de residência", f.paisResidencia],
-    ["Telefone residencial", f.telRes],
-    ["Telefone comercial", f.telCom],
-    ["Celular", f.celular],
-    ["E-mail", f.email],
-    ["Endereço para correspondência", f.endCorresp],
+    [QUESTIONS.endereco, [f.endereco, f.cidade, f.estado, f.cep].filter(Boolean).join(", ")],
+    [QUESTIONS.paisResidencia, f.paisResidencia],
+    [QUESTIONS.telRes, f.telRes],
+    [QUESTIONS.telCom, f.telCom],
+    [QUESTIONS.celular, f.celular],
+    [QUESTIONS.email, f.email],
+    [QUESTIONS.endCorresp, f.endCorresp],
     // Família
-    ["Cônjuge/parceiro(a)", f.nomePartner],
-    ["Data nasc. do cônjuge", f.nascPartner],
-    ["Nacionalidade do cônjuge", f.nacPartner],
-    ["Passaporte do cônjuge", f.passaportePartner],
-    ["Cônjuge viaja junto", f.partnerViaja],
-    ["Filhos", f.temFilhos === "SIM/YES" ? f.filhosDetalhe : null],
-    ["Nome da mãe", f.nomeMae],
-    ["Nome do pai", f.nomePai],
-    ["Familiar/amigo na Austrália", f.familiaAustralia === "SIM/YES" ? f.familiaAustraliaDetalhe : null],
+    [QUESTIONS.conjuge, f.nomePartner],
+    [QUESTIONS.nascPartner, f.nascPartner],
+    [QUESTIONS.nacPartner, f.nacPartner],
+    [QUESTIONS.passaportePartner, f.passaportePartner],
+    [QUESTIONS.partnerViaja, f.partnerViaja],
+    [QUESTIONS.temFilhos, yn(f.temFilhos, f.filhosDetalhe)],
+    [QUESTIONS.nomeMae, f.nomeMae],
+    [QUESTIONS.nomePai, f.nomePai],
+    [QUESTIONS.familiaAustralia, yn(f.familiaAustralia, f.familiaAustraliaDetalhe)],
     // Detalhes da viagem
-    ["Motivo da viagem", f.motivoViagem],
-    ["Data de chegada", f.dataChegada],
-    ["Tempo de permanência", f.tempoPermanencia],
-    ["Endereço na Austrália", f.enderecoAustralia],
-    ["Cidades a visitar", f.cidadesVisitar],
-    ["Acompanhante na viagem", f.acompanhante === "SIM/YES" ? f.acompanhanteDetalhe : null],
+    [QUESTIONS.motivoViagem, f.motivoViagem],
+    [QUESTIONS.dataChegada, f.dataChegada],
+    [QUESTIONS.tempoPermanencia, f.tempoPermanencia],
+    [QUESTIONS.enderecoAustralia, f.enderecoAustralia],
+    [QUESTIONS.cidadesVisitar, f.cidadesVisitar],
+    [QUESTIONS.acompanhante, yn(f.acompanhante, f.acompanhanteDetalhe)],
     // Trabalho e finanças
-    ["Situação profissional", f.situacao],
-    ["Empresa", f.empresa],
-    ["Cargo", f.cargo],
-    ["Endereço da empresa", f.endEmpresa],
-    ["Telefone da empresa", f.telEmpresa],
-    ["Quem custeia a viagem", f.quemPaga],
-    ["Renda mensal", f.renda],
-    ["Fundos disponíveis", f.fundos],
+    [QUESTIONS.situacao, f.situacao],
+    [QUESTIONS.empresa, f.empresa],
+    [QUESTIONS.cargo, f.cargo],
+    [QUESTIONS.endEmpresa, f.endEmpresa],
+    [QUESTIONS.telEmpresa, f.telEmpresa],
+    [QUESTIONS.quemPaga, f.quemPaga],
+    [QUESTIONS.renda, f.renda],
+    [QUESTIONS.fundos, f.fundos],
     // Histórico de viagens
-    ["Já visitou a Austrália", f.jaVisitouAustralia === "SIM/YES" ? f.jaVisitouAustraliaDetalhe : null],
-    ["Já solicitou visto", f.jaSolicitouVisto === "SIM/YES" ? f.jaSolicitouVistoDetalhe : null],
-    ["Solicitou residência permanente (5 anos)", f.residenciaPerm === "SIM/YES" ? (f.residenciaPermDetalhe || "Sim") : "Não"],
-    ["Países visitados (10 anos)", f.paisesVisitados],
-    ["Vistos anteriores", f.vistosAnteriores],
+    [QUESTIONS.jaVisitouAustralia, yn(f.jaVisitouAustralia, f.jaVisitouAustraliaDetalhe)],
+    [QUESTIONS.jaSolicitouVisto, yn(f.jaSolicitouVisto, f.jaSolicitouVistoDetalhe)],
+    [QUESTIONS.residenciaPerm, yn(f.residenciaPerm, f.residenciaPermDetalhe)],
+    [QUESTIONS.paisesVisitados, f.paisesVisitados],
+    [QUESTIONS.vistosAnteriores, f.vistosAnteriores],
     // Saúde e caráter
-    ["Condição de saúde", f.saude === "SIM/YES" ? f.saudeDetalhe : "Não"],
-    ["Pretende trabalhar na Austrália", f.trabalharAustralia],
-    ["Condenação criminal", f.crime === "SIM/YES" ? f.crimeDetalhe : "Não"],
-    ["Acusação pendente", f.acusacao === "SIM/YES" ? f.acusacaoDetalhe : "Não"],
-    ["Descumpriu condições de visto", f.descumpriu === "SIM/YES" ? f.descumpriuDetalhe : "Não"],
-    ["Visto recusado/cancelado", f.recusado === "SIM/YES" ? f.recusadoDetalhe : "Não"],
+    [QUESTIONS.saude, yn(f.saude, f.saudeDetalhe)],
+    [QUESTIONS.trabalharAustralia, f.trabalharAustralia],
+    [QUESTIONS.crime, yn(f.crime, f.crimeDetalhe)],
+    [QUESTIONS.acusacao, yn(f.acusacao, f.acusacaoDetalhe)],
+    [QUESTIONS.descumpriu, yn(f.descumpriu, f.descumpriuDetalhe)],
+    [QUESTIONS.recusado, yn(f.recusado, f.recusadoDetalhe)],
     // Assinatura
-    ["Assinatura digital", f.assinatura],
-    ["Data da assinatura", f.dataAssinatura],
+    [QUESTIONS.assinatura, f.assinatura],
+    [QUESTIONS.dataAssinatura, f.dataAssinatura],
     ...buildFilePairs(),
   ].filter(([, v]) => v);
 }
 
 function buildFilePairs() {
   const FILE_LABELS = {
-    passaporte: "Documento(s): Passaporte",
-    renda: "Documento(s): Comprovante de renda/holerite",
-    extrato: "Documento(s): Extrato bancário",
-    vinculo: "Documento(s): Comprovante de vínculo",
-    itinerario: "Documento(s): Itinerário de viagem",
-    outros: "Documento(s): Outros",
+    passaporte: "Cópia do passaporte (página de dados)",
+    renda: "Comprovante de renda ou holerite (solicitante ou sponsor)",
+    extrato: "Extrato bancário dos últimos 3 meses (solicitante ou sponsor)",
+    vinculo: "Comprovante de vínculo (trabalho/estudo)",
+    itinerario: "Itinerário de viagem",
+    outros: "Outros documentos anexados",
   };
   return Object.keys(FILE_LABELS).map(id => {
     const v = f[`file_${id}`];
@@ -984,6 +1065,7 @@ function buildFilePairs() {
     return [FILE_LABELS[id], list.length ? list.join(", ") : null];
   });
 }
+
 
 function escapeHtml(str) {
   return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
@@ -1011,6 +1093,105 @@ function savePDF() {
   window.print();
 }
 
+// Gera o mesmo comprovante que aparecia só no botão manual "Salvar em PDF",
+// agora como um arquivo PDF real, pronto para ser anexado ao envio automaticamente.
+// É esse PDF, e não mais o texto cru do Web3Forms, que passa a chegar no seu e-mail.
+function generatePdfBlob() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: "pt", format: "a4" });
+  const marginX = 40;
+  const rightX = 555;
+  let y = 56;
+
+  // Cabeçalho
+  doc.setFillColor(242, 123, 32);
+  doc.rect(marginX, y - 20, 26, 26, "F");
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(10);
+  doc.setFont(undefined, "bold");
+  doc.text("kmp", marginX + 6, y - 3);
+
+  doc.setTextColor(26, 26, 26);
+  doc.setFontSize(13);
+  doc.text("kmp consulting", marginX + 34, y - 8);
+  doc.setFontSize(7.5);
+  doc.setFont(undefined, "normal");
+  doc.setTextColor(242, 123, 32);
+  doc.text("ESTRATEGIA QUE CONECTA. FUTURO QUE TRANSFORMA.", marginX + 34, y + 2);
+
+  y += 16;
+  doc.setDrawColor(242, 123, 32);
+  doc.setLineWidth(1.2);
+  doc.line(marginX, y, rightX, y);
+  y += 22;
+
+  const nome = `${f.nome || ""} ${f.sobrenome || ""}`.trim() || "Solicitante";
+  doc.setTextColor(26, 26, 26);
+  doc.setFontSize(13);
+  doc.setFont(undefined, "bold");
+  doc.text("Visto de Turista (Subclass 600) - Comprovante de Solicitacao", marginX, y);
+  y += 15;
+
+  doc.setFontSize(9);
+  doc.setFont(undefined, "normal");
+  doc.setTextColor(107, 114, 128);
+  const geradoEm = `Solicitante: ${nome} - Gerado em ${new Date().toLocaleString("pt-BR")}`;
+  doc.text(geradoEm, marginX, y);
+  if (APPLICATION_ID) {
+    doc.text(`ID da aplicacao (KMP Hub): ${APPLICATION_ID}`, marginX, y + 12);
+    y += 12;
+  }
+  y += 16;
+
+  // Tabela pergunta / resposta
+  const pairs = buildSummaryPairs();
+  const colGap = 14;
+  const colLabelW = 190;
+  const colValueW = rightX - marginX - colLabelW - colGap;
+  const pageBottom = 800;
+
+  doc.setFontSize(9);
+  const lineHeight = doc.getLineHeight();
+
+  pairs.forEach(([k, v]) => {
+    doc.setFont(undefined, "bold");
+    const labelLines = doc.splitTextToSize(String(k), colLabelW);
+    doc.setFont(undefined, "normal");
+    const valueLines = doc.splitTextToSize(String(v), colValueW);
+    const rowLines = Math.max(labelLines.length, valueLines.length);
+    const rowHeight = rowLines * lineHeight + 6;
+
+    if (y + rowHeight > pageBottom) {
+      doc.addPage();
+      y = 50;
+    }
+
+    doc.setTextColor(107, 114, 128);
+    doc.setFont(undefined, "bold");
+    doc.text(labelLines, marginX, y);
+
+    doc.setTextColor(26, 26, 26);
+    doc.setFont(undefined, "normal");
+    doc.text(valueLines, marginX + colLabelW + colGap, y);
+
+    y += rowHeight;
+    doc.setDrawColor(229, 231, 235);
+    doc.setLineWidth(0.5);
+    doc.line(marginX, y - 5, rightX, y - 5);
+  });
+
+  y += 12;
+  if (y > pageBottom) { doc.addPage(); y = 50; }
+  doc.setFontSize(7);
+  doc.setTextColor(156, 163, 175);
+  doc.text(
+    `Este documento e uma copia das informacoes fornecidas pelo solicitante e nao constitui a aplicacao oficial. (c) ${new Date().getFullYear()} KMP Consulting. Versao ${FORM_VERSION}`,
+    marginX, y
+  );
+
+  return doc.output("blob");
+}
+
 async function handleSubmit() {
   sending = true;
   sendError = null;
@@ -1019,15 +1200,24 @@ async function handleSubmit() {
 
   const nome = `${f.nome || ""} ${f.sobrenome || ""}`.trim() || "Solicitante";
 
-  // Reúne todos os arquivos selecionados
-  const allFiles = [];
+  const FOLDER_LABELS = {
+    passaporte: "Passaporte",
+    renda: "Comprovante de Renda",
+    extrato: "Extrato Bancario",
+    vinculo: "Comprovante de Vinculo",
+    itinerario: "Itinerario de Viagem",
+    outros: "Outros Documentos",
+  };
+
+  // Reúne todos os arquivos selecionados, preservando o tipo de cada um
+  const allEntries = [];
   for (const id in fileObjects) {
-    for (const file of fileObjects[id]) allFiles.push(file);
+    for (const file of fileObjects[id]) allEntries.push({ id, file });
   }
 
-  // Guarda de tamanho por arquivo (uploader avançado aceita arquivos maiores)
+  // Guarda de tamanho por arquivo
   const MAX = 25 * 1024 * 1024;
-  for (const file of allFiles) {
+  for (const { file } of allEntries) {
     if (file.size > MAX) {
       sendError = `O arquivo "${file.name}" passa de 25 MB. Reduza o tamanho e anexe novamente.`;
       sending = false; render(); return;
@@ -1035,39 +1225,55 @@ async function handleSubmit() {
   }
 
   try {
-    // 1. Sobe cada documento individualmente via uploader avançado (URL assinada).
-    //    Cada arquivo sobe sozinho, então não há limite de tamanho total por envio.
-    const uploadedKeys = [];
-    for (let i = 0; i < allFiles.length; i++) {
-      const file = allFiles[i];
-      sendingMsg = `Enviando documento ${i + 1} de ${allFiles.length}…`;
-      render();
-      const presRes = await fetch(`https://api.web3forms.com/upload?file=${encodeURIComponent(file.name)}`);
-      if (!presRes.ok) throw new Error("Não foi possível preparar o envio dos documentos.");
-      const { url, key } = await presRes.json();
-      const putRes = await fetch(url, {
-        method: "PUT",
-        body: file,
-        headers: { "Content-Type": file.type || "application/octet-stream" },
-      });
-      if (!putRes.ok) throw new Error(`Falha ao enviar o arquivo ${file.name}.`);
-      uploadedKeys.push(key);
+    // 1. Gera o comprovante em PDF automaticamente, no mesmo layout que antes só existia
+    //    se o cliente clicasse em "Salvar em PDF" e reenviasse por conta própria.
+    sendingMsg = "Gerando comprovante em PDF…";
+    render();
+    const pdfBlob = generatePdfBlob();
+
+    // 2. Empacota o comprovante e todos os documentos num único ZIP, organizado por tipo.
+    //    Você passa a receber um só anexo no e-mail, em vez de abrir cada documento
+    //    individualmente para salvar.
+    sendingMsg = "Organizando e compactando os documentos…";
+    render();
+    const zip = new JSZip();
+    zip.file(`Comprovante_${nome.replace(/\s+/g, "_")}.pdf`, pdfBlob);
+    for (const { id, file } of allEntries) {
+      const folder = FOLDER_LABELS[id] || "Outros Documentos";
+      zip.folder(folder).file(file.name, file);
     }
+    const zipBlob = await zip.generateAsync({ type: "blob", compression: "DEFLATE" });
+    const zipFile = new File([zipBlob], `Documentos_${nome.replace(/\s+/g, "_")}.zip`, { type: "application/zip" });
+
+    // 3. Sobe o ZIP único via uploader avançado (URL assinada), recurso PRO do Web3Forms.
+    sendingMsg = "Enviando pacote de documentos…";
+    render();
+    const presRes = await fetch(`https://api.web3forms.com/upload?file=${encodeURIComponent(zipFile.name)}`);
+    if (!presRes.ok) throw new Error("Não foi possível preparar o envio dos documentos.");
+    const { url, key } = await presRes.json();
+    const putRes = await fetch(url, {
+      method: "PUT",
+      body: zipFile,
+      headers: { "Content-Type": "application/zip" },
+    });
+    if (!putRes.ok) throw new Error("Falha ao enviar o pacote de documentos.");
 
     sendingMsg = "Finalizando envio…";
     render();
 
-    // 2. Envia o formulário em JSON, referenciando os arquivos já enviados.
+    // 4. Envia o formulário em JSON, referenciando o único arquivo já enviado.
+    const idLinha = APPLICATION_ID ? `ID da aplicação (KMP Hub): ${APPLICATION_ID}\n` : "";
     const linhas = buildSummaryPairs().map(([k, v]) => `${k}: ${v}`).join("\n");
-    const corpo = `Nova solicitação de visto de turista — KMP Consulting\nData: ${new Date().toLocaleString("pt-BR")}\n\n${"".repeat(50)}\n\n${linhas}`;
+    const corpo = `Nova solicitação de visto de turista — KMP Consulting\nData: ${new Date().toLocaleString("pt-BR")}\n${idLinha}\n${"".repeat(50)}\n\n${linhas}`;
     const payload = {
       access_key: WEB3FORMS_KEY,
       subject: `Nova Solicitação de Visto Turista — ${nome}`,
       from_name: "Formulário KMP Consulting",
       message: corpo,
       replyto: f.email || "",
+      attachment: key,
     };
-    if (uploadedKeys.length) payload.attachment = uploadedKeys;
+    if (APPLICATION_ID) payload.application_id = APPLICATION_ID;
 
     const res = await fetch("https://api.web3forms.com/submit", {
       method: "POST",
