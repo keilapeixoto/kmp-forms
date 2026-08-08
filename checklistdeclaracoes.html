@@ -275,6 +275,7 @@
 </head>
 <body>
 
+<div id="pdfCapture">
 <header>
   <svg class="brand-logo" viewBox="0 0 1243.92969 265.72656" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="KMP Consulting">
     <title>KMP Consulting</title>
@@ -370,6 +371,7 @@
   <div class="foot-org">Estrategia que conecta. Futuro que transforma.</div>
   <div class="foot-org"><a href="mailto:keila.peixoto@kmpconsulting.com.au" style="color:#fff;opacity:0.85;text-decoration:none;">keila.peixoto@kmpconsulting.com.au</a> | kmpconsulting.com.au</div>
 </footer>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -545,69 +547,77 @@ function validateBeforeAction(){
 document.getElementById('downloadPdfBtn').addEventListener('click', async () => {
   if(!validateBeforeAction()) return;
   showStatus('Gerando PDF, aguarde um momento...', true);
-  const main = document.querySelector('main');
-  const canvasImg = await html2canvas(main, {scale:2, backgroundColor:'#F8F7F5'});
-  const imgData = canvasImg.toDataURL('image/png');
-  const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF('p', 'mm', 'a4');
-  const pageWidth = pdf.internal.pageSize.getWidth();
-  const pageHeight = pdf.internal.pageSize.getHeight();
-  const imgWidth = pageWidth;
-  const imgHeight = canvasImg.height * imgWidth / canvasImg.width;
-  let heightLeft = imgHeight;
-  let position = 0;
-  pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-  heightLeft -= pageHeight;
-  while(heightLeft > 0){
-    position = heightLeft - imgHeight;
-    pdf.addPage();
-    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-    heightLeft -= pageHeight;
+  try{
+    const pdf = await buildPdf();
+    const applicantName = document.getElementById('applicantName').value.trim().replace(/\s+/g, '_');
+    pdf.save('Checklist_Declaracoes_' + applicantName + '.pdf');
+    showStatus('PDF gerado com sucesso. Salve uma copia e envie tambem para keila.peixoto@kmpconsulting.com.au', true);
+  }catch(err){
+    showStatus('Nao foi possivel gerar o PDF. Tente novamente.', false);
   }
-  const applicantName = document.getElementById('applicantName').value.trim().replace(/\s+/g, '_');
-  pdf.save('Checklist_Declaracoes_' + applicantName + '.pdf');
-  showStatus('PDF gerado com sucesso. Salve uma copia e envie tambem para keila.peixoto@kmpconsulting.com.au', true);
 });
 
 document.getElementById('sendEmailBtn').addEventListener('click', async () => {
   if(!validateBeforeAction()) return;
-  showStatus('Enviando para a KMP Consulting, aguarde...', true);
+  showStatus('Gerando PDF e enviando para a KMP Consulting, aguarde...', true);
   const { summary, missing } = collectAnswers();
   const applicantName = document.getElementById('applicantName').value.trim();
   const visaType = document.getElementById('visaType').value.trim();
   const formDate = document.getElementById('formDate').value;
   const signName = document.getElementById('signName').value.trim();
-  const sigDataUrl = canvas.toDataURL('image/png');
-
-  const formData = new FormData();
-  formData.append('access_key', 'eb911200-f515-4a77-afbf-61c4f99be8cf');
-  formData.append('subject', 'Checklist de Declaracoes - ' + applicantName);
-  formData.append('from_name', applicantName + ' via Checklist KMP');
-  formData.append('Aplicante', applicantName);
-  formData.append('Tipo_de_visto', visaType || 'Nao informado');
-  formData.append('Data', formDate);
-  formData.append('Assinado_por', signName);
-  formData.append('Respostas', summary);
-  if(missing.length){
-    formData.append('Atencao', 'Existem ' + missing.length + ' pergunta(s) sem resposta.');
-  }
-  try{
-    const blob = await (await fetch(sigDataUrl)).blob();
-    formData.append('attachment', blob, 'assinatura_' + applicantName.replace(/\s+/g,'_') + '.png');
-  }catch(e){ /* signature attach optional */ }
 
   try{
+    const pdf = await buildPdf();
+    const pdfBlob = pdf.output('blob');
+
+    const formData = new FormData();
+    formData.append('access_key', 'eb911200-f515-4a77-afbf-61c4f99be8cf');
+    formData.append('subject', 'Checklist de Declaracoes - ' + applicantName);
+    formData.append('from_name', applicantName + ' via Checklist KMP');
+    formData.append('Aplicante', applicantName);
+    formData.append('Tipo_de_visto', visaType || 'Nao informado');
+    formData.append('Data', formDate);
+    formData.append('Assinado_por', signName);
+    formData.append('Respostas', summary);
+    if(missing.length){
+      formData.append('Atencao', 'Existem ' + missing.length + ' pergunta(s) sem resposta.');
+    }
+    formData.append('attachment', pdfBlob, 'Checklist_Declaracoes_' + applicantName.replace(/\s+/g,'_') + '.pdf');
+
     const res = await fetch('https://api.web3forms.com/submit', { method:'POST', body: formData });
     const data = await res.json();
     if(data.success){
-      showStatus('Enviado com sucesso. Recomendamos tambem baixar o PDF, salvar uma copia para voce e enviar para keila.peixoto@kmpconsulting.com.au', true);
+      showStatus('Enviado com sucesso, com o PDF completo em anexo. Recomendamos tambem baixar uma copia para voce.', true);
     } else {
-      showStatus('Nao foi possivel enviar automaticamente. Baixe o PDF, salve uma copia e envie por e mail para keila.peixoto@kmpconsulting.com.au', false);
+      showStatus('Nao foi possivel enviar automaticamente. Baixe o PDF e envie por e mail para keila.peixoto@kmpconsulting.com.au', false);
     }
   }catch(err){
-    showStatus('Nao foi possivel enviar automaticamente. Baixe o PDF, salve uma copia e envie por e mail para keila.peixoto@kmpconsulting.com.au', false);
+    showStatus('Nao foi possivel enviar automaticamente. Baixe o PDF e envie por e mail para keila.peixoto@kmpconsulting.com.au', false);
   }
 });
+
+async function buildPdf(){
+  const toHide = [document.querySelector('.action-row'), document.getElementById('statusMsg'), document.querySelector('.email-line')];
+  toHide.forEach(el => { if(el) el.style.display = 'none'; });
+
+  const capture = document.getElementById('pdfCapture');
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF('p', 'pt', 'a4');
+
+  try{
+    await pdf.html(capture, {
+      margin: 0,
+      autoPaging: 'text',
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#F8F7F5', windowWidth: 900 },
+      width: 595,
+      windowWidth: 900
+    });
+  } finally {
+    toHide.forEach(el => { if(el) el.style.display = ''; });
+  }
+  return pdf;
+}
 </script>
 </body>
 </html>
