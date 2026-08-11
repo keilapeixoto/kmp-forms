@@ -204,8 +204,11 @@
     border:1px solid var(--border);
     width:100%;
     max-width:720px;
+    min-height:1018px;
     margin:0 auto;
     box-shadow:0 4px 18px rgba(0,0,0,0.06);
+    display:flex;
+    flex-direction:column;
   }
   .doc-header{
     background:linear-gradient(135deg,var(--orange),var(--orange-light));
@@ -214,6 +217,7 @@
     display:flex;
     justify-content:space-between;
     align-items:flex-start;
+    flex-shrink:0;
   }
   .doc-header .brand{
     font-family:'Cormorant Garamond',serif;
@@ -238,7 +242,13 @@
     opacity:0.9;
     margin-top:4px;
   }
-  .doc-body{padding:30px 32px;}
+  .doc-body{
+    padding:38px 32px;
+    flex:1 0 auto;
+    display:flex;
+    flex-direction:column;
+  }
+  .doc-body-fill{flex:1 0 auto;}
   .doc-meta{
     display:flex;
     justify-content:space-between;
@@ -330,6 +340,7 @@
     text-align:center;
     padding:18px;
     font-size:11.5px;
+    flex-shrink:0;
   }
   .doc-footer .thanks{
     font-family:'Cormorant Garamond',serif;
@@ -708,12 +719,10 @@ async function exportPdf(){
       await document.fonts.ready;
     }
     const canvas = await html2canvas(doc, {
-      scale: 2,
+      scale: 3,
       backgroundColor: '#ffffff',
       useCORS: true,
-      logging: false,
-      windowWidth: doc.scrollWidth,
-      windowHeight: doc.scrollHeight
+      logging: false
     });
     const imgData = canvas.toDataURL('image/png');
     const { jsPDF } = window.jspdf;
