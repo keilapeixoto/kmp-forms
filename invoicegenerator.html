@@ -199,7 +199,7 @@
 
   /* Preview / invoice document styling */
   .preview-wrap{position:sticky; top:20px; align-self:start;}
-  #invoice-doc{
+  #invoice-doc, .invoice-doc-el{
     background:#fff;
     border:1px solid var(--border);
     width:100%;
@@ -349,6 +349,26 @@
     margin-bottom:6px;
     color:var(--orange-light);
   }
+
+  /* Compact mode: applied automatically only to the offscreen clone used
+     for PDF export, when the invoice is too tall to fit one A4 page.
+     Never applied to the on screen preview. */
+  .invoice-doc-el.pdf-compact{font-size:13px;}
+  .invoice-doc-el.pdf-compact .doc-header{padding:18px 28px;}
+  .invoice-doc-el.pdf-compact .doc-header .doc-title h1{font-size:22px;}
+  .invoice-doc-el.pdf-compact .doc-header .brand-tag{font-size:10px;}
+  .invoice-doc-el.pdf-compact .doc-body{padding:22px 28px;}
+  .invoice-doc-el.pdf-compact .doc-meta{margin-bottom:14px; font-size:12px;}
+  .invoice-doc-el.pdf-compact .doc-table th{padding:5px 6px; font-size:10px;}
+  .invoice-doc-el.pdf-compact .doc-table td{padding:6px 6px; font-size:12px;}
+  .invoice-doc-el.pdf-compact .totals{font-size:12px;}
+  .invoice-doc-el.pdf-compact .totals .total-final{font-size:14px; padding:7px 0 0; margin-top:4px;}
+  .invoice-doc-el.pdf-compact .payment-card{padding:12px 14px; margin:14px 0; font-size:12px;}
+  .invoice-doc-el.pdf-compact .payment-card .block-title{margin-bottom:5px;}
+  .invoice-doc-el.pdf-compact .notes{margin-top:10px; font-size:11px;}
+  .invoice-doc-el.pdf-compact .doc-footer{padding:12px; font-size:10.5px;}
+  .invoice-doc-el.pdf-compact .doc-footer .thanks{font-size:14px; margin-bottom:4px;}
+
   #status-msg{
     text-align:center;
     font-size:12.5px;
@@ -711,22 +731,59 @@ async function exportPdf(){
   statusEl.textContent = 'Gerando PDF...';
   const btn = document.getElementById('btn-pdf');
   btn.disabled = true;
+  let host = null;
   try{
-    const doc = document.getElementById('invoice-doc');
+    const original = document.getElementById('invoice-doc');
     // Make sure webfonts (Cormorant Garamond, Outfit) are fully loaded before
     // rasterizing, otherwise the PDF can render with a fallback font.
     if (document.fonts && document.fonts.ready) {
       await document.fonts.ready;
     }
-    // The invoice card is responsive and can be displayed at very different
-    // widths depending on the device (narrow on mobile, wider on desktop).
-    // To always get a crisp, print quality PDF regardless of screen size,
-    // we calculate a dynamic scale so the captured canvas always lands at a
-    // fixed target resolution close to 300dpi for an A4 page.
+
+    // Render an offscreen clone at a fixed desktop width instead of the
+    // live, responsive element. On narrow screens (phones) the on screen
+    // invoice wraps text differently and grows taller, which was pushing
+    // the footer onto a second page. A fixed width guarantees the same
+    // layout, and therefore the same single page result, on every device.
+    const FIXED_WIDTH = 720;
+    const A4_RATIO = 297 / 210;
+    const maxHeight = FIXED_WIDTH * A4_RATIO;
+
+    host = document.createElement('div');
+    host.style.position = 'fixed';
+    host.style.left = '-10000px';
+    host.style.top = '0';
+    host.style.width = FIXED_WIDTH + 'px';
+    host.style.pointerEvents = 'none';
+
+    const clone = original.cloneNode(true);
+    clone.removeAttribute('id');
+    clone.classList.add('invoice-doc-el');
+    clone.style.width = FIXED_WIDTH + 'px';
+    clone.style.maxWidth = FIXED_WIDTH + 'px';
+    clone.style.minHeight = maxHeight + 'px';
+    clone.style.margin = '0';
+    clone.style.boxShadow = 'none';
+
+    host.appendChild(clone);
+    document.body.appendChild(host);
+
+    // Force a layout pass, then measure the natural (uncompacted) height.
+    void clone.offsetHeight;
+    let naturalHeight = clone.scrollHeight;
+
+    // If it does not fit one A4 page at the fixed width, switch to the
+    // compact typographic preset (smaller fonts and tighter spacing) and
+    // measure again, instead of letting it spill onto a second page.
+    if (naturalHeight > maxHeight + 1) {
+      clone.classList.add('pdf-compact');
+      void clone.offsetHeight;
+      naturalHeight = clone.scrollHeight;
+    }
+
     const TARGET_WIDTH_PX = 2480; // ~300dpi at 210mm wide
-    const renderedWidth = doc.getBoundingClientRect().width;
-    const dynamicScale = TARGET_WIDTH_PX / renderedWidth;
-    const canvas = await html2canvas(doc, {
+    const dynamicScale = TARGET_WIDTH_PX / FIXED_WIDTH;
+    const canvas = await html2canvas(clone, {
       scale: dynamicScale,
       backgroundColor: '#ffffff',
       useCORS: true,
@@ -755,6 +812,9 @@ async function exportPdf(){
   }catch(err){
     statusEl.textContent = 'Erro ao gerar PDF. Tente novamente.';
   }finally{
+    if (host && host.parentNode) {
+      host.parentNode.removeChild(host);
+    }
     btn.disabled = false;
     setTimeout(() => statusEl.textContent = '', 4000);
   }
