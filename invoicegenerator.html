@@ -842,7 +842,9 @@ async function exportPdf(){
     let position = 0;
     pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
     heightLeft -= 297;
-    while(heightLeft > 0){
+    // A tiny sub millimeter surplus from pixel rounding (canvas height gets
+    // rounded to a whole pixel) should not trigger a near blank extra page.
+    while(heightLeft > 1){
       position = heightLeft - imgHeight;
       pdf.addPage();
       pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
