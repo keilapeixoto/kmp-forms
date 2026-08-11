@@ -243,7 +243,7 @@
     margin-top:4px;
   }
   .doc-body{
-    padding:38px 32px;
+    padding:30px 32px;
     flex:1 0 auto;
     display:flex;
     flex-direction:column;
@@ -352,22 +352,60 @@
 
   /* Compact mode: applied automatically only to the offscreen clone used
      for PDF export, when the invoice is too tall to fit one A4 page.
-     Never applied to the on screen preview. */
-  .invoice-doc-el.pdf-compact{font-size:13px;}
-  .invoice-doc-el.pdf-compact .doc-header{padding:18px 28px;}
-  .invoice-doc-el.pdf-compact .doc-header .doc-title h1{font-size:22px;}
-  .invoice-doc-el.pdf-compact .doc-header .brand-tag{font-size:10px;}
-  .invoice-doc-el.pdf-compact .doc-body{padding:22px 28px;}
-  .invoice-doc-el.pdf-compact .doc-meta{margin-bottom:14px; font-size:12px;}
-  .invoice-doc-el.pdf-compact .doc-table th{padding:5px 6px; font-size:10px;}
-  .invoice-doc-el.pdf-compact .doc-table td{padding:6px 6px; font-size:12px;}
-  .invoice-doc-el.pdf-compact .totals{font-size:12px;}
-  .invoice-doc-el.pdf-compact .totals .total-final{font-size:14px; padding:7px 0 0; margin-top:4px;}
-  .invoice-doc-el.pdf-compact .payment-card{padding:12px 14px; margin:14px 0; font-size:12px;}
-  .invoice-doc-el.pdf-compact .payment-card .block-title{margin-bottom:5px;}
-  .invoice-doc-el.pdf-compact .notes{margin-top:10px; font-size:11px;}
-  .invoice-doc-el.pdf-compact .doc-footer{padding:12px; font-size:10.5px;}
-  .invoice-doc-el.pdf-compact .doc-footer .thanks{font-size:14px; margin-bottom:4px;}
+     Never applied to the on screen preview. Three escalating tiers are
+     tried in sequence until the content fits one page. */
+  .invoice-doc-el.pdf-compact-1{font-size:13px;}
+  .invoice-doc-el.pdf-compact-1 .doc-header{padding:18px 28px;}
+  .invoice-doc-el.pdf-compact-1 .doc-header .doc-title h1{font-size:22px;}
+  .invoice-doc-el.pdf-compact-1 .doc-header .brand-tag{font-size:10px;}
+  .invoice-doc-el.pdf-compact-1 .doc-body{padding:20px 28px;}
+  .invoice-doc-el.pdf-compact-1 .doc-meta{margin-bottom:12px; font-size:12px;}
+  .invoice-doc-el.pdf-compact-1 .doc-table{margin-bottom:12px;}
+  .invoice-doc-el.pdf-compact-1 .doc-table th{padding:4px 6px; font-size:10px;}
+  .invoice-doc-el.pdf-compact-1 .doc-table td{padding:5px 6px; font-size:12px;}
+  .invoice-doc-el.pdf-compact-1 .totals{font-size:12px;}
+  .invoice-doc-el.pdf-compact-1 .totals .total-final{font-size:14px; padding:6px 0 0; margin-top:4px;}
+  .invoice-doc-el.pdf-compact-1 .payment-card{padding:10px 14px; margin:12px 0; font-size:12px;}
+  .invoice-doc-el.pdf-compact-1 .payment-card .block-title{margin-bottom:4px;}
+  .invoice-doc-el.pdf-compact-1 .notes{margin-top:8px; font-size:11px;}
+  .invoice-doc-el.pdf-compact-1 .doc-footer{padding:10px; font-size:10.5px;}
+  .invoice-doc-el.pdf-compact-1 .doc-footer .thanks{font-size:14px; margin-bottom:3px;}
+
+  .invoice-doc-el.pdf-compact-2{font-size:12px;}
+  .invoice-doc-el.pdf-compact-2 .doc-header{padding:14px 24px;}
+  .invoice-doc-el.pdf-compact-2 .doc-header .doc-title h1{font-size:19px;}
+  .invoice-doc-el.pdf-compact-2 .doc-header .brand-tag{font-size:9px;}
+  .invoice-doc-el.pdf-compact-2 .logo-svg{height:26px;}
+  .invoice-doc-el.pdf-compact-2 .doc-body{padding:14px 24px;}
+  .invoice-doc-el.pdf-compact-2 .doc-meta{margin-bottom:8px; font-size:11px;}
+  .invoice-doc-el.pdf-compact-2 .doc-table{margin-bottom:8px;}
+  .invoice-doc-el.pdf-compact-2 .doc-table th{padding:3px 5px; font-size:9px;}
+  .invoice-doc-el.pdf-compact-2 .doc-table td{padding:4px 5px; font-size:11px;}
+  .invoice-doc-el.pdf-compact-2 .totals{font-size:11px;}
+  .invoice-doc-el.pdf-compact-2 .totals .total-final{font-size:13px; padding:5px 0 0; margin-top:3px;}
+  .invoice-doc-el.pdf-compact-2 .payment-card{padding:8px 12px; margin:8px 0; font-size:11px;}
+  .invoice-doc-el.pdf-compact-2 .payment-card .block-title{margin-bottom:3px;}
+  .invoice-doc-el.pdf-compact-2 .notes{margin-top:6px; font-size:10px;}
+  .invoice-doc-el.pdf-compact-2 .doc-footer{padding:8px; font-size:9.5px;}
+  .invoice-doc-el.pdf-compact-2 .doc-footer .thanks{font-size:12.5px; margin-bottom:2px;}
+
+  .invoice-doc-el.pdf-compact-3{font-size:11px;}
+  .invoice-doc-el.pdf-compact-3 .doc-header{padding:10px 20px;}
+  .invoice-doc-el.pdf-compact-3 .doc-header .doc-title h1{font-size:16px;}
+  .invoice-doc-el.pdf-compact-3 .doc-header .brand-tag{font-size:8px;}
+  .invoice-doc-el.pdf-compact-3 .logo-svg{height:20px;}
+  .invoice-doc-el.pdf-compact-3 .doc-body{padding:10px 20px;}
+  .invoice-doc-el.pdf-compact-3 .doc-meta{margin-bottom:6px; font-size:10px;}
+  .invoice-doc-el.pdf-compact-3 .doc-table{margin-bottom:6px;}
+  .invoice-doc-el.pdf-compact-3 .doc-table th{padding:2px 4px; font-size:8px;}
+  .invoice-doc-el.pdf-compact-3 .doc-table td{padding:3px 4px; font-size:10px;}
+  .invoice-doc-el.pdf-compact-3 .totals{font-size:10px;}
+  .invoice-doc-el.pdf-compact-3 .totals .total-final{font-size:12px; padding:4px 0 0; margin-top:2px;}
+  .invoice-doc-el.pdf-compact-3 .payment-card{padding:6px 10px; margin:6px 0; font-size:10px;}
+  .invoice-doc-el.pdf-compact-3 .payment-card .block-title{margin-bottom:2px;}
+  .invoice-doc-el.pdf-compact-3 .notes{margin-top:4px; font-size:9px;}
+  .invoice-doc-el.pdf-compact-3 .doc-footer{padding:6px; font-size:8.5px;}
+  .invoice-doc-el.pdf-compact-3 .doc-footer .thanks{font-size:11px; margin-bottom:2px;}
 
   #status-msg{
     text-align:center;
@@ -761,24 +799,29 @@ async function exportPdf(){
     clone.classList.add('invoice-doc-el');
     clone.style.width = FIXED_WIDTH + 'px';
     clone.style.maxWidth = FIXED_WIDTH + 'px';
-    clone.style.minHeight = maxHeight + 'px';
     clone.style.margin = '0';
     clone.style.boxShadow = 'none';
 
     host.appendChild(clone);
     document.body.appendChild(host);
 
-    // Force a layout pass, then measure the natural (uncompacted) height.
+    // Force a layout pass, then measure. If the natural height overflows
+    // one A4 page at this fixed width, step through progressively more
+    // compact typographic presets until it fits (or we run out of tiers).
     void clone.offsetHeight;
-    let naturalHeight = clone.scrollHeight;
-
-    // If it does not fit one A4 page at the fixed width, switch to the
-    // compact typographic preset (smaller fonts and tighter spacing) and
-    // measure again, instead of letting it spill onto a second page.
-    if (naturalHeight > maxHeight + 1) {
-      clone.classList.add('pdf-compact');
+    let fitsPage = clone.scrollHeight <= maxHeight + 2;
+    const tiers = ['pdf-compact-1', 'pdf-compact-2', 'pdf-compact-3'];
+    for (let i = 0; !fitsPage && i < tiers.length; i++) {
+      clone.classList.add(tiers[i]);
       void clone.offsetHeight;
-      naturalHeight = clone.scrollHeight;
+      fitsPage = clone.scrollHeight <= maxHeight + 2;
+    }
+
+    // Only stretch to fill the page nicely when the content already fits
+    // comfortably; never let a min-height push a tight fit into overflow.
+    if (fitsPage) {
+      clone.style.minHeight = maxHeight + 'px';
+      void clone.offsetHeight;
     }
 
     const TARGET_WIDTH_PX = 2480; // ~300dpi at 210mm wide
