@@ -271,6 +271,11 @@
     .applicant-card{grid-template-columns:1fr;}
     header h1{font-size:27px;}
   }
+  @media print{
+    .action-row, .status-msg, .email-line, .sig-actions{display:none !important;}
+    body{background:#fff;}
+    .question-card, .signature-card, .applicant-card, .intro-card{break-inside:avoid;}
+  }
 </style>
 </head>
 <body>
@@ -544,17 +549,12 @@ function validateBeforeAction(){
   return true;
 }
 
-document.getElementById('downloadPdfBtn').addEventListener('click', async () => {
+document.getElementById('downloadPdfBtn').addEventListener('click', () => {
   if(!validateBeforeAction()) return;
-  showStatus('Gerando PDF, aguarde um momento...', true);
-  try{
-    const pdf = await buildPdf();
-    const applicantName = document.getElementById('applicantName').value.trim().replace(/\s+/g, '_');
-    pdf.save('Checklist_Declaracoes_' + applicantName + '.pdf');
-    showStatus('PDF gerado com sucesso. Salve uma copia e envie tambem para keila.peixoto@kmpconsulting.com.au', true);
-  }catch(err){
-    showStatus('Nao foi possivel gerar o PDF. Tente novamente.', false);
-  }
+  // Uses the browser's own print engine (Save as PDF) instead of a screenshot library,
+  // so the saved file is guaranteed to look exactly like the page - same text, same fonts, same layout.
+  showStatus('Na janela que abrir, escolha "Salvar como PDF" em Destino e clique em Salvar.', true);
+  window.print();
 });
 
 document.getElementById('sendEmailBtn').addEventListener('click', async () => {
@@ -566,28 +566,45 @@ document.getElementById('sendEmailBtn').addEventListener('click', async () => {
   const formDate = document.getElementById('formDate').value;
   const signName = document.getElementById('signName').value.trim();
 
+  const formData = new FormData();
+  formData.append('access_key', 'eb911200-f515-4a77-afbf-61c4f99be8cf');
+  formData.append('subject', 'Checklist de Declaracoes - ' + applicantName);
+  formData.append('from_name', applicantName + ' via Checklist KMP');
+  formData.append('Aplicante', applicantName);
+  formData.append('Tipo_de_visto', visaType || 'Nao informado');
+  formData.append('Data', formDate);
+  formData.append('Assinado_por', signName);
+  formData.append('Respostas', summary);
+  if(missing.length){
+    formData.append('Atencao', 'Existem ' + missing.length + ' pergunta(s) sem resposta.');
+  }
+
+  let pdfAttached = false;
+  let filename = 'Checklist_Declaracoes_' + applicantName.replace(/\s+/g,'_') + '.pdf';
   try{
-    const pdf = await buildPdf();
-    const pdfBlob = pdf.output('blob');
-
-    const formData = new FormData();
-    formData.append('access_key', 'eb911200-f515-4a77-afbf-61c4f99be8cf');
-    formData.append('subject', 'Checklist de Declaracoes - ' + applicantName);
-    formData.append('from_name', applicantName + ' via Checklist KMP');
-    formData.append('Aplicante', applicantName);
-    formData.append('Tipo_de_visto', visaType || 'Nao informado');
-    formData.append('Data', formDate);
-    formData.append('Assinado_por', signName);
-    formData.append('Respostas', summary);
-    if(missing.length){
-      formData.append('Atencao', 'Existem ' + missing.length + ' pergunta(s) sem resposta.');
+    // Preferred path: server-side rendering (same fidelity as "Salvar como PDF" in the browser).
+    const pdfBlob = await buildPdfServerSide();
+    formData.append('attachment', pdfBlob, filename);
+    pdfAttached = true;
+  }catch(err){
+    try{
+      // Fallback while the server endpoint isn't deployed yet, or if it fails for this request.
+      const pdf = await buildPdfClientFallback();
+      const pdfBlob = pdf.output('blob');
+      formData.append('attachment', pdfBlob, filename);
+      pdfAttached = true;
+    }catch(err2){
+      formData.append('Atencao_PDF', 'Nao foi possivel gerar o PDF neste dispositivo. Apenas as respostas em texto foram enviadas.');
     }
-    formData.append('attachment', pdfBlob, 'Checklist_Declaracoes_' + applicantName.replace(/\s+/g,'_') + '.pdf');
+  }
 
+  try{
     const res = await fetch('https://api.web3forms.com/submit', { method:'POST', body: formData });
     const data = await res.json();
-    if(data.success){
+    if(data.success && pdfAttached){
       showStatus('Enviado com sucesso, com o PDF completo em anexo. Recomendamos tambem baixar uma copia para voce.', true);
+    } else if(data.success && !pdfAttached){
+      showStatus('As respostas foram enviadas, mas nao foi possivel anexar o PDF neste dispositivo. Tente baixar o PDF em outro navegador (Chrome) ou computador e envie para keila.peixoto@kmpconsulting.com.au', false);
     } else {
       showStatus('Nao foi possivel enviar automaticamente. Baixe o PDF e envie por e mail para keila.peixoto@kmpconsulting.com.au', false);
     }
@@ -596,23 +613,134 @@ document.getElementById('sendEmailBtn').addEventListener('click', async () => {
   }
 });
 
-async function buildPdf(){
+function buildSnapshotHtml(){
+  const clone = document.getElementById('pdfCapture').cloneNode(true);
+
+  // Bake in the real answers: native "checked" DOM property does not serialize into outerHTML,
+  // so we copy it into the "checked" attribute on the clone before sending it anywhere.
+  clone.querySelectorAll('input[type=radio]').forEach(r => {
+    const original = document.querySelector('input[name="' + r.name + '"][value="' + r.value + '"]');
+    if(original && original.checked){ r.setAttribute('checked','checked'); }
+    else { r.removeAttribute('checked'); }
+  });
+
+  // Textareas: same issue, the typed text lives in .value, not in the markup. Swap each for
+  // a plain styled div with the actual typed text baked in.
+  clone.querySelectorAll('textarea').forEach(t => {
+    const original = document.getElementById(t.id);
+    const val = original ? original.value.trim() : '';
+    const div = document.createElement('div');
+    div.style.cssText = 'width:100%;min-height:60px;padding:9px 10px;border:1px solid #E7E1D8;border-radius:6px;font-family:Outfit,sans-serif;font-size:14px;background:#fff;color:#2C2C2C;white-space:pre-wrap;';
+    div.textContent = val || '(nao preenchido)';
+    t.replaceWith(div);
+  });
+
+  // Signature: the canvas pixels only exist on screen, not in the markup. Bake the drawing
+  // in as a plain image so it survives being sent elsewhere for rendering.
+  const cloneCanvas = clone.querySelector('#sigPad');
+  if(cloneCanvas){
+    const img = document.createElement('img');
+    img.src = canvas.toDataURL('image/png');
+    img.style.cssText = 'width:100%;height:150px;border:1px dashed #F27B20;border-radius:8px;background:#F8F7F5;display:block;object-fit:contain;';
+    cloneCanvas.replaceWith(img);
+  }
+
+  clone.querySelectorAll('.action-row, .status-msg, .email-line, .sig-actions').forEach(el => el.remove());
+
+  const styleTag = document.querySelector('style') ? document.querySelector('style').outerHTML : '';
+  const fontLinks = Array.from(document.querySelectorAll('link[rel="stylesheet"], link[rel="preconnect"]')).map(l => l.outerHTML).join('\n');
+
+  return '<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">' + fontLinks + styleTag +
+    '</head><body style="background:#F8F7F5;margin:0;">' + clone.outerHTML + '</body></html>';
+}
+
+async function buildPdfServerSide(){
+  const applicantName = document.getElementById('applicantName').value.trim().replace(/\s+/g, '_');
+  const html = buildSnapshotHtml();
+  const res = await fetch('/api/generate-pdf', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ html, filename: 'Checklist_Declaracoes_' + applicantName + '.pdf' })
+  });
+  if(!res.ok) throw new Error('server-pdf-unavailable');
+  return await res.blob();
+}
+
+function isCanvasSuspiciouslyBlack(canvasEl){
+  try{
+    const ctx = canvasEl.getContext('2d');
+    const w = canvasEl.width, h = canvasEl.height;
+    const points = [[5,5],[w-5,5],[5,h-5],[w-5,h-5],[Math.floor(w/2),Math.floor(h/2)]];
+    let blackCount = 0;
+    for(const [x,y] of points){
+      const d = ctx.getImageData(Math.max(0,x), Math.max(0,y), 1, 1).data;
+      if(d[0] < 8 && d[1] < 8 && d[2] < 8) blackCount++;
+    }
+    return blackCount === points.length;
+  }catch(e){
+    return false;
+  }
+}
+
+async function buildPdfClientFallback(){
   const toHide = [document.querySelector('.action-row'), document.getElementById('statusMsg'), document.querySelector('.email-line')];
   toHide.forEach(el => { if(el) el.style.display = 'none'; });
 
-  const capture = document.getElementById('pdfCapture');
+  window.scrollTo(0, 0);
+  await new Promise(r => setTimeout(r, 50));
 
+  const capture = document.getElementById('pdfCapture');
   const { jsPDF } = window.jspdf;
   const pdf = new jsPDF('p', 'pt', 'a4');
 
   try{
-    await pdf.html(capture, {
-      margin: 0,
-      autoPaging: 'text',
-      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#F8F7F5', windowWidth: 900 },
-      width: 595,
-      windowWidth: 900
+    let canvasImg = await html2canvas(capture, {
+      scale: 1.5,
+      useCORS: true,
+      allowTaint: false,
+      backgroundColor: '#F8F7F5',
+      windowWidth: 900,
+      scrollX: 0,
+      scrollY: 0,
+      x: 0,
+      y: 0
     });
+
+    if(isCanvasSuspiciouslyBlack(canvasImg)){
+      // Retry once with a simpler, safer configuration (helps on mobile Safari / low-memory devices)
+      canvasImg = await html2canvas(capture, {
+        scale: 1,
+        useCORS: true,
+        allowTaint: false,
+        backgroundColor: '#F8F7F5',
+        windowWidth: 900,
+        scrollX: 0,
+        scrollY: 0,
+        x: 0,
+        y: 0,
+        removeContainer: true
+      });
+    }
+
+    if(isCanvasSuspiciouslyBlack(canvasImg)){
+      throw new Error('capture-failed');
+    }
+
+    const imgData = canvasImg.toDataURL('image/png');
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const imgWidth = pageWidth;
+    const imgHeight = canvasImg.height * imgWidth / canvasImg.width;
+    let heightLeft = imgHeight;
+    let position = 0;
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+    while(heightLeft > 0){
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
   } finally {
     toHide.forEach(el => { if(el) el.style.display = ''; });
   }
