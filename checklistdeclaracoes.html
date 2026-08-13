@@ -549,12 +549,39 @@ function validateBeforeAction(){
   return true;
 }
 
-document.getElementById('downloadPdfBtn').addEventListener('click', () => {
+function triggerDownload(blob, filename){
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+document.getElementById('downloadPdfBtn').addEventListener('click', async () => {
   if(!validateBeforeAction()) return;
-  // Uses the browser's own print engine (Save as PDF) instead of a screenshot library,
-  // so the saved file is guaranteed to look exactly like the page - same text, same fonts, same layout.
-  showStatus('Na janela que abrir, escolha "Salvar como PDF" em Destino e clique em Salvar.', true);
-  window.print();
+  showStatus('Gerando PDF, aguarde...', true);
+
+  const applicantName = document.getElementById('applicantName').value.trim();
+  const filename = 'Checklist_Declaracoes_' + applicantName.replace(/\s+/g,'_') + '.pdf';
+
+  try{
+    // Preferred path: server side rendering, same fidelity used for the email attachment.
+    const pdfBlob = await buildPdfServerSide();
+    triggerDownload(pdfBlob, filename);
+    showStatus('PDF baixado com sucesso.', true);
+  }catch(err){
+    try{
+      // Fallback while the server endpoint isn't deployed yet, or if it fails for this request.
+      const pdf = await buildPdfClientFallback();
+      pdf.save(filename);
+      showStatus('PDF baixado com sucesso.', true);
+    }catch(err2){
+      showStatus('Nao foi possivel gerar o PDF neste dispositivo. Tente em outro navegador (Chrome) ou computador.', false);
+    }
+  }
 });
 
 document.getElementById('sendEmailBtn').addEventListener('click', async () => {
