@@ -832,7 +832,7 @@ async function exportPdf(){
       useCORS: true,
       logging: false
     });
-    const imgData = canvas.toDataURL('image/png');
+    const imgData = canvas.toDataURL('image/jpeg', 0.92);
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF('p', 'mm', 'a4');
     const pageWidth = 210;
@@ -840,14 +840,14 @@ async function exportPdf(){
     const imgHeight = (canvas.height * imgWidth) / canvas.width;
     let heightLeft = imgHeight;
     let position = 0;
-    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight, undefined, 'MEDIUM');
     heightLeft -= 297;
     // A tiny sub millimeter surplus from pixel rounding (canvas height gets
     // rounded to a whole pixel) should not trigger a near blank extra page.
     while(heightLeft > 1){
       position = heightLeft - imgHeight;
       pdf.addPage();
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight, undefined, 'MEDIUM');
       heightLeft -= 297;
     }
     const clientName = (document.getElementById('cl-name').value || 'Cliente').replace(/\s+/g,'_');
