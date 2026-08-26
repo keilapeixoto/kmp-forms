@@ -1,733 +1,236 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KMP Consulting — Checklist 482 Subsequent Entrant</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --orange: #F27B20;
-      --orange-dark: #E06A10;
-      --orange-light: #FFF5EC;
-      --dark: #1a1a1a;
-      --gray: #6b7280;
-      --light-gray: #f3f4f6;
-      --border: #e5e7eb;
-      --green: #16a34a;
-      --green-light: #f0fdf4;
-    }
-
-    body {
-      font-family: 'Outfit', sans-serif;
-      background: #f8f8f8;
-      min-height: 100vh;
-      color: var(--dark);
-    }
-
-    /* Top bar */
-    .topbar {
-      background: #fff;
-      border-bottom: 3px solid var(--orange);
-      padding: 14px 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 14px;
-    }
-    .logo-icon { width: 42px; height: 42px; border-radius: 10px; background: linear-gradient(135deg, #F27B20 0%, #F5941E 100%); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .logo-icon span { color: #fff; font-weight: 800; font-size: 16px; letter-spacing: -0.02em; }
-    .logo-text strong { display: block; font-weight: 700; font-size: 18px; letter-spacing: -0.01em; }
-    .logo-text strong span { font-weight: 300; }
-    .logo-tagline { display: block; font-size: 10px; color: var(--orange); font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; margin-top: 2px; }
-
-    /* Layout */
-    .container { max-width: 800px; margin: 0 auto; padding: 32px 16px 48px; }
-
-    /* Header */
-    .doc-header {
-      background: #fff;
-      border-radius: 16px;
-      padding: 32px 32px 28px;
-      margin-bottom: 24px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.05);
-      border: 1px solid #eee;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .doc-header::before {
-      content: "";
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, #F27B20, #F5941E);
-    }
-
-    .doc-header-top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-
-    .doc-header h1 {
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 32px;
-      font-weight: 700;
-      letter-spacing: -0.01em;
-      line-height: 1.15;
-      color: var(--dark);
-    }
-
-    .doc-header h1 span { color: var(--orange); }
-
-    .doc-header p.sub {
-      font-size: 14px;
-      color: var(--gray);
-      margin-top: 6px;
-      line-height: 1.5;
-    }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--orange-light);
-      border: 1.5px solid var(--orange);
-      color: var(--orange-dark);
-      font-size: 12px;
-      font-weight: 700;
-      padding: 6px 14px;
-      border-radius: 100px;
-      white-space: nowrap;
-      letter-spacing: 0.03em;
-    }
-
-    /* Progress bar */
-    .progress-wrap { margin-top: 20px; }
-    .progress-label {
-      display: flex;
-      justify-content: space-between;
-      font-size: 13px;
-      color: var(--gray);
-      margin-bottom: 8px;
-    }
-    .progress-label strong { color: var(--orange); font-weight: 700; }
-    .progress-bar-bg { height: 8px; background: #e5e7eb; border-radius: 100px; overflow: hidden; }
-    .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #F27B20, #F5941E); border-radius: 100px; transition: width 0.4s ease; }
-
-    /* Info box */
-    .info-box {
-      padding: 16px 20px;
-      background: var(--orange-light);
-      border-radius: 12px;
-      margin-bottom: 24px;
-      border-left: 4px solid var(--orange);
-      font-size: 13px;
-      line-height: 1.7;
-      color: var(--dark);
-    }
-    .info-box strong { color: var(--orange-dark); }
-
-    /* Section */
-    .section { margin-bottom: 24px; }
-
-    .section-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 14px 20px;
-      background: var(--dark);
-      border-radius: 12px 12px 0 0;
-      color: #fff;
-    }
-
-    .section-header .sec-icon { font-size: 20px; }
-
-    .section-header h2 {
-      font-size: 15px;
-      font-weight: 700;
-      letter-spacing: 0.01em;
-      flex: 1;
-    }
-
-    .section-header .sec-count {
-      font-size: 12px;
-      font-weight: 500;
-      opacity: 0.6;
-    }
-
-    .section-body {
-      background: #fff;
-      border-radius: 0 0 12px 12px;
-      border: 1px solid #eee;
-      border-top: none;
-      overflow: hidden;
-    }
-
-    /* Checklist item */
-    .item {
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-      padding: 14px 20px;
-      border-bottom: 1px solid var(--border);
-      transition: background 0.15s;
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .item:last-child { border-bottom: none; }
-    .item:hover { background: #fafafa; }
-    .item.checked { background: var(--green-light); }
-
-    .checkbox {
-      width: 22px;
-      height: 22px;
-      border-radius: 6px;
-      border: 2px solid #d1d5db;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      margin-top: 1px;
-      transition: all 0.15s;
-    }
-
-    .item.checked .checkbox {
-      background: var(--green);
-      border-color: var(--green);
-    }
-
-    .checkbox svg { display: none; }
-    .item.checked .checkbox svg { display: block; }
-
-    .item-content { flex: 1; }
-
-    .item-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--dark);
-      line-height: 1.4;
-    }
-
-    .item.checked .item-title {
-      text-decoration: line-through;
-      color: var(--gray);
-    }
-
-    .item-sub {
-      font-size: 12px;
-      color: var(--gray);
-      margin-top: 3px;
-      line-height: 1.5;
-    }
-
-    .item-en {
-      font-size: 11px;
-      color: #9ca3af;
-      font-style: italic;
-      margin-top: 2px;
-    }
-
-    .tag {
-      display: inline-block;
-      font-size: 10px;
-      font-weight: 700;
-      padding: 2px 8px;
-      border-radius: 100px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-top: 5px;
-    }
-
-    .tag-required { background: #fee2e2; color: #dc2626; }
-    .tag-conditional { background: #fef3c7; color: #d97706; }
-    .tag-optional { background: var(--orange-light); color: var(--orange-dark); }
-
-    /* Notes section */
-    .notes-section {
-      background: #fff;
-      border-radius: 12px;
-      padding: 24px;
-      margin-bottom: 24px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.05);
-      border: 1px solid #eee;
-    }
-
-    .notes-section h3 {
-      font-size: 15px;
-      font-weight: 700;
-      margin-bottom: 14px;
-      color: var(--dark);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    textarea.notes-input {
-      width: 100%;
-      padding: 12px 14px;
-      border: 1.5px solid var(--border);
-      border-radius: 8px;
-      font-size: 14px;
-      font-family: 'Outfit', sans-serif;
-      color: var(--dark);
-      resize: vertical;
-      min-height: 100px;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    textarea.notes-input:focus { border-color: var(--orange); box-shadow: 0 0 0 3px rgba(242,123,32,0.12); }
-
-    /* Action bar */
-    .action-bar {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-bottom: 24px;
-    }
-
-    .btn-reset-all {
-      padding: 10px 20px;
-      background: transparent;
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
-      color: var(--gray);
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      font-family: 'Outfit', sans-serif;
-      transition: all 0.2s;
-    }
-    .btn-reset-all:hover { border-color: #e53e3e; color: #e53e3e; }
-
-    .btn-print {
-      padding: 10px 20px;
-      background: linear-gradient(135deg, #F27B20 0%, #F5941E 100%);
-      border: none;
-      border-radius: 10px;
-      color: #fff;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      font-family: 'Outfit', sans-serif;
-      box-shadow: 0 4px 14px rgba(242,123,32,0.3);
-      transition: all 0.2s;
-    }
-    .btn-print:hover { opacity: 0.9; }
-
-    .footer { text-align: center; font-size: 11px; color: #aaa; margin-top: 18px; }
-
-    @media print {
-      .topbar, .action-bar, .notes-section, .progress-wrap, .btn-print, .btn-reset-all { display: none !important; }
-      body { background: #fff; }
-      .container { padding: 0; }
-      .doc-header { box-shadow: none; border: 1px solid #ddd; }
-      .item { break-inside: avoid; }
-    }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Checklist 482 Subsequent Entrant — KMP Consulting</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Outfit',sans-serif;background:#e8e8e8;padding:28px 16px;color:#1a1a1a;font-size:13px}
+.page{background:#fff;width:210mm;max-width:100%;margin:0 auto;box-shadow:0 4px 28px rgba(0,0,0,0.13)}
+.hdr{background:linear-gradient(135deg,#F27B20 0%,#F5941E 100%);padding:26px 36px;color:#fff;display:flex;justify-content:space-between;align-items:center}
+.logo-wrap{display:flex;align-items:center;gap:12px}
+.logo-box{width:44px;height:44px;background:rgba(255,255,255,0.2);border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:#fff;flex-shrink:0;border:2px solid rgba(255,255,255,0.5)}
+.logo-name{font-size:19px;font-weight:700}
+.logo-name span{font-weight:300}
+.logo-sub{font-size:8px;letter-spacing:0.13em;text-transform:uppercase;opacity:0.85;margin-top:2px;display:block}
+.hdr-right{text-align:right}
+.hdr-visa{font-size:9px;opacity:0.8;text-transform:uppercase;letter-spacing:0.1em;background:rgba(255,255,255,0.15);padding:3px 10px;border-radius:10px;display:inline-block;margin-bottom:6px}
+.hdr-type{font-size:13px;font-weight:800;display:block}
+.body{padding:22px 36px 26px}
+.doc-title{text-align:center;margin-bottom:14px;padding-bottom:12px;border-bottom:1.5px solid #e5e7eb}
+.doc-title h1{font-size:15px;font-weight:800;color:#1a1a1a;margin-bottom:3px}
+.doc-title p{font-size:10px;color:#6b7280}
+.intro{border-left:3px solid #F27B20;padding:8px 12px;margin-bottom:16px;font-size:11px;color:#374151;line-height:1.7;background:#fffbf7}
+.intro strong{color:#c2410c}
+.section{margin-bottom:15px}
+.sec-title{font-size:9px;font-weight:700;color:#F27B20;text-transform:uppercase;letter-spacing:0.12em;padding:5px 0;border-bottom:1.5px solid #fde8d0;margin-bottom:0}
+.item{display:flex;align-items:flex-start;gap:9px;padding:7px 0;border-bottom:1px solid #f5f5f5}
+.item:last-child{border-bottom:none}
+.cb{width:14px;height:14px;border:1.5px solid #d1d5db;border-radius:3px;flex-shrink:0;margin-top:1px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.cb.checked{background:#F27B20;border-color:#F27B20}
+.cb.checked::after{content:'✓';color:#fff;font-size:9px;font-weight:800}
+.item-body{flex:1}
+.item-main{font-size:12px;font-weight:700;color:#1a1a1a;line-height:1.4}
+.item-en{font-size:10px;color:#9ca3af;font-style:italic;margin-top:1px;line-height:1.4}
+.item-note{font-size:10.5px;color:#6b7280;margin-top:2px;line-height:1.5}
+.item-warn{font-size:10px;color:#c2410c;margin-top:2px;font-weight:600;line-height:1.5}
+.item-link a{font-size:10px;color:#F27B20;margin-top:1px;display:block;text-decoration:none}
+.tag{display:inline-block;font-size:8.5px;font-weight:700;padding:2px 7px;border-radius:8px;text-transform:uppercase;letter-spacing:0.05em;margin-top:4px}
+.tag-required{background:#fee2e2;color:#dc2626}
+.tag-conditional{background:#fef3c7;color:#92400e}
+.tag-optional{background:#fde8d0;color:#c2410c}
+.costs-title{font-size:9px;font-weight:700;color:#1a1a1a;text-transform:uppercase;letter-spacing:0.1em;padding:5px 0;border-bottom:1.5px solid #e5e7eb;margin-bottom:10px}
+.cost-block{border:1px solid #e5e7eb;border-radius:6px;overflow:hidden;margin-bottom:9px}
+.cost-block-hd{background:#f9fafb;padding:7px 12px;font-size:10px;font-weight:700;color:#374151;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;align-items:center}
+.method{font-size:9px;font-weight:600;padding:2px 8px;border-radius:8px}
+.m-bsb{background:#dcfce7;color:#166534}
+.m-card{background:#dbeafe;color:#1e40af}
+.m-direct{background:#fef3c7;color:#92400e}
+.cost-row{display:flex;justify-content:space-between;padding:5px 12px;border-bottom:1px solid #f5f5f5;font-size:11.5px}
+.cost-row:last-child{border-bottom:none;font-weight:800;color:#F27B20}
+.cost-note{font-size:10px;color:#6b7280;font-style:italic;padding:5px 12px 7px;background:#f9fafb;border-top:1px solid #f0f0f0}
+.sig-box{border:1px solid #e5e7eb;border-radius:6px;padding:13px 16px;margin-bottom:10px}
+.sig-hd{font-size:9px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px}
+.sig-disclaimer{font-size:10.5px;color:#374151;line-height:1.7;margin-bottom:11px}
+.sig-grid{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:4px}
+.sig-line{height:30px;border-bottom:1.5px solid #9ca3af}
+.sig-lbl{font-size:8.5px;color:#9ca3af;text-transform:uppercase;letter-spacing:0.06em;margin-top:3px}
+.sig-full-line{height:30px;border-bottom:1.5px solid #9ca3af;margin-top:10px}
+.footer{border-top:1.5px solid #e5e7eb;padding:8px 36px;display:flex;justify-content:space-between;align-items:center}
+.footer-l{font-size:9px;color:#9ca3af}
+.footer-r{font-size:9px;font-weight:700;color:#F27B20;white-space:nowrap}
+.print-btn{position:fixed;bottom:22px;right:22px;background:#F27B20;color:#fff;border:none;padding:11px 18px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;box-shadow:0 4px 14px rgba(242,123,32,0.4)}
+.sig-input{width:100%;border:none;border-bottom:1.5px solid #9ca3af;padding:6px 0;font-size:13px;font-family:'Outfit',sans-serif;color:#1a1a1a;background:transparent;outline:none}
+.sig-input:focus{border-bottom-color:#F27B20}
+.sig-input::placeholder{color:#d1d5db}
+.submit-wrap{margin-top:14px;display:flex;flex-direction:column;gap:8px}
+.submit-btn{width:100%;padding:12px;background:linear-gradient(135deg,#F27B20,#F5941E);border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif}
+.submit-msg{font-size:11px;text-align:center;padding:8px;border-radius:6px;display:none}
+.submit-msg.ok{background:#dcfce7;color:#166534;display:block}
+.submit-msg.err{background:#fef2f2;color:#991b1b;display:block}
+@page{size:A4;margin:0}
+@media print{
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  body{background:#fff!important;padding:0!important}
+  .page{box-shadow:none!important;width:100%!important}
+  .print-btn{display:none!important}
+  .hdr{background:linear-gradient(135deg,#F27B20 0%,#F5941E 100%)!important}
+  .intro{background:#fffbf7!important}
+  .cost-block-hd,.cost-note{background:#f9fafb!important}
+  .m-bsb{background:#dcfce7!important}
+  .m-card{background:#dbeafe!important}
+  .m-direct{background:#fef3c7!important}
+  .tag-required{background:#fee2e2!important}
+  .tag-conditional{background:#fef3c7!important}
+  .tag-optional{background:#fde8d0!important}
+}
+</style>
 </head>
 <body>
-
-<div class="topbar">
-  <div class="logo-icon"><span>kmp</span></div>
-  <div class="logo-text">
-    <strong>kmp<span> consulting</span></strong>
-    <span class="logo-tagline">Estratégia que conecta. Futuro que transforma.</span>
-  </div>
-</div>
-
-<div class="container">
-
-  <!-- Header -->
-  <div class="doc-header">
-    <div class="doc-header-top">
+<div class="page">
+  <div class="hdr">
+    <div class="logo-wrap">
+      <div class="logo-box">kmp</div>
       <div>
-        <h1>Checklist de Documentos<br><span>482 Subsequent Entrant</span></h1>
-        <p class="sub">Temporary Skill Shortage Visa — Dependente / Subsequent Entrant<br>Subclass 482 · Department of Home Affairs</p>
+        <div class="logo-name">kmp<span> consulting</span></div>
+        <span class="logo-sub">Estratégia que conecta. Futuro que transforma.</span>
       </div>
-      <span class="badge"> KMP Consulting</span>
     </div>
-    <div class="progress-wrap">
-      <div class="progress-label">
-        <span>Documentos marcados como reunidos</span>
-        <strong id="progress-text">0 / 0</strong>
-      </div>
-      <div class="progress-bar-bg">
-        <div class="progress-bar-fill" id="progress-bar" style="width:0%"></div>
-      </div>
+    <div class="hdr-right">
+      <span class="hdr-visa">Subclass 482 — Temporary Skill Shortage Visa</span>
+      <span class="hdr-type">Subsequent Entrant — Document Checklist</span>
     </div>
   </div>
 
-  <!-- Info box -->
-  <div class="info-box">
-    <strong>Como usar este checklist:</strong> Clique em cada item para marcá-lo como reunido. O progresso é salvo automaticamente no seu navegador. Documentos marcados como <span style="color:#dc2626;font-weight:700">OBRIGATÓRIO</span> são exigidos em todos os casos. Documentos <span style="color:#d97706;font-weight:700">CONDICIONAL</span> dependem da situação do solicitante.
+  <div class="body">
+    <div class="doc-title">
+      <h1>Document Checklist — Lista de Documentos</h1>
+      <p>Reúna todos os documentos e envie para vistos@kmpconsulting.com.au</p>
+    </div>
+    <div class="intro">Todos os documentos devem ser enviados em formato <strong>PDF ou JPG de alta qualidade</strong>. Itens marcados <strong>OBRIGATÓRIO</strong> são exigidos em todos os casos; <strong>CONDICIONAL</strong> depende da situação do solicitante.</div>
+
+    <div class="section">
+      <div class="sec-title">Identidade e Passaporte / Identity and Passport</div>
+      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Passaporte — página de dados biográficos</div><div class="item-en">Passport — biographical data page</div><div class="item-note">Cópia colorida nítida. Passaporte deve ter validade mínima de 6 meses.</div><span class="tag tag-required">Obrigatório</span></div></div>
+      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Passaporte — todas as páginas carimbadas</div><div class="item-en">Passport — all stamped pages</div><div class="item-note">Inclui vistos, carimbos de entrada e saída de todos os países visitados.</div><span class="tag tag-required">Obrigatório</span></div></div>
+      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Foto facial recente (fundo branco)</div><div class="item-en">Recent facial image (white background)</div><div class="item-note">Foto tipo passaporte, fundo branco, rosto visível. Arquivo JPG ou PNG.</div><span class="tag tag-required">Obrigatório</span></div></div>
+      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Documento de identidade nacional (RG, CNH ou equivalente)</div><div class="item-en">National identity document (ID card, driver's licence, or equivalent)</div><div class="item-note">Frente e verso. Inclui documentos australianos se o solicitante já reside aqui.</div><span class="tag tag-optional">Recomendado</span></div></div>
+    </div>
+
+    <div class="section">
+      <div class="sec-title">Evidência de Relacionamento / Relationship Evidence</div>
+      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Certidão de união estável (de facto) ou certidão de casamento</div><div class="item-en">De facto relationship certificate or marriage certificate</div><div class="item-note">Documento oficial registrado em cartório ou órgão competente. Tradução juramentada se em outro idioma.</div><span class="tag tag-required">Obrigatório</span></div></div>
+      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Contrato de aluguel ou comprovante de residência conjunta</div><div class="item-en">Lease agreement or joint residence proof</div><div class="item-note">Contrato com ambos os nomes. Período atual.</div><span class="tag tag-required">Obrigatório</span></div></div>
+      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Extrato bancário de conta conjunta ou transferências entre o casal</div><div class="item-en">Joint bank account statement or transfers between partners</div><div class="item-note">Últimos 3 a 6 meses. Demonstra vida financeira compartilhada.</div><span class="tag tag-required">Obrigatório</span></div></div>
+      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Apólice de seguro conjunto (carro, saúde, residência)</div><div class="item-en">Joint insurance policy (car, health, home)</div><div class="item-note">Seguro com ambos os nomes ou como beneficiários mútuos.</div><span class="tag tag-conditional">Condicional</span></div></div>
+      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Contas de consumo conjuntas (luz, internet, água, gás)</div><div class="item-en">Joint utility bills (electricity, internet, water, gas)</div><div class="item-note">Conta emitida para o endereço compartilhado. Pelo menos 1 conta com um dos nomes.</div><span class="tag tag-conditional">Condicional</span></div></div>
+      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Fotos do casal (viagens, eventos, vida cotidiana)</div><div class="item-en">Photos of the couple (trips, events, daily life)</div><div class="item-note">Selecione fotos com datas e locais diferentes para demonstrar convivência ao longo do tempo.</div><span class="tag tag-optional">Recomendado</span></div></div>
+      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Declarações de terceiros (familiares, amigos, colegas)</div><div class="item-en">Statutory declarations from third parties (family, friends, colleagues)</div><div class="item-note">Declarações de pessoas que conhecem o casal e confirmam o relacionamento.</div><span class="tag tag-optional">Recomendado</span></div></div>
+      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Histórico de comunicações (mensagens, ligações, e-mails)</div><div class="item-en">Communication records (messages, calls, emails)</div><div class="item-note">Especialmente útil se os parceiros ficaram em países diferentes por algum período.</div><span class="tag tag-optional">Recomendado</span></div></div>
+    </div>
+
+    <div class="section">
+      <div class="sec-title">Antecedentes Criminais / Police Clearance</div>
+      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Certidão de antecedentes criminais — Austrália (AFP National Police Check)</div><div class="item-en">Australian Federal Police (AFP) National Police Check</div><div class="item-note">Obrigatória para quem residiu na Austrália por 12+ meses (cumulativos) nos últimos 10 anos.</div><span class="tag tag-required">Obrigatório</span></div></div>
+      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Certidão de antecedentes — Brasil (Polícia Federal, nível federal)</div><div class="item-en">Brazilian Federal Police Clearance</div><div class="item-note">Emitida pela Polícia Federal do Brasil. Obrigatória para nacionais brasileiros que viveram no Brasil por 12+ meses nos últimos 10 anos.</div><span class="tag tag-required">Obrigatório</span></div></div>
+      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Certidão de antecedentes — estado brasileiro de residência (ex: RS, SP, RJ)</div><div class="item-en">Brazilian State Police Clearance (state of residence)</div><div class="item-note">Exigida pelo Department juntamente com a certidão federal. Solicitar no estado de residência mais recente.</div><span class="tag tag-required">Obrigatório</span></div></div>
+      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Certidão de antecedentes de outros países (se aplicável)</div><div class="item-en">Police clearance from other countries (if applicable)</div><div class="item-note">Necessária para cada país onde o solicitante residiu por 12+ meses (cumulativos) nos últimos 10 anos.</div><span class="tag tag-conditional">Condicional</span></div></div>
+    </div>
+
+    <div class="section">
+      <div class="sec-title">Exame de Saúde / Health Examination</div>
+      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Resultado do exame de saúde (HAP ID)</div><div class="item-en">Health examination result (HAP ID)</div><div class="item-note">Agendado através do ImmiAccount. O Department enviará convite para exame após lodgement. Guarde o HAP ID.</div><span class="tag tag-conditional">Condicional</span></div></div>
+      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Radiografia de tórax (chest x-ray) — se solicitado</div><div class="item-en">Chest x-ray — if requested</div><div class="item-note">Solicitada pelo médico designado (panel physician) durante o exame.</div><span class="tag tag-conditional">Condicional</span></div></div>
+    </div>
+
+    <div class="section">
+      <div class="sec-title">Visto Australiano Anterior (se aplicável) / Previous Australian Visa</div>
+      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Número de concessão do visto australiano anterior (Grant Number)</div><div class="item-en">Previous Australian visa grant number</div><div class="item-note">Localizado no e-mail de grant ou no ImmiAccount.</div><span class="tag tag-conditional">Condicional</span></div></div>
+      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Cartão ou carta de concessão do visto anterior</div><div class="item-en">Previous visa grant card or letter</div><div class="item-note">Se disponível, anexe a carta ou cartão de concessão do visto anterior.</div><span class="tag tag-optional">Recomendado</span></div></div>
+    </div>
+
+    <div class="section">
+      <div class="sec-title">Comprovante de Residência / Proof of Residence</div>
+      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Comprovante de endereço atual na Austrália</div><div class="item-en">Proof of current address in Australia</div><div class="item-note">Conta de serviço, contrato de aluguel, correspondência bancária ou governamental com nome e endereço.</div><span class="tag tag-required">Obrigatório</span></div></div>
+    </div>
+
+    <div class="section">
+      <div class="sec-title">Documentos de Suporte Adicionais / Additional Supporting Documents</div>
+      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Tradução juramentada (NAATI) de todos os documentos em português</div><div class="item-en">NAATI certified translation of all documents in Portuguese</div><div class="item-note">Obrigatório para documentos em idioma que não seja inglês. Tradutor deve ter credencial NAATI.</div><span class="tag tag-required">Obrigatório</span></div></div>
+      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Certidão de nascimento (para filhos dependentes menores de 18 anos)</div><div class="item-en">Birth certificate (for dependent children under 18)</div><div class="item-note">Com tradução juramentada NAATI se em português.</div><span class="tag tag-conditional">Condicional</span></div></div>
+      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Certidão de adoção (se aplicável)</div><div class="item-en">Adoption certificate (if applicable)</div><div class="item-note">Com tradução juramentada NAATI se em português.</div><span class="tag tag-conditional">Condicional</span></div></div>
+      <div class="item"><div class="cb" onclick="this.classList.toggle('checked')"></div><div class="item-body"><div class="item-main">Confirmação de seguro saúde (OSHC ou equivalente)</div><div class="item-en">Health insurance confirmation (OSHC or equivalent)</div><div class="item-note">O solicitante deve comprovar que fez arranjos adequados para seguro durante a estadia.</div><span class="tag tag-required">Obrigatório</span></div></div>
+    </div>
+
+    <div class="section">
+      <div class="costs-title">Detalhes de Pagamento / Payment Details</div>
+      <div class="cost-block">
+        <div class="cost-block-hd"><span>KMP Consulting — Taxa de Serviço / Service Fee</span><span class="method m-bsb">Transferência Bancária</span></div>
+        <div class="cost-row"><span>Service Fee</span><span>AUD $1,500.00</span></div>
+        <div class="cost-note">BSB: 923100 &nbsp;|&nbsp; Conta: 319505660 &nbsp;|&nbsp; Nome: Keila Mayara Peixoto</div>
+      </div>
+      <div class="cost-block">
+        <div class="cost-block-hd"><span>Governo / Government Application Charge</span><span class="method m-card">Credit Card</span></div>
+        <div class="cost-row"><span>Subsequent Entrant (482 TSS Visa)</span><span>AUD $4,715.00</span></div>
+        <div class="cost-row"><span>Card Surcharge (1.40%)</span><span>AUD $66.01</span></div>
+        <div class="cost-row"><span>Total</span><span>AUD $4,781.01</span></div>
+        <div class="cost-note">Pago via cartão de crédito — preencha o Card Authorisation Form da KMP Consulting</div>
+      </div>
+      <div class="cost-block">
+        <div class="cost-block-hd"><span>Seguro Saúde / Health Insurance (OSHC)</span><span class="method m-direct">Pago diretamente</span></div>
+        <div class="cost-row"><span>Overseas Student Health Cover / equivalente</span><span>Conforme apólice</span></div>
+        <div class="cost-note">Contrate a apólice diretamente com a seguradora e envie o comprovante para vistos@kmpconsulting.com.au</div>
+      </div>
+    </div>
+
+    <div class="sig-box">
+      <div class="sig-hd">Client Acknowledgment — Reconhecimento</div>
+      <div class="sig-disclaimer">Confirmo que li e compreendi todos os requisitos deste checklist. / <em>I confirm that I have read and understood all requirements listed.</em></div>
+      <div class="sig-grid">
+        <div><input class="sig-input" id="sig-name" type="text" placeholder="Nome completo / Full name"/><div class="sig-lbl">Nome / Name</div></div>
+        <div><input class="sig-input" id="sig-date" type="date"/><div class="sig-lbl">Data / Date</div></div>
+      </div>
+      <div style="margin-top:12px">
+        <input class="sig-input" id="sig-email" type="email" placeholder="Seu e-mail / Your email"/>
+        <div class="sig-lbl" style="margin-top:3px">E-mail</div>
+      </div>
+      <div class="submit-wrap">
+        <div class="submit-msg" id="msg"></div>
+        <button class="submit-btn" onclick="submitForm()">Enviar / Submit</button>
+      </div>
+    </div>
+    <div style="text-align:center;font-size:9px;color:#9ca3af;margin-bottom:4px">KMP Consulting | vistos@kmpconsulting.com.au</div>
   </div>
-
-  <!-- Action bar -->
-  <div class="action-bar">
-    <button class="btn-reset-all" onclick="resetAll()">↺ Limpar todos os marcadores</button>
-    <button class="btn-print" onclick="window.print()"> Imprimir checklist</button>
+  <div class="footer">
+    <span class="footer-l">KMP Consulting | vistos@kmpconsulting.com.au</span>
+    <span class="footer-r">Subclass 482 — Subsequent Entrant</span>
   </div>
-
-  <!-- Sections -->
-  <div id="checklist"></div>
-
-  <!-- Notes -->
-  <div class="notes-section">
-    <h3> Notas do caso / Case notes</h3>
-    <textarea class="notes-input" id="notes-input" placeholder="Adicione observações sobre o caso, pendências ou informações específicas do cliente..."
-      oninput="saveNotes(this.value)"></textarea>
-  </div>
-
-  <p class="footer">© <span id="yr"></span> KMP Consulting — Estratégia que conecta. Futuro que transforma. — Este checklist é de uso interno e não substitui orientação jurídica.</p>
 </div>
+<button class="print-btn" onclick="window.print()">Save as PDF</button>
 
 <script>
-document.getElementById("yr").textContent = new Date().getFullYear();
-
-const SECTIONS = [
-  {
-    id: "identidade",
-    icon: "",
-    title: "Identidade e Passaporte",
-    en: "Identity and Passport",
-    items: [
-      {
-        id: "pp_bio",
-        title: "Passaporte — página de dados biográficos",
-        en: "Passport — biographical data page",
-        sub: "Cópia colorida nítida. Passaporte deve ter validade mínima de 6 meses.",
-        tag: "required"
-      },
-      {
-        id: "pp_todos",
-        title: "Passaporte — todas as páginas carimbadas",
-        en: "Passport — all stamped pages",
-        sub: "Inclui vistos, carimbos de entrada e saída de todos os países visitados.",
-        tag: "required"
-      },
-      {
-        id: "foto_facial",
-        title: "Foto facial recente (fundo branco)",
-        en: "Recent facial image (white background)",
-        sub: "Foto tipo passaporte, fundo branco, rostovisível. Arquivo JPG ou PNG.",
-        tag: "required"
-      },
-      {
-        id: "rg_cnh",
-        title: "Documento de identidade nacional (RG, CNH ou equivalente)",
-        en: "National identity document (ID card, driver's licence, or equivalent)",
-        sub: "Frente e verso. Inclui documentos australianos se o solicitante já reside aqui.",
-        tag: "optional"
-      },
-    ]
-  },
-  {
-    id: "relacionamento",
-    icon: "",
-    title: "Evidência de Relacionamento",
-    en: "Relationship Evidence",
-    items: [
-      {
-        id: "cert_defacto",
-        title: "Certidão de união estável (de facto) ou certidão de casamento",
-        en: "De facto relationship certificate or marriage certificate",
-        sub: "Documento oficial registrado em cartório ou órgão competente. Tradução juramentada se em outro idioma.",
-        tag: "required"
-      },
-      {
-        id: "contrato_aluguel",
-        title: "Contrato de aluguel ou comprovante de residência conjunta",
-        en: "Lease agreement or joint residence proof",
-        sub: "Contrato com ambos os nomes. Período atual.",
-        tag: "required"
-      },
-      {
-        id: "conta_conjunta",
-        title: "Extrato bancário de conta conjunta ou transferências entre o casal",
-        en: "Joint bank account statement or transfers between partners",
-        sub: "Últimos 3 a 6 meses. Demonstra vida financeira compartilhada.",
-        tag: "required"
-      },
-      {
-        id: "seguro_conjunto",
-        title: "Apólice de seguro conjunto (carro, saúde, residência)",
-        en: "Joint insurance policy (car, health, home)",
-        sub: "Seguro com ambos os nomes ou como beneficiários mútuos.",
-        tag: "conditional"
-      },
-      {
-        id: "conta_luz_internet",
-        title: "Contas de consumo conjuntas (luz, internet, água, gás)",
-        en: "Joint utility bills (electricity, internet, water, gas)",
-        sub: "Conta emitida para o endereço compartilhado. Pelo menos 1 conta com um dos nomes.",
-        tag: "conditional"
-      },
-      {
-        id: "fotos_viagens",
-        title: "Fotos do casal (viagens, eventos, vida cotidiana)",
-        en: "Photos of the couple (trips, events, daily life)",
-        sub: "Selecione fotos com datas e locais diferentes para demonstrar convivência ao longo do tempo.",
-        tag: "optional"
-      },
-      {
-        id: "declaracoes",
-        title: "Declarações de terceiros (familiares, amigos, colegas)",
-        en: "Statutory declarations from third parties (family, friends, colleagues)",
-        sub: "Declarações de pessoas que conhecem o casal e confirmam o relacionamento.",
-        tag: "optional"
-      },
-      {
-        id: "comunicacoes",
-        title: "Histórico de comunicações (mensagens, ligações, e-mails)",
-        en: "Communication records (messages, calls, emails)",
-        sub: "Especialmente útil se os parceiros ficaram em países diferentes por algum período.",
-        tag: "optional"
-      },
-    ]
-  },
-  {
-    id: "antecedentes",
-    icon: "",
-    title: "Antecedentes Criminais (Police Clearance)",
-    en: "Character — Police Clearance Certificates",
-    items: [
-      {
-        id: "police_australia",
-        title: "Certidão de antecedentes criminais — Austrália (AFP National Police Check)",
-        en: "Australian Federal Police (AFP) National Police Check",
-        sub: "Obrigatória para quem residiu na Austrália por 12+ meses (cumulativos) nos últimos 10 anos.",
-        tag: "required"
-      },
-      {
-        id: "police_brasil_federal",
-        title: "Certidão de antecedentes — Brasil (Polícia Federal — nível federal)",
-        en: "Brazilian Federal Police Clearance",
-        sub: "Emitida pela Polícia Federal do Brasil. Obrigatória para nacionais brasileiros que viveram no Brasil por 12+ meses nos últimos 10 anos.",
-        tag: "required"
-      },
-      {
-        id: "police_brasil_estado",
-        title: "Certidão de antecedentes — estado brasileiro de residência (ex: RS, SP, RJ)",
-        en: "Brazilian State Police Clearance (state of residence)",
-        sub: "Exigida pelo Department juntamente com a certidão federal. Solicitar no estado de residência mais recente.",
-        tag: "required"
-      },
-      {
-        id: "police_outros",
-        title: "Certidão de antecedentes de outros países (se aplicável)",
-        en: "Police clearance from other countries (if applicable)",
-        sub: "Necessária para cada país onde o solicitante residiu por 12+ meses (cumulativos) nos últimos 10 anos.",
-        tag: "conditional"
-      },
-    ]
-  },
-  {
-    id: "saude",
-    icon: "",
-    title: "Exame de Saúde",
-    en: "Health Examination",
-    items: [
-      {
-        id: "exame_saude",
-        title: "Resultado do exame de saúde (HAP ID)",
-        en: "Health examination result (HAP ID)",
-        sub: "Agendado através do ImmiAccount. O Department enviará convite para exame após lodgement. Guarde o HAP ID.",
-        tag: "conditional"
-      },
-      {
-        id: "radiografia",
-        title: "Radiografia de tórax (chest x-ray) — se solicitado",
-        en: "Chest x-ray — if requested",
-        sub: "Solicitada pelo médico designado (panel physician) durante o exame.",
-        tag: "conditional"
-      },
-    ]
-  },
-  {
-    id: "vistoAnterior",
-    icon: "",
-    title: "Visto Australiano Anterior (se aplicável)",
-    en: "Previous Australian Visa (if applicable)",
-    items: [
-      {
-        id: "grant_anterior",
-        title: "Número de concessão do visto australiano anterior (Grant Number)",
-        en: "Previous Australian visa grant number",
-        sub: "Localizado no e-mail de grant ou no ImmiAccount. Ex: 0079553171553.",
-        tag: "conditional"
-      },
-      {
-        id: "cartao_visto",
-        title: "Cartão ou carta de concessão do visto anterior",
-        en: "Previous visa grant card or letter",
-        sub: "Se disponível, anexe a carta ou cartão de concessão do visto anterior.",
-        tag: "optional"
-      },
-    ]
-  },
-  {
-    id: "residencia",
-    icon: "",
-    title: "Comprovante de Residência",
-    en: "Proof of Residence",
-    items: [
-      {
-        id: "comprov_end",
-        title: "Comprovante de endereço atual na Austrália",
-        en: "Proof of current address in Australia",
-        sub: "Conta de serviço, contrato de aluguel, correspondência bancária ou governamental com nome e endereço.",
-        tag: "required"
-      },
-
-    ]
-  },
-  {
-    id: "documentos_doc",
-    icon: "",
-    title: "Documentos de Suporte Adicionais",
-    en: "Additional Supporting Documents",
-    items: [
-      {
-        id: "traduz",
-        title: "Tradução juramentada (NAATI) de todos os documentos em português",
-        en: "NAATI-certified translation of all documents in Portuguese",
-        sub: "Obrigatório para documentos em idioma que não seja inglês. Tradutor deve ter credencial NAATI.",
-        tag: "required"
-      },
-      {
-        id: "cert_nascimento",
-        title: "Certidão de nascimento (para filhos dependentes menores de 18 anos)",
-        en: "Birth certificate (for dependent children under 18)",
-        sub: "Com tradução juramentada NAATI se em português.",
-        tag: "conditional"
-      },
-      {
-        id: "cert_adocao",
-        title: "Certidão de adoção (se aplicável)",
-        en: "Adoption certificate (if applicable)",
-        sub: "Com tradução juramentada NAATI se em português.",
-        tag: "conditional"
-      },
-      {
-        id: "seguro_saude",
-        title: "Confirmação de seguro saúde (OSHC ou equivalente)",
-        en: "Health insurance confirmation (OSHC or equivalent)",
-        sub: "O solicitante deve comprovar que fez arranjos adequados para seguro durante a estadia.",
-        tag: "required"
-      },
-    ]
-  },
-];
-
-let checked = JSON.parse(localStorage.getItem("kmp_482se_checked") || "{}");
-let notes = localStorage.getItem("kmp_482se_notes") || "";
-
-function totalItems() {
-  return SECTIONS.reduce((acc, s) => acc + s.items.length, 0);
+async function submitForm(){
+  const name=document.getElementById('sig-name').value.trim();
+  const date=document.getElementById('sig-date').value;
+  const email=document.getElementById('sig-email').value.trim();
+  const msg=document.getElementById('msg');
+  msg.className='submit-msg';msg.style.display='none';
+  if(!name||!email){msg.textContent='Por favor, preencha nome e e-mail antes de enviar.';msg.className='submit-msg err';return;}
+  try{
+    const res=await fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      access_key:'eb911200-f515-4a77-afbf-61c4f99be8cf',
+      subject:`Checklist 482 Subsequent Entrant — ${name}`,
+      from_name:'Checklist KMP Consulting',
+      message:`Checklist Subclass 482 — Subsequent Entrant\nData: ${new Date().toLocaleString('pt-BR')}\n\nNome: ${name}\nData: ${date}\nE-mail: ${email}`,
+      replyto:email
+    })});
+    const data=await res.json();
+    if(data.success){msg.textContent='Checklist enviado com sucesso! Entraremos em contato em breve.';msg.className='submit-msg ok';}
+    else throw new Error();
+  }catch{msg.textContent='Não foi possível enviar. Tente novamente ou entre em contato diretamente.';msg.className='submit-msg err';}
 }
-
-function totalChecked() {
-  return Object.values(checked).filter(Boolean).length;
-}
-
-function updateProgress() {
-  const total = totalItems();
-  const done = totalChecked();
-  const pct = total > 0 ? Math.round((done / total) * 100) : 0;
-  document.getElementById("progress-text").textContent = `${done} / ${total}`;
-  document.getElementById("progress-bar").style.width = `${pct}%`;
-}
-
-function toggle(id) {
-  checked[id] = !checked[id];
-  localStorage.setItem("kmp_482se_checked", JSON.stringify(checked));
-  const el = document.getElementById(`item_${id}`);
-  if (el) { el.classList.toggle("checked", checked[id]); }
-  updateSectionCount(id);
-  updateProgress();
-}
-
-function updateSectionCount(itemId) {
-  for (const sec of SECTIONS) {
-    if (sec.items.find(i => i.id === itemId)) {
-      const done = sec.items.filter(i => checked[i.id]).length;
-      const el = document.getElementById(`sec_count_${sec.id}`);
-      if (el) el.textContent = `${done}/${sec.items.length}`;
-      break;
-    }
-  }
-}
-
-function saveNotes(val) {
-  notes = val;
-  localStorage.setItem("kmp_482se_notes", val);
-}
-
-function resetAll() {
-  if (!confirm("Tem certeza? Todos os marcadores serão removidos.")) return;
-  checked = {};
-  localStorage.removeItem("kmp_482se_checked");
-  document.querySelectorAll(".item").forEach(el => el.classList.remove("checked"));
-  document.querySelectorAll(".sec-count").forEach(el => {
-    const parts = el.textContent.split("/");
-    el.textContent = `0/${parts[1]}`;
-  });
-  updateProgress();
-}
-
-function tagHtml(tag) {
-  if (tag === "required") return `<span class="tag tag-required">Obrigatório</span>`;
-  if (tag === "conditional") return `<span class="tag tag-conditional">Condicional</span>`;
-  if (tag === "optional") return `<span class="tag tag-optional">Recomendado</span>`;
-  return "";
-}
-
-function renderChecklist() {
-  const container = document.getElementById("checklist");
-  container.innerHTML = SECTIONS.map(sec => {
-    const secChecked = sec.items.filter(i => checked[i.id]).length;
-    const items = sec.items.map(item => `
-      <div class="item ${checked[item.id] ? "checked" : ""}" id="item_${item.id}" onclick="toggle('${item.id}')">
-        <span class="checkbox">
-          <svg width="13" height="10" viewBox="0 0 13 10" fill="none">
-            <path d="M1.5 5L5 8.5L11.5 1.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </span>
-        <div class="item-content">
-          <div class="item-title">${item.title}</div>
-          <div class="item-en">${item.en}</div>
-          ${item.sub ? `<div class="item-sub">${item.sub}</div>` : ""}
-          ${tagHtml(item.tag)}
-        </div>
-      </div>
-    `).join("");
-
-    return `
-      <div class="section">
-        <div class="section-header">
-          <span class="sec-icon">${sec.icon}</span>
-          <h2>${sec.title} <span style="font-weight:300;font-size:12px;opacity:0.7">/ ${sec.en}</span></h2>
-          <span class="sec-count" id="sec_count_${sec.id}">${secChecked}/${sec.items.length}</span>
-        </div>
-        <div class="section-body">${items}</div>
-      </div>`;
-  }).join("");
-}
-
-// Init
-renderChecklist();
-updateProgress();
-
-// Restore notes
-const notesEl = document.getElementById("notes-input");
-if (notesEl) notesEl.value = notes;
 </script>
 </body>
 </html>
