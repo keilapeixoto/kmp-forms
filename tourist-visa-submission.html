@@ -537,8 +537,9 @@ const SECTIONS = [
 ];
 
 const WEB3FORMS_KEY = "eb911200-f515-4a77-afbf-61c4f99be8cf";
+const WHATSAPP_NUMBER = "61451051806"; // KMP Consulting, formato internacional sem 0 e sem +
 const DRAFT_KEY = "kmp_form600_draft";
-const FORM_VERSION = "2026.09.01"; // selo de versão para conferir o deploy
+const FORM_VERSION = "2026.09.02"; // selo de versão para conferir o deploy
 
 const APPLICATION_ID = new URLSearchParams(window.location.search).get("app_id") || "";
 
@@ -1201,16 +1202,10 @@ async function handleSubmit() {
     }
   }
 
-  // Limite total de anexos por email (a maioria dos provedores recusa
-  // acima de ~25MB somados). Convertemos tudo pra um zip só quando o
-  // total ultrapassar um limite seguro, e enviamos solto quando é pouca coisa.
-  const SAFE_TOTAL = 18 * 1024 * 1024;
-  let totalSize = 0;
   const allEntries = [];
   for (const id in fileObjects) {
     for (const file of fileObjects[id]) {
       allEntries.push({ id, file });
-      totalSize += file.size;
     }
   }
 
@@ -1243,28 +1238,20 @@ async function handleSubmit() {
 
   let attachmentNote = "";
   try {
-    if (totalSize + pdfBlob.size > SAFE_TOTAL && allEntries.length > 0) {
-      // Muita coisa pra anexar solta: compacta tudo (comprovante + documentos) num zip só
-      sendingMsg = "Organizando e compactando os documentos…";
-      render();
-      const zip = new JSZip();
-      zip.file(pdfFile.name, pdfBlob);
-      for (const { id, file } of allEntries) {
-        const folder = FOLDER_LABELS[id] || "Outros Documentos";
-        zip.folder(folder).file(file.name, file);
-      }
-      const zipBlob = await zip.generateAsync({ type: "blob", compression: "DEFLATE" });
-      const zipFile = new File([zipBlob], `Documentos_${nome.replace(/\s+/g, "_")}.zip`, { type: "application/zip" });
-      formData.append("attachment", zipFile);
-    } else {
-      // Poucos documentos: anexa cada um direto, sem compactar
-      formData.append("attachment", pdfFile);
-      for (const { id, file } of allEntries) {
-        const folder = FOLDER_LABELS[id] || "Outros";
-        const renamed = new File([file], `${folder} - ${file.name}`, { type: file.type || "application/octet-stream" });
-        formData.append("attachment", renamed);
-      }
+    // Sempre compacta tudo (comprovante + documentos) num único zip organizado
+    // por pasta, mesmo quando é pouca coisa — assim você nunca precisa salvar
+    // anexo por anexo, o zip inteiro já vem pronto pra baixar de uma vez.
+    sendingMsg = "Organizando e compactando os documentos…";
+    render();
+    const zip = new JSZip();
+    zip.file(pdfFile.name, pdfBlob);
+    for (const { id, file } of allEntries) {
+      const folder = FOLDER_LABELS[id] || "Outros Documentos";
+      zip.folder(folder).file(file.name, file);
     }
+    const zipBlob = await zip.generateAsync({ type: "blob", compression: "DEFLATE" });
+    const zipFile = new File([zipBlob], `Documentos_${nome.replace(/\s+/g, "_")}.zip`, { type: "application/zip" });
+    formData.append("attachment", zipFile);
   } catch (e) {
     // Se a compactação falhar por qualquer motivo, não trava o envio:
     // manda o formulário sem os documentos e avisa você no próprio email.
@@ -1315,6 +1302,9 @@ function render() {
   const app = document.getElementById("app");
 
   if (submitted) {
+    const nomeWpp = `${f.nome || ""} ${f.sobrenome || ""}`.trim() || "Solicitante";
+    const wppTexto = encodeURIComponent(`Olá! Sou ${nomeWpp} e acabei de preencher o formulário de Visto de Turista (Subclass 600). Segue em anexo o comprovante em PDF da minha solicitação.`);
+    const wppLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${wppTexto}`;
     app.innerHTML = `
       <div class="success-screen">
         <div class="success-card">
@@ -1325,8 +1315,16 @@ function render() {
           </div>
           <h2>Formulário Enviado!</h2>
           <p>Sua solicitação foi recebida com sucesso. A equipe da <strong style="color:#F27B20">KMP Consulting</strong> entrará em contato em até 48 horas úteis.</p>
+          <div class="conditional" style="text-align:left;margin-top:20px">
+            <p style="font-weight:700;margin-bottom:6px">Último passo, obrigatório:</p>
+            <p style="font-size:14px;line-height:1.6">Salve o comprovante em PDF (botão abaixo) e envie o arquivo pelo WhatsApp da KMP Consulting. Isso garante que sua solicitação seja confirmada mesmo se o email demorar a chegar.</p>
+          </div>
           <div class="success-actions">
             <button class="btn-pdf" onclick="savePDF()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Salvar comprovante em PDF</button>
+            <a class="btn-pdf" style="background:#25D366;text-decoration:none" href="${wppLink}" target="_blank" rel="noopener">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.39 1.26 4.81L2 22l5.44-1.43a9.85 9.85 0 0 0 4.6 1.17h.01c5.46 0 9.9-4.45 9.9-9.91C21.95 6.45 17.5 2 12.04 2zm0 18.06h-.01a8.19 8.19 0 0 1-4.17-1.14l-.3-.18-3.1.81.83-3.02-.19-.31a8.18 8.18 0 0 1-1.26-4.31c0-4.53 3.69-8.22 8.22-8.22 2.2 0 4.26.86 5.82 2.41a8.15 8.15 0 0 1 2.4 5.81c0 4.53-3.7 8.22-8.24 8.22z"/></svg>
+              Enviar pelo WhatsApp
+            </a>
             <button class="btn-reset" onclick="resetForm()">Novo Formulário</button>
           </div>
         </div>
