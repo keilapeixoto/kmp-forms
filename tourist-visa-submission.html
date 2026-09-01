@@ -377,7 +377,7 @@
     .autosave-note { text-align: center; font-size: 12px; color: var(--gray); margin: 0 0 16px; display: flex; align-items: center; justify-content: center; gap: 6px; }
     .autosave-note .dot { width: 7px; height: 7px; border-radius: 50%; background: #16a34a; display: inline-block; }
 
-    /* Buttons */
+    /* Botões */
     .btn-row {
       display: flex;
       justify-content: space-between;
@@ -538,10 +538,8 @@ const SECTIONS = [
 
 const WEB3FORMS_KEY = "eb911200-f515-4a77-afbf-61c4f99be8cf";
 const DRAFT_KEY = "kmp_form600_draft";
-const FORM_VERSION = "2026.07.06"; // selo de versão para conferir o deploy
+const FORM_VERSION = "2026.09.01"; // selo de versão para conferir o deploy
 
-// ID da aplicação, recebido pela URL quando o link é enviado a partir do KMP Hub
-// Ex: https://kmp-forms.vercel.app/turista600?app_id=abc123
 const APPLICATION_ID = new URLSearchParams(window.location.search).get("app_id") || "";
 
 let step = 0;
@@ -550,11 +548,8 @@ let submitted = false;
 let sending = false;
 let sendingMsg = "";
 let sendError = null;
-let fileObjects = {}; // arquivos reais selecionados (não persistidos no rascunho)
+let fileObjects = {};
 
-//  Helpers 
-
-// Salvamento automático do rascunho neste dispositivo
 function saveDraft() {
   try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ f, step })); } catch (e) {}
 }
@@ -563,7 +558,6 @@ function loadDraft() {
     const d = JSON.parse(localStorage.getItem(DRAFT_KEY));
     if (d && d.f && typeof d.f === "object") {
       f = d.f; step = d.step || 0;
-      // arquivos não podem ser restaurados pelo navegador: limpa referências antigas para reanexo
       Object.keys(f).forEach(k => { if (k.indexOf("file_") === 0) delete f[k]; });
     }
   } catch (e) {}
@@ -573,7 +567,7 @@ function clearDraft() {
 }
 
 function set(key, val) { f[key] = val; saveDraft(); render(); }
-function setValue(key, val) { f[key] = val; saveDraft(); } // atualiza sem reconstruir a tela (preserva o foco)
+function setValue(key, val) { f[key] = val; saveDraft(); }
 
 function label(num, pt, en, req) {
   return `<label class="field-label">
@@ -679,8 +673,6 @@ function removeFile(ev, id, index) {
   saveDraft();
   render();
 }
-
-//  Steps 
 
 function renderStep() {
   switch (step) {
@@ -895,20 +887,12 @@ function renderStep() {
   }
 }
 
-//  Submit 
-
-// Mostra sempre a resposta SIM/NÃO da pergunta. Se a resposta for SIM e houver
-// um detalhe digitado, o detalhe é anexado. Antes, perguntas respondidas com
-// NÃO desapareciam do resumo porque só o detalhe (vazio, nesse caso) era usado.
 function yn(value, detail) {
   if (!value) return null;
   if (value === "SIM/YES" && detail) return `${value} — ${detail}`;
   return value;
 }
 
-// Texto integral de cada pergunta, igual ao que o cliente vê no formulário.
-// Única fonte de verdade: se o texto da pergunta mudar aqui, muda também no
-// comprovante em PDF e no e-mail, sem risco dos dois ficarem diferentes.
 const QUESTIONS = {
   nomeCompleto: "Nome completo (conforme passaporte)",
   outrosNomes: "Outros nomes já utilizados (nome de solteiro(a), apelido legal etc)",
@@ -976,7 +960,6 @@ const QUESTIONS = {
 function buildSummaryPairs() {
   const nome = `${f.nome || ""} ${f.sobrenome || ""}`.trim() || "Solicitante";
   return [
-    // Dados pessoais
     [QUESTIONS.nomeCompleto, nome],
     [QUESTIONS.outrosNomes, f.outrosNomes],
     [QUESTIONS.genero, f.genero],
@@ -987,7 +970,6 @@ function buildSummaryPairs() {
     [QUESTIONS.nacionalidade, f.nacionalidade],
     [QUESTIONS.outraNacionalidade, yn(f.outraNacionalidade, f.outraNacionalidadeDetalhe)],
     [QUESTIONS.escolaridade, f.escolaridade],
-    // Passaporte
     [QUESTIONS.numPassaporte, f.numPassaporte],
     [QUESTIONS.paisPassaporte, f.paisPassaporte],
     [QUESTIONS.nacionalidadePassaporte, f.nacionalidadePassaporte],
@@ -996,7 +978,6 @@ function buildSummaryPairs() {
     [QUESTIONS.localEmissao, f.localEmissao],
     [QUESTIONS.outroPassaporte, yn(f.outroPassaporte, f.outroPassaporteDetalhe)],
     [QUESTIONS.documentoIdentidade, [f.rg, f.cpf].filter(Boolean).join(" · ")],
-    // Contato e endereço
     [QUESTIONS.endereco, [f.endereco, f.cidade, f.estado, f.cep].filter(Boolean).join(", ")],
     [QUESTIONS.paisResidencia, f.paisResidencia],
     [QUESTIONS.telRes, f.telRes],
@@ -1004,7 +985,6 @@ function buildSummaryPairs() {
     [QUESTIONS.celular, f.celular],
     [QUESTIONS.email, f.email],
     [QUESTIONS.endCorresp, f.endCorresp],
-    // Família
     [QUESTIONS.conjuge, f.nomePartner],
     [QUESTIONS.nascPartner, f.nascPartner],
     [QUESTIONS.nacPartner, f.nacPartner],
@@ -1014,14 +994,12 @@ function buildSummaryPairs() {
     [QUESTIONS.nomeMae, f.nomeMae],
     [QUESTIONS.nomePai, f.nomePai],
     [QUESTIONS.familiaAustralia, yn(f.familiaAustralia, f.familiaAustraliaDetalhe)],
-    // Detalhes da viagem
     [QUESTIONS.motivoViagem, f.motivoViagem],
     [QUESTIONS.dataChegada, f.dataChegada],
     [QUESTIONS.tempoPermanencia, f.tempoPermanencia],
     [QUESTIONS.enderecoAustralia, f.enderecoAustralia],
     [QUESTIONS.cidadesVisitar, f.cidadesVisitar],
     [QUESTIONS.acompanhante, yn(f.acompanhante, f.acompanhanteDetalhe)],
-    // Trabalho e finanças
     [QUESTIONS.situacao, f.situacao],
     [QUESTIONS.empresa, f.empresa],
     [QUESTIONS.cargo, f.cargo],
@@ -1030,20 +1008,17 @@ function buildSummaryPairs() {
     [QUESTIONS.quemPaga, f.quemPaga],
     [QUESTIONS.renda, f.renda],
     [QUESTIONS.fundos, f.fundos],
-    // Histórico de viagens
     [QUESTIONS.jaVisitouAustralia, yn(f.jaVisitouAustralia, f.jaVisitouAustraliaDetalhe)],
     [QUESTIONS.jaSolicitouVisto, yn(f.jaSolicitouVisto, f.jaSolicitouVistoDetalhe)],
     [QUESTIONS.residenciaPerm, yn(f.residenciaPerm, f.residenciaPermDetalhe)],
     [QUESTIONS.paisesVisitados, f.paisesVisitados],
     [QUESTIONS.vistosAnteriores, f.vistosAnteriores],
-    // Saúde e caráter
     [QUESTIONS.saude, yn(f.saude, f.saudeDetalhe)],
     [QUESTIONS.trabalharAustralia, f.trabalharAustralia],
     [QUESTIONS.crime, yn(f.crime, f.crimeDetalhe)],
     [QUESTIONS.acusacao, yn(f.acusacao, f.acusacaoDetalhe)],
     [QUESTIONS.descumpriu, yn(f.descumpriu, f.descumpriuDetalhe)],
     [QUESTIONS.recusado, yn(f.recusado, f.recusadoDetalhe)],
-    // Assinatura
     [QUESTIONS.assinatura, f.assinatura],
     [QUESTIONS.dataAssinatura, f.dataAssinatura],
     ...buildFilePairs(),
@@ -1065,7 +1040,6 @@ function buildFilePairs() {
     return [FILE_LABELS[id], list.length ? list.join(", ") : null];
   });
 }
-
 
 function escapeHtml(str) {
   return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
@@ -1093,9 +1067,6 @@ function savePDF() {
   window.print();
 }
 
-// Gera o mesmo comprovante que aparecia só no botão manual "Salvar em PDF",
-// agora como um arquivo PDF real, pronto para ser anexado ao envio automaticamente.
-// É esse PDF, e não mais o texto cru do Web3Forms, que passa a chegar no seu e-mail.
 function generatePdfBlob() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ unit: "pt", format: "a4" });
@@ -1103,7 +1074,6 @@ function generatePdfBlob() {
   const rightX = 555;
   let y = 56;
 
-  // Cabeçalho
   doc.setFillColor(242, 123, 32);
   doc.rect(marginX, y - 20, 26, 26, "F");
   doc.setTextColor(255, 255, 255);
@@ -1143,7 +1113,6 @@ function generatePdfBlob() {
   }
   y += 16;
 
-  // Tabela pergunta / resposta
   const pairs = buildSummaryPairs();
   const colGap = 14;
   const colLabelW = 190;
@@ -1192,6 +1161,27 @@ function generatePdfBlob() {
   return doc.output("blob");
 }
 
+// ------------------------------------------------------------------
+// ENVIO — reescrito em 01/09/2026
+//
+// Antes: o comprovante e os documentos eram compactados num zip, o zip
+// era enviado por um endpoint de upload separado (api.web3forms.com/upload)
+// para gerar uma URL assinada, e só então o formulário de texto era
+// enviado com a chave desse upload dentro de um JSON. Se qualquer um
+// desses passos falhasse (o upload, a assinatura, o PUT do zip), a
+// função lançava um erro ANTES de enviar o texto, e nada chegava no
+// seu email — nem as respostas do cliente.
+//
+// Agora: os dados do formulário são sempre enviados, mesmo que o envio
+// dos documentos falhe por algum motivo. O comprovante em PDF e os
+// documentos anexados são enviados diretamente no mesmo envio, como
+// arquivos de verdade (multipart), sem depender do endpoint de upload
+// separado. Se algum documento não puder ser incluído (por exemplo,
+// por passar do limite total de anexos do seu provedor de email), você
+// ainda recebe o email com todas as respostas e a lista dos documentos
+// que o cliente anexou, para pedir por fora se precisar.
+// ------------------------------------------------------------------
+
 async function handleSubmit() {
   sending = true;
   sendError = null;
@@ -1199,6 +1189,30 @@ async function handleSubmit() {
   render();
 
   const nome = `${f.nome || ""} ${f.sobrenome || ""}`.trim() || "Solicitante";
+
+  // Guarda de tamanho por arquivo (mantido do fluxo anterior)
+  const MAX = 25 * 1024 * 1024;
+  for (const id in fileObjects) {
+    for (const file of fileObjects[id]) {
+      if (file.size > MAX) {
+        sendError = `O arquivo "${file.name}" passa de 25 MB. Reduza o tamanho e anexe novamente.`;
+        sending = false; render(); return;
+      }
+    }
+  }
+
+  // Limite total de anexos por email (a maioria dos provedores recusa
+  // acima de ~25MB somados). Convertemos tudo pra um zip só quando o
+  // total ultrapassar um limite seguro, e enviamos solto quando é pouca coisa.
+  const SAFE_TOTAL = 18 * 1024 * 1024;
+  let totalSize = 0;
+  const allEntries = [];
+  for (const id in fileObjects) {
+    for (const file of fileObjects[id]) {
+      allEntries.push({ id, file });
+      totalSize += file.size;
+    }
+  }
 
   const FOLDER_LABELS = {
     passaporte: "Passaporte",
@@ -1209,76 +1223,65 @@ async function handleSubmit() {
     outros: "Outros Documentos",
   };
 
-  // Reúne todos os arquivos selecionados, preservando o tipo de cada um
-  const allEntries = [];
-  for (const id in fileObjects) {
-    for (const file of fileObjects[id]) allEntries.push({ id, file });
+  sendingMsg = "Gerando comprovante em PDF…";
+  render();
+  const pdfBlob = generatePdfBlob();
+  const pdfFile = new File([pdfBlob], `Comprovante_${nome.replace(/\s+/g, "_")}.pdf`, { type: "application/pdf" });
+
+  // Monta o texto do email (sempre enviado, com ou sem documentos)
+  const idLinha = APPLICATION_ID ? `ID da aplicação (KMP Hub): ${APPLICATION_ID}\n` : "";
+  const linhas = buildSummaryPairs().map(([k, v]) => `${k}: ${v}`).join("\n");
+  const corpo = `Nova solicitação de visto de turista — KMP Consulting\nData: ${new Date().toLocaleString("pt-BR")}\n${idLinha}\n${"=".repeat(50)}\n\n${linhas}`;
+
+  const formData = new FormData();
+  formData.append("access_key", WEB3FORMS_KEY);
+  formData.append("subject", `Nova Solicitação de Visto Turista — ${nome}`);
+  formData.append("from_name", "Formulário KMP Consulting");
+  formData.append("message", corpo);
+  formData.append("replyto", f.email || "");
+  if (APPLICATION_ID) formData.append("application_id", APPLICATION_ID);
+
+  let attachmentNote = "";
+  try {
+    if (totalSize + pdfBlob.size > SAFE_TOTAL && allEntries.length > 0) {
+      // Muita coisa pra anexar solta: compacta tudo (comprovante + documentos) num zip só
+      sendingMsg = "Organizando e compactando os documentos…";
+      render();
+      const zip = new JSZip();
+      zip.file(pdfFile.name, pdfBlob);
+      for (const { id, file } of allEntries) {
+        const folder = FOLDER_LABELS[id] || "Outros Documentos";
+        zip.folder(folder).file(file.name, file);
+      }
+      const zipBlob = await zip.generateAsync({ type: "blob", compression: "DEFLATE" });
+      const zipFile = new File([zipBlob], `Documentos_${nome.replace(/\s+/g, "_")}.zip`, { type: "application/zip" });
+      formData.append("attachment", zipFile);
+    } else {
+      // Poucos documentos: anexa cada um direto, sem compactar
+      formData.append("attachment", pdfFile);
+      for (const { id, file } of allEntries) {
+        const folder = FOLDER_LABELS[id] || "Outros";
+        const renamed = new File([file], `${folder} - ${file.name}`, { type: file.type || "application/octet-stream" });
+        formData.append("attachment", renamed);
+      }
+    }
+  } catch (e) {
+    // Se a compactação falhar por qualquer motivo, não trava o envio:
+    // manda o formulário sem os documentos e avisa você no próprio email.
+    attachmentNote = `\n\nATENÇÃO: os documentos anexados pelo cliente não puderam ser incluídos automaticamente neste email (erro: ${e && e.message ? e.message : "desconhecido"}). Entre em contato com o cliente para solicitar por fora.`;
   }
 
-  // Guarda de tamanho por arquivo
-  const MAX = 25 * 1024 * 1024;
-  for (const { file } of allEntries) {
-    if (file.size > MAX) {
-      sendError = `O arquivo "${file.name}" passa de 25 MB. Reduza o tamanho e anexe novamente.`;
-      sending = false; render(); return;
-    }
+  if (attachmentNote) {
+    formData.set("message", corpo + attachmentNote);
   }
+
+  sendingMsg = "Enviando…";
+  render();
 
   try {
-    // 1. Gera o comprovante em PDF automaticamente, no mesmo layout que antes só existia
-    //    se o cliente clicasse em "Salvar em PDF" e reenviasse por conta própria.
-    sendingMsg = "Gerando comprovante em PDF…";
-    render();
-    const pdfBlob = generatePdfBlob();
-
-    // 2. Empacota o comprovante e todos os documentos num único ZIP, organizado por tipo.
-    //    Você passa a receber um só anexo no e-mail, em vez de abrir cada documento
-    //    individualmente para salvar.
-    sendingMsg = "Organizando e compactando os documentos…";
-    render();
-    const zip = new JSZip();
-    zip.file(`Comprovante_${nome.replace(/\s+/g, "_")}.pdf`, pdfBlob);
-    for (const { id, file } of allEntries) {
-      const folder = FOLDER_LABELS[id] || "Outros Documentos";
-      zip.folder(folder).file(file.name, file);
-    }
-    const zipBlob = await zip.generateAsync({ type: "blob", compression: "DEFLATE" });
-    const zipFile = new File([zipBlob], `Documentos_${nome.replace(/\s+/g, "_")}.zip`, { type: "application/zip" });
-
-    // 3. Sobe o ZIP único via uploader avançado (URL assinada), recurso PRO do Web3Forms.
-    sendingMsg = "Enviando pacote de documentos…";
-    render();
-    const presRes = await fetch(`https://api.web3forms.com/upload?file=${encodeURIComponent(zipFile.name)}`);
-    if (!presRes.ok) throw new Error("Não foi possível preparar o envio dos documentos.");
-    const { url, key } = await presRes.json();
-    const putRes = await fetch(url, {
-      method: "PUT",
-      body: zipFile,
-      headers: { "Content-Type": "application/zip" },
-    });
-    if (!putRes.ok) throw new Error("Falha ao enviar o pacote de documentos.");
-
-    sendingMsg = "Finalizando envio…";
-    render();
-
-    // 4. Envia o formulário em JSON, referenciando o único arquivo já enviado.
-    const idLinha = APPLICATION_ID ? `ID da aplicação (KMP Hub): ${APPLICATION_ID}\n` : "";
-    const linhas = buildSummaryPairs().map(([k, v]) => `${k}: ${v}`).join("\n");
-    const corpo = `Nova solicitação de visto de turista — KMP Consulting\nData: ${new Date().toLocaleString("pt-BR")}\n${idLinha}\n${"".repeat(50)}\n\n${linhas}`;
-    const payload = {
-      access_key: WEB3FORMS_KEY,
-      subject: `Nova Solicitação de Visto Turista — ${nome}`,
-      from_name: "Formulário KMP Consulting",
-      message: corpo,
-      replyto: f.email || "",
-      attachment: key,
-    };
-    if (APPLICATION_ID) payload.application_id = APPLICATION_ID;
-
     const res = await fetch("https://api.web3forms.com/submit", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
+      body: formData, // não define Content-Type manualmente — o navegador cuida disso
     });
     const data = await res.json();
     if (data.success) {
@@ -1307,8 +1310,6 @@ function goStep(n) {
 function resetForm() {
   step = 0; f = {}; submitted = false; sendError = null; clearDraft(); render();
 }
-
-//  Render 
 
 function render() {
   const app = document.getElementById("app");
