@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>KMP Consulting — Montador de Aplicações</title>
+<style>
+  :root{
+    --orange:#F27B20;
+    --orange2:#F5941E;
+    --graphite:#2C2C2C;
+    --cream:#F8F7F5;
+    --peach:#FFF6EE;
+    --peach2:#FBE7D4;
+    --line:#E8E2DA;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Segoe UI',Outfit,Arial,sans-serif;
+    background:var(--cream);
+    color:var(--graphite);
+    font-size:14.5px;
+    line-height:1.6;
+  }
+  .app{display:flex;min-height:100vh;}
+  .sidebar{
+    width:280px;
+    background:var(--graphite);
+    color:#fff;
+    padding:24px 18px;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+  .brand{
+    font-family:Georgia,'Cormorant Garamond',serif;
+    font-size:22px;
+    font-weight:700;
+    letter-spacing:0.3px;
+  }
+  .brand span{color:var(--orange2);}
+  .subtitle{font-size:12px;color:#c9c5c0;margin-top:-10px;}
+  .newcase-btn{
+    background:var(--orange);
+    color:#fff;
+    border:none;
+    padding:10px 14px;
+    border-radius:8px;
+    font-size:13.5px;
+    cursor:pointer;
+    font-weight:600;
+  }
+  .newcase-btn:hover{background:var(--orange2);}
+  .case-list{display:flex;flex-direction:column;gap:6px;overflow-y:auto;flex:1;}
+  .case-item{
+    padding:10px 12px;
+    border-radius:8px;
+    cursor:pointer;
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.06);
+  }
+  .case-item:hover{background:rgba(255,255,255,0.09);}
+  .case-item.active{background:rgba(242,123,32,0.18);border-color:var(--orange);}
+  .case-name{font-weight:600;font-size:13.5px;}
+  .case-meta{font-size:11.5px;color:#c9c5c0;margin-top:2px;}
+  .badge{
+    display:inline-block;
+    font-size:10.5px;
+    padding:2px 7px;
+    border-radius:999px;
+    background:var(--orange2);
+    color:#fff;
+    margin-right:6px;
+  }
+  .case-progress-bar{
+    height:4px;background:rgba(255,255,255,0.12);border-radius:2px;margin-top:6px;overflow:hidden;
+  }
+  .case-progress-fill{height:100%;background:var(--orange2);}
+  .empty-side{color:#a39d96;font-size:12px;padding:8px 4px;}
+
+  .main{flex:1;padding:32px 40px;max-width:920px;}
+  .placeholder{
+    display:flex;align-items:center;justify-content:center;height:60vh;color:#9a948d;font-size:15px;text-align:center;
+  }
+  h1{
+    font-family:Georgia,'Cormorant Garamond',serif;
+    font-size:28px;
+    margin:0 0 4px 0;
+  }
+  .case-form{
+    display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0 24px 0;
+  }
+  .field{display:flex;flex-direction:column;gap:4px;}
+  .field.full{grid-column:1 / -1;}
+  label{font-size:12px;color:#6b665f;font-weight:600;}
+  input,select,textarea{
+    padding:9px 10px;
+    border:1px solid var(--line);
+    border-radius:6px;
+    font-size:13.5px;
+    font-family:inherit;
+    background:#fff;
+    color:var(--graphite);
+  }
+  textarea{resize:vertical;}
+
+  .tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:20px;}
+  .tab{
+    padding:9px 16px;
+    cursor:pointer;
+    font-size:13.5px;
+    font-weight:600;
+    color:#8a847c;
+    border-bottom:2px solid transparent;
+  }
+  .tab.active{color:var(--orange);border-bottom-color:var(--orange);}
+
+  .section-title{font-size:12.5px;text-transform:uppercase;letter-spacing:0.06em;color:#8a847c;font-weight:700;margin:22px 0 10px 0;}
+  .section-title:first-child{margin-top:0;}
+
+  .checklist-progress{
+    display:flex;align-items:center;gap:10px;margin-bottom:14px;
+  }
+  .checklist-progress .bar{flex:1;height:8px;background:var(--peach2);border-radius:4px;overflow:hidden;}
+  .checklist-progress .fill{height:100%;background:var(--orange);}
+  .checklist-progress .count{font-size:12.5px;color:#6b665f;white-space:nowrap;}
+
+  .check-item{
+    display:flex;align-items:flex-start;gap:10px;
+    padding:10px 12px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    margin-bottom:8px;
+    background:#fff;
+  }
+  .check-item.done{background:var(--peach);border-color:var(--peach2);}
+  .check-item input[type=checkbox]{margin-top:2px;width:16px;height:16px;accent-color:var(--orange);}
+  .check-item .item-text{flex:1;font-size:13.5px;}
+  .check-item.done .item-text{text-decoration:line-through;color:#9a948d;}
+  .check-item .item-note{
+    width:100%;margin-top:6px;border:none;border-top:1px dashed var(--line);padding-top:6px;font-size:12.5px;background:transparent;color:#6b665f;
+  }
+  .remove-btn{
+    border:none;background:transparent;color:#b5afa7;cursor:pointer;font-size:16px;line-height:1;padding:2px 4px;
+  }
+  .remove-btn:hover{color:#c0392b;}
+  .add-row{display:flex;gap:8px;margin-top:10px;}
+  .add-row input{flex:1;}
+  .add-btn,.ghost-btn{
+    border:1px solid var(--orange);
+    background:#fff;
+    color:var(--orange);
+    padding:8px 14px;
+    border-radius:6px;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+  }
+  .add-btn:hover,.ghost-btn:hover{background:var(--peach);}
+
+  .doc-picker{display:flex;gap:8px;margin-bottom:16px;}
+  .doc-pick-btn{
+    padding:8px 14px;border-radius:6px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:13px;font-weight:600;color:var(--graphite);
+  }
+  .doc-pick-btn.active{border-color:var(--orange);color:var(--orange);background:var(--peach);}
+  .doc-output{
+    background:#fff;border:1px solid var(--line);border-radius:8px;padding:16px;font-size:13.5px;min-height:260px;white-space:pre-wrap;
+  }
+  .copy-btn{margin-top:10px;}
+
+  .summary-grid{display:flex;flex-direction:column;gap:14px;}
+  .summary-block{background:#fff;border:1px solid var(--line);border-radius:8px;padding:14px 16px;}
+  .summary-block h3{margin:0 0 10px 0;font-size:14px;color:var(--orange);}
+  .kv-row{display:flex;gap:10px;margin-bottom:6px;align-items:center;}
+  .kv-row input{flex:1;}
+  .kv-row .kv-key{max-width:200px;font-weight:600;background:var(--peach);}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="sidebar">
+    <div>
+      <div class="brand">KMP <span>Consulting</span></div>
+      <div class="subtitle">Montador de Aplicações</div>
+    </div>
+    <button class="newcase-btn" onclick="createCase()">+ Novo caso</button>
+    <div id="caseList" class="case-list"></div>
+  </div>
+  <div class="main" id="main">
+    <div class="placeholder">Selecione um caso na lateral ou crie um novo caso para começar.</div>
+  </div>
+</div>
+
+<script>
+const SUBCLASSES = {
+  "600": {
+    label: "Subclasse 600 (Visitante)",
+    checklist: [
+      "Cópia da página de dados do passaporte",
+      "Foto no padrão exigido",
+      "Comprovante de vínculo empregatício ou estudantil no Brasil",
+      "Extratos bancários dos últimos meses",
+      "Comprovante de renda ou patrocinador financeiro",
+      "Itinerário de viagem",
+      "Reserva de acomodação",
+      "Seguro viagem",
+      "Carta convite (se aplicável)",
+      "Declaração estatutária do propósito da viagem",
+      "Histórico de viagens anteriores"
+    ]
+  },
+  "485": {
+    label: "Subclasse 485 (Temporary Graduate)",
+    checklist: [
+      "Cópia da página de dados do passaporte",
+      "Confirmation of Enrolment (CoE) e certificado de conclusão",
+      "Histórico acadêmico completo",
+      "Comprovante de proficiência em inglês (IELTS ou equivalente)",
+      "Overseas Student Health Cover (OSHC) vigente",
+      "Certidão de antecedentes criminais (police clearance)",
+      "Exame de saúde (se solicitado pelo Departamento)",
+      "Comprovante de duração mínima do curso no país",
+      "Avaliação de habilidades (quando aplicável ao stream Skilled)",
+      "Comprovante de endereço atual na Austrália"
+    ]
+  },
+  "482": {
+    label: "Subclasse 482 (Skills in Demand)",
+    checklist: [
+      "Cópia da página de dados do passaporte",
+      "Contrato de trabalho com o patrocinador",
+      "Nomination aprovada pelo empregador",
+      "Comprovante de experiência profissional relevante",
+      "Avaliação de habilidades (quando exigida pela ocupação)",
+      "Comprovante de proficiência em inglês",
+      "Certidão de antecedentes criminais",
+      "Exame de saúde",
+      "Seguro saúde"
+    ]
+  },
+  "462": {
+    label: "Subclasse 462 (Work and Holiday)",
+    checklist: [
+      "Cópia da página de dados do passaporte",
+      "Comprovante de fundos suficientes",
+      "Certidão de antecedentes criminais",
+      "Carta de intenção de viagem",
+      "Comprovante de conclusão do ensino médio ou 2 anos de universidade",
+      "Passagem de saída ou fundos para compra"
+    ]
+  }
+};
+
+const TEMPLATES = {
+  cover: {
+    label: "Carta de Apresentação",
+    build: c => `Assunto: Solicitação de Visto ${SUBCLASSES[c.subclass].label}
+Requerente: ${c.name || "[nome do cliente]"}
+
+Prezados,
+
+Escrevo em nome de ${c.name || "[nome do cliente]"} para acompanhar a solicitação do visto ${SUBCLASSES[c.subclass].label}, com submissão prevista para ${c.dueDate || "[data prevista]"}.
+
+Este dossiê reúne a documentação de apoio listada no índice em anexo, organizada conforme os requisitos do Departamento de Assuntos Internos.
+
+${c.notes ? "Observações adicionais: " + c.notes : "Ficamos à disposição para fornecer qualquer esclarecimento adicional."}
+
+Atenciosamente,
+Keila Mayara Peixoto
+KMP Consulting
+Registro QEAC 09831`
+  },
+  declaration: {
+    label: "Declaração Estatutária (rascunho)",
+    build: c => `DECLARAÇÃO ESTATUTÁRIA
+
+Eu, ${c.name || "[nome completo do cliente]"}, declaro, para os devidos fins relacionados à solicitação do visto ${SUBCLASSES[c.subclass].label}, o seguinte:
+
+1. [Descrever o propósito da solicitação e o vínculo do requerente com o país de origem]
+
+2. [Descrever a intenção de cumprimento das condições do visto durante o período de permanência]
+
+3. [Incluir qualquer informação relevante adicional discutida em atendimento]
+
+Declaro que as informações acima são verdadeiras e completas até onde tenho conhecimento.
+
+Assinatura: ______________________
+Data: ${c.dueDate || "[data]"}`
+  }
+};
+
+const SUMMARY_TEMPLATE = {
+  "Dados pessoais": [
+    ["Nome completo",""],
+    ["Data de nascimento",""],
+    ["Número do passaporte",""],
+    ["Validade do passaporte",""],
+    ["Endereço atual",""]
+  ],
+  "Dados do processo": [
+    ["Subclasse",""],
+    ["Data prevista de submissão",""],
+    ["Data de expiração do visto atual (se houver)",""],
+    ["Patrocinador ou instituição vinculada",""]
+  ],
+  "Contato": [
+    ["E mail",""],
+    ["Telefone",""]
+  ]
+};
+
+let state = { cases: {}, order: [], activeId: null };
+let activeTab = "checklist";
+let activeDoc = "cover";
+
+async function loadAll(){
+  try{
+    const idx = await window.storage.get("cases-index", false);
+    const ids = idx ? JSON.parse(idx.value) : [];
+    state.order = ids;
+    for(const id of ids){
+      try{
+        const r = await window.storage.get("case:"+id, false);
+        if(r) state.cases[id] = JSON.parse(r.value);
+      }catch(e){}
+    }
+  }catch(e){}
+  renderSidebar();
+  if(state.order.length && !state.activeId){
+    state.activeId = state.order[0];
+    renderMain();
+  }
+}
+
+async function saveIndex(){
+  try{ await window.storage.set("cases-index", JSON.stringify(state.order), false); }
+  catch(e){ console.error("Falha ao salvar índice", e); }
+}
+async function saveCase(id){
+  try{ await window.storage.set("case:"+id, JSON.stringify(state.cases[id]), false); }
+  catch(e){ console.error("Falha ao salvar caso", e); }
+}
+
+function newId(){ return "c" + Date.now() + Math.floor(Math.random()*1000); }
+
+async function createCase(){
+  const id = newId();
+  state.cases[id] = {
+    id, name:"", subclass:"485", dueDate:"", notes:"",
+    checklist: SUBCLASSES["485"].checklist.map(t=>({text:t, done:false, note:""})),
+    summary: JSON.parse(JSON.stringify(SUMMARY_TEMPLATE))
+  };
+  state.order.unshift(id);
+  state.activeId = id;
+  await saveIndex();
+  await saveCase(id);
+  renderSidebar();
+  renderMain();
+}
+
+function progressOf(c){
+  if(!c.checklist.length) return {done:0,total:0,pct:0};
+  const done = c.checklist.filter(i=>i.done).length;
+  return {done, total:c.checklist.length, pct: Math.round(done/c.checklist.length*100)};
+}
+
+function renderSidebar(){
+  const list = document.getElementById("caseList");
+  if(!state.order.length){
+    list.innerHTML = '<div class="empty-side">Nenhum caso ainda. Clique em "Novo caso".</div>';
+    return;
+  }
+  list.innerHTML = state.order.map(id=>{
+    const c = state.cases[id];
+    if(!c) return "";
+    const p = progressOf(c);
+    return `<div class="case-item ${id===state.activeId?'active':''}" onclick="selectCase('${id}')">
+      <div class="case-name">${c.name || "Cliente sem nome"}</div>
+      <div class="case-meta"><span class="badge">${c.subclass}</span>${c.dueDate || "sem data"}</div>
+      <div class="case-progress-bar"><div class="case-progress-fill" style="width:${p.pct}%"></div></div>
+    </div>`;
+  }).join("");
+}
+
+function selectCase(id){
+  state.activeId = id;
+  activeTab = "checklist";
+  renderSidebar();
+  renderMain();
+}
+
+function renderMain(){
+  const main = document.getElementById("main");
+  const c = state.cases[state.activeId];
+  if(!c){ main.innerHTML = '<div class="placeholder">Selecione um caso na lateral ou crie um novo caso para começar.</div>'; return; }
+
+  main.innerHTML = `
+    <h1>${c.name || "Novo caso"}</h1>
+    <div class="case-form">
+      <div class="field">
+        <label>Nome do cliente</label>
+        <input value="${escAttr(c.name)}" oninput="updateField('name', this.value)">
+      </div>
+      <div class="field">
+        <label>Subclasse</label>
+        <select onchange="changeSubclass(this.value)">
+          ${Object.keys(SUBCLASSES).map(k=>`<option value="${k}" ${k===c.subclass?"selected":""}>${SUBCLASSES[k].label}</option>`).join("")}
+        </select>
+      </div>
+      <div class="field">
+        <label>Data prevista de submissão</label>
+        <input type="date" value="${c.dueDate}" oninput="updateField('dueDate', this.value)">
+      </div>
+      <div class="field">
+        <label>Notas do caso</label>
+        <input value="${escAttr(c.notes)}" oninput="updateField('notes', this.value)">
+      </div>
+    </div>
+    <div class="tabs">
+      <div class="tab ${activeTab==='checklist'?'active':''}" onclick="setTab('checklist')">Checklist</div>
+      <div class="tab ${activeTab==='docs'?'active':''}" onclick="setTab('docs')">Documentos</div>
+      <div class="tab ${activeTab==='summary'?'active':''}" onclick="setTab('summary')">Resumo de Preenchimento</div>
+    </div>
+    <div id="tabBody"></div>
+  `;
+  renderTab();
+}
+
+function escAttr(s){ return (s||"").replace(/"/g,"&quot;"); }
+
+async function updateField(field, value){
+  const c = state.cases[state.activeId];
+  c[field] = value;
+  await saveCase(c.id);
+  if(field==="name" || field==="dueDate" || field==="subclass") renderSidebar();
+  if(field==="name" || field==="dueDate"){
+    document.querySelector("h1").textContent = c.name || "Novo caso";
+  }
+}
+
+async function changeSubclass(value){
+  const c = state.cases[state.activeId];
+  const keepDone = {};
+  c.checklist.forEach(i=>{ if(i.done) keepDone[i.text]=true; });
+  c.subclass = value;
+  c.checklist = SUBCLASSES[value].checklist.map(t=>({text:t, done: !!keepDone[t], note:""}));
+  await saveCase(c.id);
+  renderSidebar();
+  renderTab();
+}
+
+function setTab(tab){ activeTab = tab; renderTab(); }
+
+function renderTab(){
+  const body = document.getElementById("tabBody");
+  const c = state.cases[state.activeId];
+  if(activeTab==="checklist") body.innerHTML = checklistHtml(c);
+  else if(activeTab==="docs") body.innerHTML = docsHtml(c);
+  else body.innerHTML = summaryHtml(c);
+}
+
+function checklistHtml(c){
+  const p = progressOf(c);
+  return `
+    <div class="checklist-progress">
+      <div class="bar"><div class="fill" style="width:${p.pct}%"></div></div>
+      <div class="count">${p.done} de ${p.total} concluídos</div>
+    </div>
+    ${c.checklist.map((item,idx)=>`
+      <div class="check-item ${item.done?'done':''}">
+        <input type="checkbox" ${item.done?"checked":""} onchange="toggleItem(${idx}, this.checked)">
+        <div style="flex:1">
+          <div style="display:flex;align-items:flex-start;gap:8px;">
+            <div class="item-text">${item.text}</div>
+            <button class="remove-btn" onclick="removeItem(${idx})" title="Remover">×</button>
+          </div>
+          <input class="item-note" placeholder="Observação (opcional)" value="${escAttr(item.note)}" oninput="noteItem(${idx}, this.value)">
+        </div>
+      </div>
+    `).join("")}
+    <div class="add-row">
+      <input id="newItemInput" placeholder="Adicionar item ao checklist">
+      <button class="add-btn" onclick="addItem()">Adicionar</button>
+    </div>
+  `;
+}
+
+async function toggleItem(idx, checked){
+  const c = state.cases[state.activeId];
+  c.checklist[idx].done = checked;
+  await saveCase(c.id);
+  renderSidebar();
+  renderTab();
+}
+async function noteItem(idx, value){
+  const c = state.cases[state.activeId];
+  c.checklist[idx].note = value;
+  await saveCase(c.id);
+}
+async function removeItem(idx){
+  const c = state.cases[state.activeId];
+  c.checklist.splice(idx,1);
+  await saveCase(c.id);
+  renderSidebar();
+  renderTab();
+}
+async function addItem(){
+  const input = document.getElementById("newItemInput");
+  const val = input.value.trim();
+  if(!val) return;
+  const c = state.cases[state.activeId];
+  c.checklist.push({text:val, done:false, note:""});
+  await saveCase(c.id);
+  renderSidebar();
+  renderTab();
+}
+
+function docsHtml(c){
+  const text = TEMPLATES[activeDoc].build(c);
+  return `
+    <div class="doc-picker">
+      ${Object.keys(TEMPLATES).map(k=>`<div class="doc-pick-btn ${k===activeDoc?'active':''}" onclick="setDoc('${k}')">${TEMPLATES[k].label}</div>`).join("")}
+    </div>
+    <div class="doc-output" id="docOutput">${text}</div>
+    <button class="ghost-btn copy-btn" onclick="copyDoc()">Copiar texto</button>
+  `;
+}
+function setDoc(k){ activeDoc = k; renderTab(); }
+function copyDoc(){
+  const el = document.getElementById("docOutput");
+  navigator.clipboard.writeText(el.textContent).then(()=>{
+    const btn = document.querySelector(".copy-btn");
+    const old = btn.textContent;
+    btn.textContent = "Copiado";
+    setTimeout(()=>{ btn.textContent = old; }, 1400);
+  });
+}
+
+function summaryHtml(c){
+  return Object.keys(c.summary).map(section=>`
+    <div class="summary-block">
+      <h3>${section}</h3>
+      ${c.summary[section].map((pair,idx)=>`
+        <div class="kv-row">
+          <input class="kv-key" value="${escAttr(pair[0])}" onchange="updateSummaryKey('${section}',${idx},this.value)">
+          <input value="${escAttr(pair[1])}" oninput="updateSummaryVal('${section}',${idx},this.value)">
+        </div>
+      `).join("")}
+    </div>
+  `).join("") + `<button class="ghost-btn" style="margin-top:4px;" onclick="copySummary()">Copiar resumo</button>`;
+}
+async function updateSummaryKey(section, idx, value){
+  const c = state.cases[state.activeId];
+  c.summary[section][idx][0] = value;
+  await saveCase(c.id);
+}
+async function updateSummaryVal(section, idx, value){
+  const c = state.cases[state.activeId];
+  c.summary[section][idx][1] = value;
+  await saveCase(c.id);
+}
+function copySummary(){
+  const c = state.cases[state.activeId];
+  let text = "";
+  Object.keys(c.summary).forEach(section=>{
+    text += section.toUpperCase() + "\\n";
+    c.summary[section].forEach(pair=> text += "  " + pair[0] + ": " + pair[1] + "\\n");
+    text += "\\n";
+  });
+  navigator.clipboard.writeText(text);
+}
+
+loadAll();
+</script>
+</body>
+</html>
