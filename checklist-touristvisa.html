@@ -298,6 +298,9 @@
     color:var(--white);
     background:var(--orange);
     transition:opacity 0.15s ease;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
   }
   .step-btn:hover{opacity:0.9;}
   .step-btn:disabled{background:#D8D2C8;cursor:not-allowed;}
@@ -466,8 +469,8 @@
       <div class="step-num" id="stepNum3">3</div>
       <div class="step-body">
         <div class="step-title-line"><strong>Enviar o PDF por WhatsApp</strong><span class="required-tag">Obrigatório</span></div>
-        <div class="step-desc">Abre o WhatsApp com uma mensagem pronta. Anexe o PDF que você baixou no passo 1 antes de enviar.</div>
-        <button type="button" class="step-btn whatsapp" id="step3Btn" disabled>Enviar pelo WhatsApp</button>
+        <div class="step-desc">No celular, abre o menu de compartilhamento já com o PDF anexado, escolha o WhatsApp da KMP Consulting na lista. No computador, abre o WhatsApp Web e você anexa manualmente o PDF baixado no passo 1.</div>
+        <button type="button" class="step-btn whatsapp" id="step3Btn" disabled><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12.017 2c-5.522 0-9.998 4.475-9.998 9.997 0 1.762.462 3.484 1.34 5.002L2 22l5.13-1.345a9.965 9.965 0 0 0 4.887 1.246h.004c5.522 0 9.997-4.475 9.997-9.997C21.996 6.481 17.539 2 12.017 2zm5.848 15.72c-.243.686-1.418 1.34-1.955 1.418-.5.074-1.12.106-1.804-.114-.416-.132-.949-.31-1.635-.607-2.877-1.242-4.756-4.135-4.9-4.327-.144-.192-1.174-1.562-1.174-2.98 0-1.418.744-2.116 1.008-2.405.264-.288.577-.36.769-.36.192 0 .385.002.552.01.177.008.415-.067.649.496.243.585.826 2.02.9 2.168.074.149.124.322.025.52-.099.198-.149.322-.298.496-.148.174-.312.389-.446.522-.148.148-.303.309-.13.606.173.297.769 1.27 1.652 2.058 1.135 1.012 2.093 1.325 2.39 1.475.297.148.471.124.644-.075.173-.198.744-.866.941-1.164.198-.298.396-.248.669-.15.273.099 1.734.818 2.031.967.297.149.495.223.57.347.074.124.074.719-.169 1.413z"/></svg>Enviar pelo WhatsApp</button>
       </div>
     </div>
 
@@ -547,8 +550,12 @@ const finalQuestions = [
   {id:'d16', text:'As an applicant: I understand that if my visa ceases to be in effect and I do not hold another visa to remain in Australia at that time, I will be an unlawful non citizen under the Migration Act 1958. As such, I will be expected to depart from Australia, and be subject to removal under the Migration Act 1958.', tr:'Como aplicante, compreendo que se meu visto deixar de estar em vigor e eu nao possuir outro visto valido, estarei em situacao irregular na Australia sob a Migration Act 1958 e sujeito a remocao.'}
 ];
 
-function renderQuestions(list, containerId){
+// flagValue = which answer ("Sim" or "Nao") is the one that needs an explanation.
+// The other answer is the "green flag" and never opens the detail box.
+function renderQuestions(list, containerId, flagValue){
   const container = document.getElementById(containerId);
+  const simOpens = flagValue === 'Sim' ? 'true' : 'false';
+  const naoOpens = flagValue === 'Nao' ? 'true' : 'false';
   container.innerHTML = list.map(q => {
     const bullets = q.bullets ? '<ul>' + q.bullets.map(b => '<li>' + b + '</li>').join('') + '</ul>' : '';
     const bulletsTr = q.bulletsTr ? '<ul>' + q.bulletsTr.map(b => '<li>' + b + '</li>').join('') + '</ul>' : '';
@@ -557,8 +564,8 @@ function renderQuestions(list, containerId){
     <div class="question-card">
       <div class="question-text">${q.text}${bullets}${translation}</div>
       <div class="yn-group">
-        <label class="yn-option"><input type="radio" name="${q.id}" value="Sim" onchange="toggleExplain('${q.id}', true)"> Sim</label>
-        <label class="yn-option"><input type="radio" name="${q.id}" value="Nao" onchange="toggleExplain('${q.id}', false)"> Nao</label>
+        <label class="yn-option"><input type="radio" name="${q.id}" value="Sim" onchange="toggleExplain('${q.id}', ${simOpens})"> Sim</label>
+        <label class="yn-option"><input type="radio" name="${q.id}" value="Nao" onchange="toggleExplain('${q.id}', ${naoOpens})"> Nao</label>
       </div>
       <div class="explain-box" id="explain_${q.id}">
         <label>Explique com detalhes</label>
@@ -574,10 +581,19 @@ function toggleExplain(id, show){
   else { box.classList.remove('visible'); document.getElementById('text_' + id).value=''; }
 }
 
-renderQuestions(healthQuestions, 'healthQuestions');
-renderQuestions(characterQuestions, 'characterQuestions');
-renderQuestions(visaHistoryQuestions, 'visaHistoryQuestions');
-renderQuestions(finalQuestions, 'finalQuestions');
+// Health, character and visa history: "Sim" is the flag that needs an explanation.
+// Final declarations: it is the opposite, "Sim" is the green flag, "Nao" needs an explanation.
+renderQuestions(healthQuestions, 'healthQuestions', 'Sim');
+renderQuestions(characterQuestions, 'characterQuestions', 'Sim');
+renderQuestions(visaHistoryQuestions, 'visaHistoryQuestions', 'Sim');
+renderQuestions(finalQuestions, 'finalQuestions', 'Nao');
+
+const GROUP_FLAG = {
+  'DECLARACOES DE SAUDE': 'Sim',
+  'DECLARACOES DE CARATER': 'Sim',
+  'HISTORICO DE VISTO': 'Sim',
+  'DECLARACOES FINAIS': 'Nao'
+};
 
 // Signature pad
 const canvas = document.getElementById('sigPad');
@@ -636,12 +652,13 @@ function collectAnswers(){
   let summary = '';
   let missing = [];
   allQuestions.forEach(group => {
+    const flag = GROUP_FLAG[group.label] || 'Sim';
     summary += '\n\n' + group.label + '\n' + '-'.repeat(group.label.length) + '\n';
     group.items.forEach(q => {
       const checked = document.querySelector('input[name="' + q.id + '"]:checked');
       if(!checked){ missing.push(q.text); summary += '- ' + q.text + ' [NAO RESPONDIDO]\n'; return; }
       summary += '- ' + q.text + ' => ' + checked.value + '\n';
-      if(checked.value === 'Sim'){
+      if(checked.value === flag){
         const detail = document.getElementById('text_' + q.id).value.trim();
         summary += '  Detalhes: ' + (detail || '[nao preenchido]') + '\n';
       }
@@ -769,10 +786,10 @@ function buildNativePdf(){
   doc.text('Data: ' + formDate, margin, y); y += 26;
 
   const groups = [
-    { label:'1. DECLARACOES DE SAUDE', items:healthQuestions },
-    { label:'2. DECLARACOES DE CARATER', items:characterQuestions },
-    { label:'3. HISTORICO DE VISTO', items:visaHistoryQuestions },
-    { label:'4. DECLARACOES FINAIS', items:finalQuestions }
+    { label:'1. DECLARACOES DE SAUDE', items:healthQuestions, flag:'Sim' },
+    { label:'2. DECLARACOES DE CARATER', items:characterQuestions, flag:'Sim' },
+    { label:'3. HISTORICO DE VISTO', items:visaHistoryQuestions, flag:'Sim' },
+    { label:'4. DECLARACOES FINAIS', items:finalQuestions, flag:'Nao' }
   ];
 
   groups.forEach(group => {
@@ -790,7 +807,8 @@ function buildNativePdf(){
     group.items.forEach(q => {
       const checked = document.querySelector('input[name="' + q.id + '"]:checked');
       const answer = checked ? checked.value : 'Nao respondido';
-      const detail = (checked && checked.value === 'Sim') ? (document.getElementById('text_' + q.id).value.trim() || '(nao preenchido)') : '';
+      const needsDetail = checked && checked.value === group.flag;
+      const detail = needsDetail ? (document.getElementById('text_' + q.id).value.trim() || '(nao preenchido)') : '';
 
       let fullQuestion = q.text;
       if(q.bullets) fullQuestion += ' ' + q.bullets.join('; ');
@@ -809,7 +827,7 @@ function buildNativePdf(){
       y += qLines.length * 12 + 4;
 
       doc.setFont('helvetica','bold');
-      if(checked && checked.value === 'Sim'){
+      if(needsDetail){
         doc.setTextColor(red[0],red[1],red[2]);
       } else {
         doc.setTextColor(graphite[0],graphite[1],graphite[2]);
@@ -912,16 +930,48 @@ document.getElementById('step2Btn').addEventListener('click', async () => {
   }
 });
 
-// ---- Step 3: WhatsApp (mandatory manual send of the downloaded PDF) ----
-document.getElementById('step3Btn').addEventListener('click', () => {
+// ---- Step 3: WhatsApp ----
+// wa.me links can only open a chat with prefilled TEXT, they can never attach a file.
+// So whenever the browser supports it (mobile Chrome/Safari), we use the native
+// share sheet with the actual PDF file attached, and the person picks WhatsApp there.
+// On browsers without file sharing (most desktops), we fall back to opening the chat
+// and the person attaches the already downloaded PDF manually.
+document.getElementById('step3Btn').addEventListener('click', async () => {
   if(!stepsState.pdf){ showStatus('Baixe o PDF no passo 1 antes de enviar pelo WhatsApp.', false); return; }
+  if(!validateBeforeAction()) return;
+
   const applicantName = document.getElementById('applicantName').value.trim();
   const visaType = document.getElementById('visaType').value.trim();
-  const msg = 'Ola, sou ' + applicantName + '. Segue em anexo o PDF assinado do Checklist de Declaracoes ' + (visaType || 'Turismo') + ' preenchido pelo formulario da KMP Consulting. Estou anexando o arquivo PDF que acabei de baixar.';
+  const filename = currentFilename();
+  const msg = 'Ola, sou ' + applicantName + '. Segue o PDF assinado do Checklist de Declaracoes ' + (visaType || 'Turismo') + ' preenchido pelo formulario da KMP Consulting.';
+
+  try{
+    const doc = buildNativePdf();
+    const pdfBlob = doc.output('blob');
+    const file = new File([pdfBlob], filename, { type:'application/pdf' });
+
+    if(navigator.canShare && navigator.canShare({ files:[file] })){
+      try{
+        await navigator.share({ files:[file], text: msg });
+        markStepDone('whatsapp');
+        showStatus('Escolha o WhatsApp da KMP Consulting na lista de compartilhamento para concluir o envio do PDF.', true);
+        return;
+      }catch(shareErr){
+        if(shareErr && shareErr.name === 'AbortError'){
+          showStatus('Envio cancelado. Clique novamente quando quiser compartilhar o PDF pelo WhatsApp.', false);
+          return;
+        }
+        // Any other share error: fall through to the chat link fallback below.
+      }
+    }
+  }catch(err){
+    // PDF regeneration failed for some reason: still let the person open the chat below.
+  }
+
   const url = 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(msg);
   window.open(url, '_blank');
   markStepDone('whatsapp');
-  showStatus('WhatsApp aberto em uma nova aba. Anexe o PDF baixado no passo 1 e envie a mensagem para concluir.', true);
+  showStatus('Seu navegador nao permite anexar o PDF automaticamente. O WhatsApp foi aberto, anexe manualmente o PDF baixado no passo 1.', false);
 });
 </script>
 </body>
