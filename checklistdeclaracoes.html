@@ -155,13 +155,6 @@
   }
   .translation ul{margin:4px 0 0;padding-left:18px;}
   .translation li{margin-bottom:1px;}
-  .email-line{
-    font-size:13px;
-    text-align:center;
-    margin-top:10px;
-  }
-  .email-line a{color:var(--orange);font-weight:600;text-decoration:none;}
-  .email-line a:hover{text-decoration:underline;}
   .yn-group{display:flex;gap:22px;margin-bottom:2px;}
   .yn-option{display:flex;align-items:center;gap:7px;cursor:pointer;font-size:14px;}
   .yn-option input{accent-color:var(--orange);width:16px;height:16px;cursor:pointer;}
@@ -226,28 +219,100 @@
     cursor:pointer;
   }
   .sig-hint{font-size:12.5px;color:#8A8A8A;}
-  .action-row{
-    display:flex;
-    gap:14px;
-    flex-wrap:wrap;
+
+  .steps-card{
+    background:var(--white);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:8px 22px 22px;
     margin-top:8px;
   }
-  .btn{
-    flex:1;
-    min-width:220px;
-    padding:14px 18px;
+  .steps-card h3{
+    font-family:'Cormorant Garamond',serif;
+    font-weight:700;
+    font-size:20px;
+    margin:16px 0 4px;
+  }
+  .steps-card > p.steps-intro{
+    font-size:13px;
+    color:#5c5c5c;
+    margin:0 0 18px;
+  }
+  .step-row{
+    display:flex;
+    gap:14px;
+    align-items:flex-start;
+    padding:16px 0;
+    border-top:1px solid var(--border);
+  }
+  .step-row:first-of-type{border-top:none;}
+  .step-num{
+    width:30px;
+    height:30px;
+    min-width:30px;
+    border-radius:50%;
+    background:var(--cream);
+    border:2px solid var(--orange);
+    color:var(--orange);
+    font-weight:700;
+    font-size:14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:all 0.15s ease;
+  }
+  .step-row.done .step-num{
+    background:var(--orange);
+    color:var(--white);
+    border-color:var(--orange);
+  }
+  .step-body{flex:1;}
+  .step-title-line{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-bottom:4px;
+  }
+  .step-title-line strong{font-size:14.5px;}
+  .required-tag{
+    background:var(--alert-peach);
+    color:var(--orange);
+    border:1px solid var(--orange);
+    font-size:10.5px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.4px;
+    padding:2px 8px;
+    border-radius:20px;
+  }
+  .step-desc{font-size:13px;color:#5c5c5c;margin-bottom:10px;}
+  .step-btn{
+    padding:11px 18px;
     border-radius:8px;
     border:none;
     font-family:'Outfit',sans-serif;
     font-weight:600;
-    font-size:14.5px;
+    font-size:13.5px;
     cursor:pointer;
-    text-align:center;
+    color:var(--white);
+    background:var(--orange);
     transition:opacity 0.15s ease;
   }
-  .btn:hover{opacity:0.9;}
-  .btn-primary{background:var(--orange);color:var(--white);}
-  .btn-secondary{background:var(--white);color:var(--orange);border:1.5px solid var(--orange);}
+  .step-btn:hover{opacity:0.9;}
+  .step-btn:disabled{background:#D8D2C8;cursor:not-allowed;}
+  .step-btn.whatsapp{background:#25D366;}
+  .step-btn.whatsapp:disabled{background:#D8D2C8;}
+  .final-note{
+    margin-top:18px;
+    background:var(--benefit-peach);
+    border-left:3px solid var(--orange);
+    border-radius:6px;
+    padding:12px 14px;
+    font-size:13px;
+    display:none;
+  }
+  .final-note.visible{display:block;}
   .status-msg{
     margin-top:14px;
     font-size:13.5px;
@@ -258,6 +323,13 @@
   .status-msg.show{display:block;}
   .status-ok{background:var(--benefit-peach);color:#8A4A00;}
   .status-err{background:#FDEAEA;color:#B23B3B;}
+  .email-line{
+    font-size:13px;
+    text-align:center;
+    margin-top:14px;
+  }
+  .email-line a{color:var(--orange);font-weight:600;text-decoration:none;}
+  .email-line a:hover{text-decoration:underline;}
   footer{
     background:var(--graphite);
     color:var(--white);
@@ -265,14 +337,13 @@
     padding:24px;
     font-size:12.5px;
   }
-  footer .foot-brand{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;margin-bottom:4px;}
   footer .foot-org{opacity:0.75;margin-bottom:2px;}
   @media(max-width:560px){
     .applicant-card{grid-template-columns:1fr;}
     header h1{font-size:27px;}
   }
   @media print{
-    .action-row, .status-msg, .email-line, .sig-actions{display:none !important;}
+    .steps-card, .status-msg, .email-line, .sig-actions{display:none !important;}
     body{background:#fff;}
     .question-card, .signature-card, .applicant-card, .intro-card{break-inside:avoid;}
   }
@@ -313,7 +384,7 @@
 <main>
   <div class="intro-card">
     <p>Este checklist reproduz as perguntas oficiais de saúde e caráter exigidas nos formulários de visto australiano. Ele serve para organizarmos suas respostas antes de darmos entrada no seu processo, evitando surpresas e atrasos.</p>
-    <p>Responda Sim ou Não a cada pergunta. Ao marcar Sim, uma caixa de texto será aberta para você detalhar a situação. Ao final, assine digitalmente e escolha se prefere baixar o PDF ou enviar diretamente para a KMP Consulting por e mail.</p>
+    <p>Responda Sim ou Não a cada pergunta. Ao marcar Sim, uma caixa de texto será aberta para você detalhar a situação. Ao final, siga os 3 passos obrigatórios abaixo para concluir o envio.</p>
   </div>
 
   <div class="applicant-card">
@@ -363,12 +434,41 @@
     </div>
   </div>
 
-  <div class="action-row">
-    <button class="btn btn-secondary" id="downloadPdfBtn">Baixar em PDF</button>
-    <button class="btn btn-primary" id="sendEmailBtn">Enviar para a KMP Consulting</button>
+  <div class="steps-card">
+    <h3>Finalize seu envio</h3>
+    <p class="steps-intro">Siga os 3 passos abaixo, nessa ordem, para concluir sua declaração. Os passos 1 e 3 são obrigatórios.</p>
+
+    <div class="step-row" id="stepRow1">
+      <div class="step-num" id="stepNum1">1</div>
+      <div class="step-body">
+        <div class="step-title-line"><strong>Baixar o PDF</strong><span class="required-tag">Obrigatório</span></div>
+        <div class="step-desc">Gera e baixa o PDF com todas as suas respostas e assinatura. Guarde este arquivo, você vai precisar dele no passo 3.</div>
+        <button type="button" class="step-btn" id="step1Btn">Baixar PDF</button>
+      </div>
+    </div>
+
+    <div class="step-row" id="stepRow2">
+      <div class="step-num" id="stepNum2">2</div>
+      <div class="step-body">
+        <div class="step-title-line"><strong>Enviar respostas por e mail</strong></div>
+        <div class="step-desc">Envia um resumo das suas respostas para a KMP Consulting por e mail.</div>
+        <button type="button" class="step-btn" id="step2Btn" disabled>Enviar por e mail</button>
+      </div>
+    </div>
+
+    <div class="step-row" id="stepRow3">
+      <div class="step-num" id="stepNum3">3</div>
+      <div class="step-body">
+        <div class="step-title-line"><strong>Enviar o PDF por WhatsApp</strong><span class="required-tag">Obrigatório</span></div>
+        <div class="step-desc">Abre o WhatsApp com uma mensagem pronta. Anexe o PDF que você baixou no passo 1 antes de enviar.</div>
+        <button type="button" class="step-btn whatsapp" id="step3Btn" disabled>Enviar pelo WhatsApp</button>
+      </div>
+    </div>
+
+    <div class="final-note" id="finalNote">Prontinho. Confirme se a mensagem com o PDF foi realmente enviada no WhatsApp, essa etapa não acontece automaticamente, é você quem envia.</div>
+    <div class="status-msg" id="statusMsg"></div>
+    <div class="email-line">Prefere enviar direto pelo seu e mail? Envie o PDF baixado para <a href="mailto:keila.peixoto@kmpconsulting.com.au">keila.peixoto@kmpconsulting.com.au</a></div>
   </div>
-  <div class="status-msg" id="statusMsg"></div>
-  <div class="email-line">Prefere enviar direto pelo seu e mail? Envie o PDF baixado para <a href="mailto:keila.peixoto@kmpconsulting.com.au">keila.peixoto@kmpconsulting.com.au</a></div>
 </main>
 
 <footer>
@@ -378,11 +478,12 @@
 </footer>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 document.getElementById('formDate').valueAsDate = new Date();
 document.getElementById('footerLogo').innerHTML = document.querySelector('header .brand-logo').innerHTML;
+
+const WHATSAPP_NUMBER = '61451051806';
 
 const healthQuestions = [
   {id:'h1', text:'In the last five years, has any applicant visited, or lived, outside their country of passport, for more than 3 consecutive months? Do not include time spent in Australia.', tr:'Nos ultimos cinco anos, algum aplicante visitou ou morou fora do pais do passaporte por mais de 3 meses consecutivos? Nao considere o tempo passado na Australia.'},
@@ -549,44 +650,219 @@ function validateBeforeAction(){
   return true;
 }
 
-function triggerDownload(blob, filename){
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
+// ---- Step tracking ----
+const stepsState = { pdf:false, email:false, whatsapp:false };
+
+function markStepDone(step){
+  stepsState[step] = true;
+  if(step === 'pdf'){
+    document.getElementById('stepRow1').classList.add('done');
+    document.getElementById('stepNum1').textContent = '✓';
+    document.getElementById('step2Btn').disabled = false;
+    document.getElementById('step3Btn').disabled = false;
+  }
+  if(step === 'email'){
+    document.getElementById('stepRow2').classList.add('done');
+    document.getElementById('stepNum2').textContent = '✓';
+  }
+  if(step === 'whatsapp'){
+    document.getElementById('stepRow3').classList.add('done');
+    document.getElementById('stepNum3').textContent = '✓';
+  }
+  if(stepsState.pdf && stepsState.email && stepsState.whatsapp){
+    document.getElementById('finalNote').classList.add('visible');
+  }
 }
 
-document.getElementById('downloadPdfBtn').addEventListener('click', async () => {
-  if(!validateBeforeAction()) return;
-  showStatus('Gerando PDF, aguarde...', true);
+// ---- Native, lightweight PDF (no screenshots, text based, small file size) ----
+function buildNativePdf(){
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit:'pt', format:'a4' });
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const margin = 42;
+  const contentWidth = pageWidth - margin * 2;
+  const orange = [242,123,32];
+  const graphite = [44,44,44];
+  const grey = [138,138,138];
+  const red = [178,59,59];
+  let y = 0;
+  let pageNum = 1;
 
-  const applicantName = document.getElementById('applicantName').value.trim();
-  const filename = 'Checklist_Declaracoes_' + applicantName.replace(/\s+/g,'_') + '.pdf';
-
-  try{
-    // Preferred path: server side rendering, same fidelity used for the email attachment.
-    const pdfBlob = await buildPdfServerSide();
-    triggerDownload(pdfBlob, filename);
-    showStatus('PDF baixado com sucesso.', true);
-  }catch(err){
-    try{
-      // Fallback while the server endpoint isn't deployed yet, or if it fails for this request.
-      const pdf = await buildPdfClientFallback();
-      pdf.save(filename);
-      showStatus('PDF baixado com sucesso.', true);
-    }catch(err2){
-      showStatus('Nao foi possivel gerar o PDF neste dispositivo. Tente em outro navegador (Chrome) ou computador.', false);
+  function drawHeader(isFirstPage){
+    if(isFirstPage){
+      doc.setFillColor(orange[0],orange[1],orange[2]);
+      doc.rect(0,0,pageWidth,86,'F');
+      doc.setFillColor(255,255,255);
+      doc.roundedRect(margin, 20, 36, 36, 7, 7, 'F');
+      doc.setTextColor(orange[0],orange[1],orange[2]);
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(12);
+      doc.text('kmp', margin + 18, 20 + 22, { align:'center' });
+      doc.setTextColor(255,255,255);
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(14);
+      doc.text('consulting.', margin + 46, 20 + 22);
+      doc.setFont('times','bold');
+      doc.setFontSize(19);
+      doc.text('Checklist de Declaracoes', margin, 74);
+      y = 106;
+    } else {
+      doc.setFillColor(orange[0],orange[1],orange[2]);
+      doc.rect(0,0,pageWidth,4,'F');
+      doc.setTextColor(orange[0],orange[1],orange[2]);
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(9);
+      doc.text('KMP CONSULTING', margin, 22);
+      y = 42;
     }
+  }
+
+  function drawFooter(){
+    doc.setDrawColor(orange[0],orange[1],orange[2]);
+    doc.setLineWidth(0.6);
+    doc.line(margin, pageHeight - 40, pageWidth - margin, pageHeight - 40);
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(8.5);
+    doc.setTextColor(grey[0],grey[1],grey[2]);
+    doc.text('keila.peixoto@kmpconsulting.com.au  |  kmpconsulting.com.au', margin, pageHeight - 26);
+    doc.text('Pagina ' + pageNum, pageWidth - margin, pageHeight - 26, { align:'right' });
+  }
+
+  function newPage(){
+    drawFooter();
+    doc.addPage();
+    pageNum++;
+    drawHeader(false);
+  }
+
+  function ensureSpace(neededHeight){
+    if(y + neededHeight > pageHeight - 56){
+      newPage();
+    }
+  }
+
+  drawHeader(true);
+
+  doc.setTextColor(graphite[0],graphite[1],graphite[2]);
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(10.5);
+  const applicantName = document.getElementById('applicantName').value.trim() || 'Nao informado';
+  const visaType = document.getElementById('visaType').value.trim() || 'Nao informado';
+  const formDate = document.getElementById('formDate').value || '';
+  doc.text('Aplicante: ' + applicantName, margin, y); y += 16;
+  doc.text('Tipo de visto: ' + visaType, margin, y); y += 16;
+  doc.text('Data: ' + formDate, margin, y); y += 26;
+
+  const groups = [
+    { label:'1. DECLARACOES DE SAUDE', items:healthQuestions },
+    { label:'2. DECLARACOES DE CARATER', items:characterQuestions },
+    { label:'3. DECLARACOES FINAIS', items:finalQuestions }
+  ];
+
+  groups.forEach(group => {
+    ensureSpace(34);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(12.5);
+    doc.setTextColor(orange[0],orange[1],orange[2]);
+    doc.text(group.label, margin, y);
+    y += 6;
+    doc.setDrawColor(orange[0],orange[1],orange[2]);
+    doc.setLineWidth(1);
+    doc.line(margin, y, pageWidth - margin, y);
+    y += 18;
+
+    group.items.forEach(q => {
+      const checked = document.querySelector('input[name="' + q.id + '"]:checked');
+      const answer = checked ? checked.value : 'Nao respondido';
+      const detail = (checked && checked.value === 'Sim') ? (document.getElementById('text_' + q.id).value.trim() || '(nao preenchido)') : '';
+
+      let fullQuestion = q.text;
+      if(q.bullets) fullQuestion += ' ' + q.bullets.join('; ');
+
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(9.5);
+      const qLines = doc.splitTextToSize(fullQuestion, contentWidth);
+      const answerLine = 'Resposta: ' + answer;
+      const detailLines = detail ? doc.splitTextToSize('Detalhes: ' + detail, contentWidth) : [];
+
+      const blockHeight = (qLines.length * 12) + 16 + (detailLines.length * 12) + 12;
+      ensureSpace(blockHeight);
+
+      doc.setTextColor(graphite[0],graphite[1],graphite[2]);
+      doc.text(qLines, margin, y);
+      y += qLines.length * 12 + 4;
+
+      doc.setFont('helvetica','bold');
+      if(checked && checked.value === 'Sim'){
+        doc.setTextColor(red[0],red[1],red[2]);
+      } else {
+        doc.setTextColor(graphite[0],graphite[1],graphite[2]);
+      }
+      doc.text(answerLine, margin, y);
+      y += 14;
+
+      if(detailLines.length){
+        doc.setFont('helvetica','italic');
+        doc.setFontSize(9);
+        doc.setTextColor(graphite[0],graphite[1],graphite[2]);
+        doc.text(detailLines, margin, y);
+        y += detailLines.length * 12 + 4;
+      }
+      y += 6;
+    });
+    y += 10;
+  });
+
+  ensureSpace(130);
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(12.5);
+  doc.setTextColor(orange[0],orange[1],orange[2]);
+  doc.text('4. ASSINATURA', margin, y);
+  y += 6;
+  doc.line(margin, y, pageWidth - margin, y);
+  y += 18;
+
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(10.5);
+  doc.setTextColor(graphite[0],graphite[1],graphite[2]);
+  const signName = document.getElementById('signName').value.trim();
+  doc.text('Assinado por: ' + signName, margin, y);
+  y += 16;
+
+  const sigDataUrl = canvas.toDataURL('image/png');
+  ensureSpace(90);
+  doc.addImage(sigDataUrl, 'PNG', margin, y, 190, 65);
+  y += 85;
+
+  drawFooter();
+  return doc;
+}
+
+function currentFilename(){
+  const applicantName = document.getElementById('applicantName').value.trim().replace(/\s+/g,'_') || 'Aplicante';
+  return 'Checklist_Declaracoes_' + applicantName + '.pdf';
+}
+
+// ---- Step 1: Download PDF ----
+document.getElementById('step1Btn').addEventListener('click', () => {
+  if(!validateBeforeAction()) return;
+  showStatus('Gerando PDF...', true);
+  try{
+    const doc = buildNativePdf();
+    doc.save(currentFilename());
+    markStepDone('pdf');
+    showStatus('PDF baixado com sucesso. Agora envie as respostas por e mail (passo 2) e o PDF pelo WhatsApp (passo 3).', true);
+  }catch(err){
+    showStatus('Nao foi possivel gerar o PDF. Tente novamente ou em outro navegador (Chrome).', false);
   }
 });
 
-document.getElementById('sendEmailBtn').addEventListener('click', async () => {
-  if(!validateBeforeAction()) return;
-  showStatus('Gerando PDF e enviando para a KMP Consulting, aguarde...', true);
+// ---- Step 2: Email (text only, no attachment, so it never fails by file size) ----
+document.getElementById('step2Btn').addEventListener('click', async () => {
+  if(!stepsState.pdf){ showStatus('Baixe o PDF no passo 1 antes de enviar o e mail.', false); return; }
+  showStatus('Enviando respostas por e mail...', true);
+
   const { summary, missing } = collectAnswers();
   const applicantName = document.getElementById('applicantName').value.trim();
   const visaType = document.getElementById('visaType').value.trim();
@@ -602,177 +878,36 @@ document.getElementById('sendEmailBtn').addEventListener('click', async () => {
   formData.append('Data', formDate);
   formData.append('Assinado_por', signName);
   formData.append('Respostas', summary);
+  formData.append('Nota', 'O PDF completo assinado foi enviado separadamente pelo aplicante via WhatsApp.');
   if(missing.length){
     formData.append('Atencao', 'Existem ' + missing.length + ' pergunta(s) sem resposta.');
-  }
-
-  let pdfAttached = false;
-  let filename = 'Checklist_Declaracoes_' + applicantName.replace(/\s+/g,'_') + '.pdf';
-  try{
-    // Preferred path: server-side rendering (same fidelity as "Salvar como PDF" in the browser).
-    const pdfBlob = await buildPdfServerSide();
-    formData.append('attachment', pdfBlob, filename);
-    pdfAttached = true;
-  }catch(err){
-    try{
-      // Fallback while the server endpoint isn't deployed yet, or if it fails for this request.
-      const pdf = await buildPdfClientFallback();
-      const pdfBlob = pdf.output('blob');
-      formData.append('attachment', pdfBlob, filename);
-      pdfAttached = true;
-    }catch(err2){
-      formData.append('Atencao_PDF', 'Nao foi possivel gerar o PDF neste dispositivo. Apenas as respostas em texto foram enviadas.');
-    }
   }
 
   try{
     const res = await fetch('https://api.web3forms.com/submit', { method:'POST', body: formData });
     const data = await res.json();
-    if(data.success && pdfAttached){
-      showStatus('Enviado com sucesso, com o PDF completo em anexo. Recomendamos tambem baixar uma copia para voce.', true);
-    } else if(data.success && !pdfAttached){
-      showStatus('As respostas foram enviadas, mas nao foi possivel anexar o PDF neste dispositivo. Tente baixar o PDF em outro navegador (Chrome) ou computador e envie para keila.peixoto@kmpconsulting.com.au', false);
+    if(data.success){
+      markStepDone('email');
+      showStatus('Respostas enviadas por e mail. Falta so o passo 3, enviar o PDF pelo WhatsApp.', true);
     } else {
-      showStatus('Nao foi possivel enviar automaticamente. Baixe o PDF e envie por e mail para keila.peixoto@kmpconsulting.com.au', false);
+      showStatus('Nao foi possivel enviar por e mail. Tente novamente em instantes.', false);
     }
   }catch(err){
-    showStatus('Nao foi possivel enviar automaticamente. Baixe o PDF e envie por e mail para keila.peixoto@kmpconsulting.com.au', false);
+    showStatus('Nao foi possivel enviar por e mail. Verifique sua conexao e tente novamente.', false);
   }
 });
 
-function buildSnapshotHtml(){
-  const clone = document.getElementById('pdfCapture').cloneNode(true);
-
-  // Bake in the real answers: native "checked" DOM property does not serialize into outerHTML,
-  // so we copy it into the "checked" attribute on the clone before sending it anywhere.
-  clone.querySelectorAll('input[type=radio]').forEach(r => {
-    const original = document.querySelector('input[name="' + r.name + '"][value="' + r.value + '"]');
-    if(original && original.checked){ r.setAttribute('checked','checked'); }
-    else { r.removeAttribute('checked'); }
-  });
-
-  // Textareas: same issue, the typed text lives in .value, not in the markup. Swap each for
-  // a plain styled div with the actual typed text baked in.
-  clone.querySelectorAll('textarea').forEach(t => {
-    const original = document.getElementById(t.id);
-    const val = original ? original.value.trim() : '';
-    const div = document.createElement('div');
-    div.style.cssText = 'width:100%;min-height:60px;padding:9px 10px;border:1px solid #E7E1D8;border-radius:6px;font-family:Outfit,sans-serif;font-size:14px;background:#fff;color:#2C2C2C;white-space:pre-wrap;';
-    div.textContent = val || '(nao preenchido)';
-    t.replaceWith(div);
-  });
-
-  // Signature: the canvas pixels only exist on screen, not in the markup. Bake the drawing
-  // in as a plain image so it survives being sent elsewhere for rendering.
-  const cloneCanvas = clone.querySelector('#sigPad');
-  if(cloneCanvas){
-    const img = document.createElement('img');
-    img.src = canvas.toDataURL('image/png');
-    img.style.cssText = 'width:100%;height:150px;border:1px dashed #F27B20;border-radius:8px;background:#F8F7F5;display:block;object-fit:contain;';
-    cloneCanvas.replaceWith(img);
-  }
-
-  clone.querySelectorAll('.action-row, .status-msg, .email-line, .sig-actions').forEach(el => el.remove());
-
-  const styleTag = document.querySelector('style') ? document.querySelector('style').outerHTML : '';
-  const fontLinks = Array.from(document.querySelectorAll('link[rel="stylesheet"], link[rel="preconnect"]')).map(l => l.outerHTML).join('\n');
-
-  return '<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">' + fontLinks + styleTag +
-    '</head><body style="background:#F8F7F5;margin:0;">' + clone.outerHTML + '</body></html>';
-}
-
-async function buildPdfServerSide(){
-  const applicantName = document.getElementById('applicantName').value.trim().replace(/\s+/g, '_');
-  const html = buildSnapshotHtml();
-  const res = await fetch('/api/generate-pdf', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ html, filename: 'Checklist_Declaracoes_' + applicantName + '.pdf' })
-  });
-  if(!res.ok) throw new Error('server-pdf-unavailable');
-  return await res.blob();
-}
-
-function isCanvasSuspiciouslyBlack(canvasEl){
-  try{
-    const ctx = canvasEl.getContext('2d');
-    const w = canvasEl.width, h = canvasEl.height;
-    const points = [[5,5],[w-5,5],[5,h-5],[w-5,h-5],[Math.floor(w/2),Math.floor(h/2)]];
-    let blackCount = 0;
-    for(const [x,y] of points){
-      const d = ctx.getImageData(Math.max(0,x), Math.max(0,y), 1, 1).data;
-      if(d[0] < 8 && d[1] < 8 && d[2] < 8) blackCount++;
-    }
-    return blackCount === points.length;
-  }catch(e){
-    return false;
-  }
-}
-
-async function buildPdfClientFallback(){
-  const toHide = [document.querySelector('.action-row'), document.getElementById('statusMsg'), document.querySelector('.email-line')];
-  toHide.forEach(el => { if(el) el.style.display = 'none'; });
-
-  window.scrollTo(0, 0);
-  await new Promise(r => setTimeout(r, 50));
-
-  const capture = document.getElementById('pdfCapture');
-  const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF('p', 'pt', 'a4');
-
-  try{
-    let canvasImg = await html2canvas(capture, {
-      scale: 1.5,
-      useCORS: true,
-      allowTaint: false,
-      backgroundColor: '#F8F7F5',
-      windowWidth: 900,
-      scrollX: 0,
-      scrollY: 0,
-      x: 0,
-      y: 0
-    });
-
-    if(isCanvasSuspiciouslyBlack(canvasImg)){
-      // Retry once with a simpler, safer configuration (helps on mobile Safari / low-memory devices)
-      canvasImg = await html2canvas(capture, {
-        scale: 1,
-        useCORS: true,
-        allowTaint: false,
-        backgroundColor: '#F8F7F5',
-        windowWidth: 900,
-        scrollX: 0,
-        scrollY: 0,
-        x: 0,
-        y: 0,
-        removeContainer: true
-      });
-    }
-
-    if(isCanvasSuspiciouslyBlack(canvasImg)){
-      throw new Error('capture-failed');
-    }
-
-    const imgData = canvasImg.toDataURL('image/png');
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
-    const imgWidth = pageWidth;
-    const imgHeight = canvasImg.height * imgWidth / canvasImg.width;
-    let heightLeft = imgHeight;
-    let position = 0;
-    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-    heightLeft -= pageHeight;
-    while(heightLeft > 0){
-      position = heightLeft - imgHeight;
-      pdf.addPage();
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-    }
-  } finally {
-    toHide.forEach(el => { if(el) el.style.display = ''; });
-  }
-  return pdf;
-}
+// ---- Step 3: WhatsApp (mandatory manual send of the downloaded PDF) ----
+document.getElementById('step3Btn').addEventListener('click', () => {
+  if(!stepsState.pdf){ showStatus('Baixe o PDF no passo 1 antes de enviar pelo WhatsApp.', false); return; }
+  const applicantName = document.getElementById('applicantName').value.trim();
+  const visaType = document.getElementById('visaType').value.trim();
+  const msg = 'Ola, sou ' + applicantName + '. Segue em anexo o PDF assinado do Checklist de Declaracoes ' + (visaType || '') + ' preenchido pelo formulario da KMP Consulting. Estou anexando o arquivo PDF que acabei de baixar.';
+  const url = 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(msg);
+  window.open(url, '_blank');
+  markStepDone('whatsapp');
+  showStatus('WhatsApp aberto em uma nova aba. Anexe o PDF baixado no passo 1 e envie a mensagem para concluir.', true);
+});
 </script>
 </body>
 </html>
