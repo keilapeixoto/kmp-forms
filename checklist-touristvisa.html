@@ -946,10 +946,17 @@ document.getElementById('step2Btn').addEventListener('click', async () => {
 
 // ---- Step 3: WhatsApp ----
 // wa.me links can only open a chat with prefilled TEXT, they can never attach a file.
-// So whenever the browser supports it (mobile Chrome/Safari), we use the native
-// share sheet with the actual PDF file attached, and the person picks WhatsApp there.
-// On browsers without file sharing (most desktops), we fall back to opening the chat
-// and the person attaches the already downloaded PDF manually.
+// On mobile (Android/iOS), the native share sheet lists the WhatsApp app itself as a
+// target with the PDF actually attached, so we use that there. On desktop (Mac,
+// Windows, Linux), that same native share sheet is an OS level menu that generally
+// does NOT include WhatsApp as an option (WhatsApp Desktop doesn't register as a share
+// target), so on desktop we skip straight to opening WhatsApp Web / the desktop app
+// with the message ready, and the person attaches the already downloaded PDF manually.
+function isMobileDevice(){
+  return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+    (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.platform)); // iPadOS reports as Mac
+}
+
 document.getElementById('step3Btn').addEventListener('click', async () => {
   if(!stepsState.pdf){ showStatus('Baixe o PDF no passo 1 antes de enviar pelo WhatsApp.', false); return; }
   if(!validateBeforeAction()) return;
@@ -959,27 +966,29 @@ document.getElementById('step3Btn').addEventListener('click', async () => {
   const filename = currentFilename();
   const msg = 'Olá, sou ' + applicantName + '. Segue o PDF assinado do Checklist de Declarações ' + (visaType || 'Turismo') + ' preenchido pelo formulário da KMP Consulting.';
 
-  try{
-    const doc = buildNativePdf();
-    const pdfBlob = doc.output('blob');
-    const file = new File([pdfBlob], filename, { type:'application/pdf' });
+  if(isMobileDevice()){
+    try{
+      const doc = buildNativePdf();
+      const pdfBlob = doc.output('blob');
+      const file = new File([pdfBlob], filename, { type:'application/pdf' });
 
-    if(navigator.canShare && navigator.canShare({ files:[file] })){
-      try{
-        await navigator.share({ files:[file], text: msg });
-        markStepDone('whatsapp');
-        showStatus('Escolha o WhatsApp da KMP Consulting na lista de compartilhamento para concluir o envio do PDF.', true);
-        return;
-      }catch(shareErr){
-        if(shareErr && shareErr.name === 'AbortError'){
-          showStatus('Envio cancelado. Clique novamente quando quiser compartilhar o PDF pelo WhatsApp.', false);
+      if(navigator.canShare && navigator.canShare({ files:[file] })){
+        try{
+          await navigator.share({ files:[file], text: msg });
+          markStepDone('whatsapp');
+          showStatus('Escolha o WhatsApp da KMP Consulting na lista de compartilhamento para concluir o envio do PDF.', true);
           return;
+        }catch(shareErr){
+          if(shareErr && shareErr.name === 'AbortError'){
+            showStatus('Envio cancelado. Clique novamente quando quiser compartilhar o PDF pelo WhatsApp.', false);
+            return;
+          }
+          // Any other share error: fall through to the chat link fallback below.
         }
-        // Any other share error: fall through to the chat link fallback below.
       }
+    }catch(err){
+      // PDF regeneration failed for some reason: still let the person open the chat below.
     }
-  }catch(err){
-    // PDF regeneration failed for some reason: still let the person open the chat below.
   }
 
   const url = 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(msg);
