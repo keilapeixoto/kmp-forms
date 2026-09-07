@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Card Authorisation Form — KMP Consulting</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Outfit',sans-serif;background:#e8e8e8;padding:28px 16px;color:#1a1a1a;font-size:13px}
+.page{background:#fff;width:210mm;max-width:100%;margin:0 auto;box-shadow:0 4px 28px rgba(0,0,0,0.13)}
+.hdr{background:linear-gradient(135deg,#F27B20 0%,#F5941E 100%);padding:24px 36px;color:#fff;display:flex;justify-content:space-between;align-items:center}
+.logo-wrap{display:flex;align-items:center;gap:14px}
+.logo-svg{height:34px;width:auto;flex-shrink:0;display:block}
+.logo-sub{font-size:8px;letter-spacing:0.13em;text-transform:uppercase;opacity:0.85;display:block;border-left:1px solid rgba(255,255,255,0.4);padding-left:14px;line-height:1.5;max-width:150px}
+.hdr-right{text-align:right}
+.hdr-tag{font-size:9px;opacity:0.8;text-transform:uppercase;letter-spacing:0.1em;background:rgba(255,255,255,0.15);padding:3px 10px;border-radius:10px;display:inline-block;margin-bottom:5px}
+.hdr-title{font-size:14px;font-weight:800;display:block}
+.hdr-sub{font-size:10px;opacity:0.85;display:block;margin-top:2px}
+
+.body{padding:24px 36px 28px}
+
+.divider{display:flex;align-items:center;gap:10px;margin:20px 0 14px}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:#e5e7eb}
+.divider span{font-size:8.5px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:0.12em;white-space:nowrap}
+
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.g4{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:16px}
+
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.field:last-child{margin-bottom:0}
+.field label{font-size:8.5px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.08em;line-height:1.35;min-height:22px;display:block}
+.field label span{color:#c2410c}
+.field input,.field select{border:1.5px solid #d1d5db;border-radius:7px;padding:0 11px;height:40px;font-size:13px;font-family:'Outfit',sans-serif;color:#1a1a1a;background:#fafafa;outline:none;width:100%;transition:border-color 0.2s,background 0.2s}
+.field input:focus,.field select:focus{border-color:#F27B20;background:#fff}
+.field input::placeholder{color:#c2c7cf}
+.field input[type="date"]{color:#1a1a1a}
+.field select{appearance:none;cursor:pointer;color:#1a1a1a;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%239ca3af'><path d='M5.5 7.5l4.5 4.5 4.5-4.5' stroke='%239ca3af' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");background-repeat:no-repeat;background-position:right 11px center;background-size:14px}
+.field select option[value=""]{color:#9ca3af}
+
+.card-types{display:flex;justify-content:center;gap:40px;padding:4px 0}
+.ct-lbl{display:flex;align-items:center;gap:9px;font-size:12.5px;cursor:pointer;color:#374151}
+.ct-lbl:has(input:checked){color:#c2410c;font-weight:600}
+.ct-lbl input{width:16px;height:16px;accent-color:#F27B20;cursor:pointer}
+.ct-badge{display:block;flex-shrink:0}
+
+.auth-text{font-size:11.5px;color:#374151;line-height:1.8;padding:12px 14px;border-left:3px solid #F27B20;background:#fffbf7;margin-bottom:0}
+.auth-text p{margin-bottom:8px}
+.auth-text p:last-child{margin-bottom:0}
+
+.sig-pad-wrap{margin-bottom:14px}
+.sig-pad{width:100%;height:150px;border:1.5px dashed #d1d5db;border-radius:7px;background:#fafafa;cursor:crosshair;display:block;touch-action:none}
+.sig-pad.has-signed{border-style:solid;border-color:#F27B20;background:#fff}
+.sig-hint{font-size:9.5px;color:#9ca3af;text-align:center;margin-top:6px;pointer-events:none}
+.sig-actions{display:flex;justify-content:flex-end;margin-top:7px}
+.sig-clear{font-size:9.5px;font-weight:700;color:#c2410c;background:none;border:none;text-transform:uppercase;letter-spacing:0.06em;cursor:pointer;font-family:'Outfit',sans-serif;padding:4px 0}
+
+.sec-notice{background:#fef2f2;border:1px solid #fca5a5;border-radius:5px;padding:8px 12px;margin-bottom:14px}
+.sec-notice p{font-size:10px;color:#991b1b;line-height:1.6}
+
+.footer{border-top:1.5px solid #e5e7eb;padding:8px 36px;display:flex;justify-content:space-between;align-items:center}
+.footer-l{font-size:9px;color:#9ca3af}
+.footer-r{font-size:9px;font-weight:700;color:#F27B20;white-space:nowrap}
+
+.submit-wrap{margin-top:14px;display:flex;flex-direction:column;gap:10px}
+.btn-primary{width:100%;padding:16px;background:linear-gradient(135deg,#F27B20,#F5941E);border:none;border-radius:9px;color:#fff;font-size:15px;font-weight:800;cursor:pointer;font-family:'Outfit',sans-serif;letter-spacing:0.02em;display:flex;align-items:center;justify-content:center;gap:9px;box-shadow:0 5px 16px rgba(242,123,32,0.38)}
+.btn-primary:disabled{opacity:0.6;cursor:default;box-shadow:none}
+.submit-row{display:flex;gap:10px}
+.btn-whatsapp{width:48px;height:48px;flex-shrink:0;border-radius:9px;background:#25D366;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.btn-whatsapp:disabled{opacity:0.6;cursor:default}
+.btn-secondary{flex:1;padding:0 14px;background:#fff;border:1.5px solid #d1d5db;border-radius:9px;color:#374151;font-size:12px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;letter-spacing:0.01em}
+.btn-secondary:disabled{opacity:0.6;cursor:default}
+.submit-msg{font-size:11px;text-align:center;padding:9px;border-radius:6px;display:none}
+.submit-msg.ok{background:#dcfce7;color:#166534;display:block}
+.submit-msg.err{background:#fef2f2;color:#991b1b;display:block}
+.submit-msg.pending{background:#fff7ed;color:#9a3412;display:block}
+
+.print-btn{display:block;margin:16px auto 0;padding:10px 20px;background:#1a1a1a;color:#fff;border:none;border-radius:6px;font-family:'Outfit',sans-serif;font-size:12px;cursor:pointer}
+
+@page{size:A4;margin:0}
+@media print{
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  body{background:#fff!important;padding:0!important}
+  .page{box-shadow:none!important;width:100%!important}
+  .print-btn{display:none!important}
+  .hdr{background:linear-gradient(135deg,#F27B20 0%,#F5941E 100%)!important}
+  .auth-text{background:#fffbf7!important;border-left:3px solid #F27B20!important}
+  .sec-notice{background:#fef2f2!important}
+  .field input,.field select{border:1.5px solid #9ca3af!important;background:#fafafa!important}
+  .sig-pad{border:1.5px solid #9ca3af!important;background:#fff!important}
+  .sig-actions{display:none!important}
+  .sig-hint{display:none!important}
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="hdr">
+    <div class="logo-wrap">
+      <svg class="logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1243.92969 265.72656">
+        <title>KMP Consulting</title>
+        <g id="kmp-icon" transform="scale(0.5191764523 0.5191735744)">
+          <path d="M 54.015,120.045 V 103.639 C 66.62,116.444 85.027,122.046 103.634,122.046 C 128.952,122.046 156.661,112.968 165.986,83.291 V 265.53 C 165.986,304.224 134.618,335.592 95.923,335.592 H -444.141 C -482.835,335.592 -514.204,304.224 -514.204,265.53 V 31.988 C -514.204,-6.706 -482.835,-38.075 -444.141,-38.075 H 5.997 V 120.045 Z" fill="#FFFFFF" transform="matrix(1.3333333 0 0 -1.3333333 685.6053 447.4560)" />
+          <path d="M 0,0 C -18.607,0 -37.014,5.602 -49.619,18.407 V -36.074 H -7.71 C 30.984,-36.074 62.352,-4.706 62.352,33.989 V 38.755 C 53.028,9.078 25.318,0 0,0 Z" fill="#FFFFFF" transform="matrix(1.3333333 0 0 -1.3333333 823.7833 450.1237)" />
+          <path d="M -257.294,0 H -319.317 L -359.532,45.217 L -387.743,24.609 V 0 H -435.761 V 160.06 H -387.743 V 77.229 L -331.322,120.045 H -257.294 L -322.918,70.226 Z" fill="#F27B20" transform="matrix(1.3333333 0 0 -1.3333333 685.6053 447.4560)" />
+          <path d="M 0,0 H -48.018 V 50.619 C -48.018,71.227 -53.42,80.03 -71.027,80.03 C -83.231,80.03 -93.435,74.828 -103.639,64.824 V 0 H -151.657 V 50.619 C -151.657,71.227 -157.059,80.03 -174.665,80.03 C -186.87,80.03 -197.074,74.828 -207.278,64.824 V 0 H -255.296 V 120.045 H -207.278 V 100.037 C -196.674,110.041 -182.468,122.046 -153.257,122.046 C -138.252,122.046 -119.245,117.644 -109.841,100.037 C -97.236,112.042 -78.83,122.046 -49.619,122.046 C -28.611,122.046 0,113.643 0,72.227 Z" fill="#F27B20" transform="matrix(1.3333333 0 0 -1.3333333 685.6053 447.4560)" />
+          <path d="M 5.997,-38.075 H 54.015 V 16.406 C 66.62,3.601 85.027,-2.001 103.634,-2.001 C 128.952,-2.001 156.662,7.077 165.986,36.754 V 83.291 C 156.661,112.968 128.952,122.046 103.634,122.046 C 85.027,122.046 66.62,116.444 54.015,103.639 V 120.045 H 5.997 Z" fill="#F27B20" transform="matrix(1.3333333 0 0 -1.3333333 685.6053 447.4560)" />
+          <path d="M 0,0 C 21.408,0 33.613,4.402 33.613,22.008 C 33.613,39.615 21.408,44.016 0,44.016 C -21.408,44.016 -33.613,39.615 -33.613,22.008 C -33.613,4.402 -21.408,0 0,0 Z" fill="#FFFFFF" transform="matrix(1.3333333 0 0 -1.3333333 802.4421 396.7704)" />
+        </g>
+        <g id="consulting" transform="translate(-338.03516 -407.13672)">
+          <path fill-rule="nonzero" fill="#FFFFFF" d="M 879.8125 642.867188 C 873.113281 642.867188 867.234375 641.617188 862.183594 639.121094 C 857.128906 636.621094 852.875 633.242188 849.417969 628.988281 C 845.960938 624.734375 843.382812 620 841.683594 614.789062 C 839.980469 609.578125 839.128906 604.257812 839.128906 598.832031 L 839.128906 597.875 C 839.128906 592.453125 839.980469 587.160156 841.683594 582 C 843.382812 576.84375 845.933594 572.214844 849.339844 568.121094 C 852.742188 564.027344 856.996094 560.78125 862.105469 558.386719 C 867.210938 555.996094 873.113281 554.796875 879.8125 554.796875 C 886.40625 554.796875 892.230469 555.96875 897.28125 558.308594 C 902.335938 560.648438 906.511719 563.949219 909.808594 568.199219 C 913.105469 572.457031 915.285156 577.5625 916.347656 583.515625 L 911.242188 583.515625 C 910.070312 576.605469 906.800781 570.886719 901.433594 566.367188 C 896.058594 561.847656 888.851562 559.585938 879.8125 559.585938 C 871.835938 559.585938 865.214844 561.367188 859.949219 564.929688 C 854.683594 568.496094 850.746094 573.226562 848.144531 579.128906 C 845.535156 585.035156 844.234375 591.441406 844.234375 598.355469 C 844.234375 605.164062 845.5625 611.597656 848.222656 617.660156 C 850.878906 623.722656 854.84375 628.644531 860.109375 632.417969 C 865.375 636.195312 871.941406 638.082031 879.8125 638.082031 C 885.875 638.082031 891.246094 636.964844 895.925781 634.730469 C 900.605469 632.496094 904.40625 629.492188 907.335938 625.71875 C 910.257812 621.941406 911.984375 617.875 912.519531 613.511719 L 917.625 613.511719 C 916.773438 619.363281 914.59375 624.46875 911.085938 628.828125 C 907.574219 633.191406 903.132812 636.621094 897.761719 639.121094 C 892.390625 641.617188 886.40625 642.867188 879.8125 642.867188 " />
+          <path fill-rule="nonzero" fill="#FFFFFF" d="M 965.167969 638.082031 C 973.25 638.082031 980.03125 636.222656 985.511719 632.5 C 990.988281 628.777344 995.164062 623.9375 998.035156 617.980469 C 1000.90625 612.023438 1002.34375 605.640625 1002.34375 598.835938 C 1002.34375 591.8125 1000.878906 585.328125 997.957031 579.367188 C 995.027344 573.414062 990.800781 568.628906 985.273438 565.011719 C 979.738281 561.394531 973.039062 559.585938 965.167969 559.585938 C 957.402344 559.585938 950.730469 561.394531 945.144531 565.011719 C 939.5625 568.628906 935.304688 573.414062 932.382812 579.367188 C 929.453125 585.328125 927.996094 591.8125 927.996094 598.835938 C 927.996094 605.640625 929.429688 612.023438 932.300781 617.980469 C 935.175781 623.9375 939.375 628.777344 944.90625 632.5 C 950.4375 636.222656 957.191406 638.082031 965.167969 638.082031 M 965.167969 642.867188 C 958.359375 642.867188 952.324219 641.617188 947.058594 639.117188 C 941.792969 636.621094 937.378906 633.296875 933.816406 629.148438 C 930.253906 625 927.539062 620.347656 925.679688 615.1875 C 923.820312 610.027344 922.890625 604.738281 922.890625 599.3125 L 922.890625 598.355469 C 922.890625 592.824219 923.847656 587.453125 925.761719 582.242188 C 927.675781 577.03125 930.441406 572.375 934.058594 568.28125 C 937.671875 564.1875 942.085938 560.917969 947.300781 558.46875 C 952.511719 556.023438 958.46875 554.800781 965.167969 554.800781 C 971.871094 554.800781 977.824219 556.023438 983.039062 558.46875 C 988.246094 560.917969 992.664062 564.1875 996.28125 568.28125 C 999.894531 572.375 1002.660156 577.03125 1004.578125 582.242188 C 1006.492188 587.453125 1007.449219 592.824219 1007.449219 598.355469 L 1007.449219 599.3125 C 1007.449219 604.738281 1006.515625 610.027344 1004.65625 615.1875 C 1002.792969 620.347656 1000.082031 625 996.519531 629.148438 C 992.953125 633.296875 988.542969 636.621094 983.277344 639.117188 C 978.011719 641.617188 971.976562 642.867188 965.167969 642.867188 " />
+          <path fill-rule="nonzero" fill="#FFFFFF" d="M 1022.605469 640.316406 L 1022.605469 557.351562 L 1026.753906 557.351562 L 1026.753906 590.535156 L 1024.839844 590.535156 C 1024.839844 583.730469 1026.058594 577.667969 1028.507812 572.347656 C 1030.953125 567.03125 1034.542969 562.832031 1039.277344 559.746094 C 1044.007812 556.660156 1049.886719 555.117188 1056.90625 555.117188 L 1057.226562 555.117188 C 1067.648438 555.117188 1075.546875 558.363281 1080.917969 564.851562 C 1086.289062 571.339844 1088.976562 579.902344 1088.976562 590.535156 L 1088.976562 640.316406 L 1083.871094 640.316406 L 1083.871094 589.261719 C 1083.871094 580.539062 1081.558594 573.464844 1076.929688 568.042969 C 1072.304688 562.617188 1065.574219 559.90625 1056.746094 559.90625 C 1047.8125 559.90625 1040.738281 562.671875 1035.527344 568.199219 C 1030.3125 573.734375 1027.710938 580.964844 1027.710938 589.898438 L 1027.710938 640.316406 Z M 1022.605469 640.316406 " />
+          <path fill-rule="nonzero" fill="#FFFFFF" d="M 1134.285156 642.550781 C 1124.179688 642.550781 1116.46875 640.183594 1111.152344 635.449219 C 1105.832031 630.71875 1103.175781 624.789062 1103.175781 617.660156 L 1108.277344 617.660156 C 1108.277344 623.191406 1110.328125 627.925781 1114.421875 631.859375 C 1118.515625 635.796875 1125.136719 637.761719 1134.285156 637.761719 C 1143.429688 637.761719 1150.054688 635.769531 1154.148438 631.78125 C 1158.242188 627.792969 1160.292969 623.085938 1160.292969 617.660156 C 1160.292969 612.234375 1158.269531 608.085938 1154.226562 605.214844 C 1150.183594 602.34375 1145.132812 600.589844 1139.070312 599.949219 L 1128.859375 598.832031 C 1121.945312 597.984375 1116.519531 595.75 1112.585938 592.132812 C 1108.648438 588.519531 1106.683594 583.730469 1106.683594 577.773438 C 1106.683594 573.625 1107.746094 569.824219 1109.875 566.367188 C 1112 562.910156 1115.140625 560.117188 1119.289062 557.988281 C 1123.4375 555.863281 1128.433594 554.800781 1134.285156 554.800781 C 1142.472656 554.800781 1149.125 556.925781 1154.226562 561.179688 C 1159.335938 565.4375 1161.886719 570.96875 1161.886719 577.773438 L 1156.78125 577.773438 C 1156.886719 572.5625 1154.972656 568.226562 1151.039062 564.769531 C 1147.101562 561.316406 1141.515625 559.585938 1134.285156 559.585938 C 1126.519531 559.585938 1120.828125 561.449219 1117.214844 565.167969 C 1113.597656 568.894531 1111.789062 573.203125 1111.789062 578.09375 C 1111.789062 582.136719 1113.277344 585.671875 1116.257812 588.703125 C 1119.234375 591.734375 1123.597656 593.570312 1129.339844 594.207031 L 1139.550781 595.324219 C 1146.78125 596.070312 1152.898438 598.277344 1157.898438 601.945312 C 1162.894531 605.613281 1165.394531 610.960938 1165.394531 617.980469 C 1165.394531 622.445312 1164.199219 626.542969 1161.808594 630.265625 C 1159.414062 633.988281 1155.929688 636.964844 1151.355469 639.199219 C 1146.78125 641.433594 1141.089844 642.550781 1134.285156 642.550781 " />
+          <path fill-rule="nonzero" fill="#FFFFFF" d="M 1209.109375 642.550781 C 1199.003906 642.550781 1191.402344 639.332031 1186.296875 632.894531 C 1181.191406 626.460938 1178.636719 618.085938 1178.636719 607.769531 L 1178.636719 557.351562 L 1183.742188 557.351562 L 1183.742188 609.042969 C 1183.742188 617.449219 1185.921875 624.335938 1190.285156 629.707031 C 1194.644531 635.078125 1201.078125 637.761719 1209.589844 637.761719 C 1218.308594 637.761719 1225.117188 635.027344 1230.011719 629.546875 C 1234.902344 624.070312 1237.351562 617.023438 1237.351562 608.40625 L 1237.351562 557.351562 L 1242.457031 557.351562 L 1242.457031 640.316406 L 1238.308594 640.316406 L 1238.308594 607.769531 L 1240.222656 607.769531 C 1240.222656 614.363281 1239.078125 620.292969 1236.792969 625.558594 C 1234.503906 630.824219 1231.101562 634.972656 1226.582031 638.003906 C 1222.058594 641.035156 1216.34375 642.550781 1209.429688 642.550781 Z M 1209.109375 642.550781 " />
+          <path fill-rule="nonzero" fill="#FFFFFF" d="M 1265.589844 523.847656 L 1270.695312 523.847656 L 1270.695312 640.316406 L 1265.589844 640.316406 Z M 1252.507812 523.847656 L 1270.695312 523.847656 L 1270.695312 528.632812 L 1252.507812 528.632812 Z M 1252.507812 523.847656 " />
+          <path fill-rule="nonzero" fill="#FFFFFF" d="M 1318.558594 641.113281 C 1313.875 641.113281 1309.757812 640.394531 1306.191406 638.960938 C 1302.628906 637.523438 1299.863281 635.105469 1297.898438 631.699219 C 1295.929688 628.296875 1294.945312 623.777344 1294.945312 618.136719 L 1294.945312 529.273438 L 1300.050781 529.273438 L 1300.050781 619.414062 C 1300.050781 624.839844 1301.539062 629.015625 1304.519531 631.941406 C 1307.496094 634.867188 1311.644531 636.328125 1316.964844 636.328125 L 1332.757812 636.328125 L 1332.757812 641.113281 Z M 1278.511719 557.351562 L 1332.757812 557.351562 L 1332.757812 561.820312 L 1278.511719 561.820312 Z M 1278.511719 557.351562 " />
+          <path fill-rule="nonzero" fill="#FFFFFF" d="M 1351.742188 557.351562 L 1356.847656 557.351562 L 1356.847656 640.316406 L 1351.742188 640.316406 Z M 1350.785156 537.886719 C 1349.082031 537.886719 1347.753906 537.40625 1346.796875 536.449219 C 1345.839844 535.492188 1345.359375 534.21875 1345.359375 532.621094 C 1345.359375 531.132812 1345.839844 529.886719 1346.796875 528.871094 C 1347.753906 527.863281 1349.132812 527.355469 1350.945312 527.355469 C 1352.644531 527.355469 1353.949219 527.863281 1354.851562 528.871094 C 1355.753906 529.886719 1356.210938 531.132812 1356.210938 532.621094 C 1356.210938 534.21875 1355.753906 535.492188 1354.851562 536.449219 C 1353.949219 537.40625 1352.59375 537.886719 1350.785156 537.886719 M 1337.382812 557.351562 L 1356.847656 557.351562 L 1356.847656 562.136719 L 1337.382812 562.136719 Z M 1337.382812 557.351562 " />
+          <path fill-rule="nonzero" fill="#FFFFFF" d="M 1379.660156 640.316406 L 1379.660156 557.351562 L 1383.808594 557.351562 L 1383.808594 590.535156 L 1381.894531 590.535156 C 1381.894531 583.730469 1383.117188 577.667969 1385.566406 572.347656 C 1388.011719 567.03125 1391.601562 562.832031 1396.335938 559.746094 C 1401.066406 556.660156 1406.945312 555.117188 1413.964844 555.117188 L 1414.285156 555.117188 C 1424.707031 555.117188 1432.605469 558.363281 1437.976562 564.851562 C 1443.347656 571.339844 1446.035156 579.902344 1446.035156 590.535156 L 1446.035156 640.316406 L 1440.929688 640.316406 L 1440.929688 589.261719 C 1440.929688 580.539062 1438.613281 573.464844 1433.988281 568.042969 C 1429.359375 562.617188 1422.632812 559.90625 1413.804688 559.90625 C 1404.871094 559.90625 1397.796875 562.671875 1392.585938 568.199219 C 1387.371094 573.734375 1384.765625 580.964844 1384.765625 589.898438 L 1384.765625 640.316406 Z M 1379.660156 640.316406 " />
+          <path fill-rule="nonzero" fill="#FFFFFF" d="M 1500.277344 638.082031 C 1507.296875 638.082031 1513.414062 636.542969 1518.625 633.457031 C 1523.835938 630.371094 1527.902344 626.171875 1530.832031 620.851562 C 1533.753906 615.535156 1535.21875 609.628906 1535.21875 603.140625 L 1535.21875 594.527344 C 1535.21875 588.359375 1533.808594 582.640625 1530.992188 577.375 C 1528.171875 572.109375 1524.15625 567.828125 1518.945312 564.53125 C 1513.730469 561.234375 1507.511719 559.585938 1500.277344 559.585938 C 1492.621094 559.585938 1486.210938 561.5 1481.054688 565.328125 C 1475.890625 569.15625 1471.984375 574.050781 1469.324219 580.007812 C 1466.664062 585.964844 1465.335938 592.238281 1465.335938 598.835938 C 1465.335938 605.75 1466.71875 612.210938 1469.484375 618.21875 C 1472.25 624.230469 1476.238281 629.042969 1481.449219 632.65625 C 1486.660156 636.273438 1492.9375 638.082031 1500.277344 638.082031 M 1499.480469 672.863281 C 1495.753906 672.863281 1491.875 672.675781 1487.832031 672.304688 C 1483.789062 671.929688 1479.90625 671.425781 1476.1875 670.789062 L 1476.1875 666.003906 C 1480.015625 666.640625 1484.027344 667.144531 1488.230469 667.519531 C 1492.433594 667.890625 1496.394531 668.078125 1500.117188 668.078125 C 1508.945312 668.078125 1515.886719 666.960938 1520.9375 664.726562 C 1525.988281 662.492188 1529.578125 658.796875 1531.707031 653.636719 C 1533.835938 648.476562 1534.898438 641.484375 1534.898438 632.65625 L 1534.898438 614.789062 L 1538.089844 603.460938 C 1538.089844 610.589844 1536.574219 617.128906 1533.542969 623.085938 C 1530.511719 629.042969 1526.148438 633.828125 1520.460938 637.445312 C 1514.769531 641.058594 1507.9375 642.867188 1499.957031 642.867188 C 1493.578125 642.867188 1487.914062 641.644531 1482.96875 639.199219 C 1478.019531 636.753906 1473.871094 633.457031 1470.523438 629.308594 C 1467.171875 625.160156 1464.617188 620.480469 1462.863281 615.265625 C 1461.109375 610.058594 1460.230469 604.738281 1460.230469 599.3125 L 1460.230469 598.355469 C 1460.230469 593.25 1461.082031 588.117188 1462.785156 582.960938 C 1464.484375 577.800781 1466.984375 573.09375 1470.28125 568.839844 C 1473.578125 564.585938 1477.726562 561.179688 1482.726562 558.628906 C 1487.726562 556.074219 1493.46875 554.800781 1499.957031 554.800781 C 1508.039062 554.800781 1514.957031 556.6875 1520.699219 560.464844 C 1526.445312 564.238281 1530.832031 569.132812 1533.863281 575.140625 C 1536.894531 581.152344 1538.410156 587.507812 1538.410156 594.207031 L 1535.855469 587.664062 L 1535.855469 557.351562 L 1540.003906 557.351562 L 1540.003906 632.816406 C 1540.003906 642.710938 1538.699219 650.578125 1536.097656 656.429688 C 1533.488281 662.277344 1529.207031 666.480469 1523.253906 669.035156 C 1517.292969 671.585938 1509.371094 672.863281 1499.480469 672.863281 " />
+          <path fill-rule="nonzero" fill="#FFFFFF" d="M 1550.691406 608.726562 L 1581.964844 608.726562 L 1581.964844 640.316406 L 1550.691406 640.316406 Z M 1550.691406 608.726562 " />
+        </g>
+      </svg>
+      <span class="logo-sub">Estratégia que conecta.<br>Futuro que transforma.</span>
+    </div>
+    <div class="hdr-right">
+      <span class="hdr-tag">Confidential Document</span>
+      <span class="hdr-title">Card Authorisation Form</span>
+      <span class="hdr-sub">Autorização de Cartão</span>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <!-- Application Details -->
+    <div class="divider"><span>Application Details / Detalhes da Aplicação</span></div>
+    <div class="g2">
+      <div class="field">
+        <label>Visa Type / Tipo de Visto <span>*</span></label>
+        <select>
+          <option value="">Select</option>
+          <option>Subclass 485 — Temporary Graduate Visa</option>
+          <option>Subclass 500 — Student Visa</option>
+          <option>Subclass 820/801 — Partner Visa</option>
+          <option>Subclass 189 — Skilled Independent</option>
+          <option>Subclass 190 — Skilled Nominated</option>
+          <option>Citizenship by Conferral</option>
+          <option>Other / Outro</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Date / Data <span>*</span></label>
+        <input type="date"/>
+      </div>
+    </div>
+
+    <!-- Cardholder Details -->
+    <div class="divider"><span>Cardholder Details / Dados do Titular</span></div>
+    <div class="field">
+      <label>Full Name as on Card / Nome Completo no Cartão <span>*</span></label>
+      <input type="text" placeholder="Exactly as printed on the card"/>
+    </div>
+    <div class="g3">
+      <div class="field">
+        <label>Date of Birth / Data de Nascimento <span>*</span></label>
+        <input type="date"/>
+      </div>
+      <div class="field">
+        <label>Email <span>*</span></label>
+        <input type="email" placeholder="email@example.com"/>
+      </div>
+      <div class="field">
+        <label>Phone / Telefone <span>*</span></label>
+        <input type="text" placeholder="0400 000 000"/>
+      </div>
+    </div>
+
+    <!-- Card Details -->
+    <div class="divider"><span>Card Details / Dados do Cartão</span></div>
+    <div class="sec-notice">
+      <p>Security Notice: This information is used solely for payment authorisation. The CVV is processed immediately and never stored. All data is handled in compliance with PCI DSS standards.</p>
+    </div>
+    <div class="field">
+      <label>Card Number / Número do Cartão <span>*</span></label>
+      <input type="text" placeholder="0000  0000  0000  0000" maxlength="19" oninput="this.value=this.value.replace(/\D/g,'').replace(/(.{4})/g,'$1  ').trim()"/>
+    </div>
+    <div class="field" style="margin-bottom:14px">
+      <label>Card Type / Bandeira <span>*</span></label>
+      <div class="card-types">
+        <label class="ct-lbl"><input type="checkbox" value="Visa" onchange="document.querySelectorAll('.card-types input').forEach(c=>{if(c!==this)c.checked=false})"><svg class="ct-badge" width="30" height="19" viewBox="0 0 30 19"><rect width="30" height="19" rx="3" fill="#1A1F71"/><text x="15" y="13.5" font-family="Arial,sans-serif" font-style="italic" font-weight="700" font-size="8.5" fill="#fff" text-anchor="middle">VISA</text></svg> Visa</label>
+        <label class="ct-lbl"><input type="checkbox" value="Mastercard" onchange="document.querySelectorAll('.card-types input').forEach(c=>{if(c!==this)c.checked=false})"><svg class="ct-badge" width="30" height="19" viewBox="0 0 30 19"><rect width="30" height="19" rx="3" fill="#f4f4f4"/><circle cx="12" cy="9.5" r="6" fill="#EB001B"/><circle cx="18" cy="9.5" r="6" fill="#F79E1B"/><path d="M15 4.6a6 6 0 0 1 0 9.8 6 6 0 0 1 0-9.8Z" fill="#FF5F00"/></svg> Mastercard</label>
+        <label class="ct-lbl"><input type="checkbox" value="AMEX" onchange="document.querySelectorAll('.card-types input').forEach(c=>{if(c!==this)c.checked=false})"><svg class="ct-badge" width="30" height="19" viewBox="0 0 30 19"><rect width="30" height="19" rx="3" fill="#2E77BC"/><text x="15" y="13" font-family="Arial,sans-serif" font-weight="700" font-size="7" fill="#fff" text-anchor="middle">AMEX</text></svg> Amex</label>
+      </div>
+    </div>
+    <div class="g4">
+      <div class="field">
+        <label>Name on Card <span>*</span></label>
+        <input type="text"/>
+      </div>
+      <div class="field">
+        <label>Expiry Month <span>*</span></label>
+        <select><option value="">MM</option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option></select>
+      </div>
+      <div class="field">
+        <label>Expiry Year <span>*</span></label>
+        <select><option value="">YYYY</option><option>2025</option><option>2026</option><option>2027</option><option>2028</option><option>2029</option><option>2030</option><option>2031</option><option>2032</option></select>
+      </div>
+      <div class="field">
+        <label>CVV <span>*</span></label>
+        <input type="text" placeholder="•••" maxlength="4" oninput="this.value=this.value.replace(/\D/g,'')"/>
+      </div>
+    </div>
+
+    <!-- Authorisation -->
+    <div class="divider"><span>Authorisation / Autorização</span></div>
+    <div class="auth-text">
+      <p>I authorise KMP Consulting to charge the applicable government visa application fee to the credit card provided above. I confirm that I am the legitimate cardholder and that all information provided is accurate and complete.</p>
+      <p>Autorizo a KMP Consulting a debitar a taxa governamental aplicável da minha aplicação de visto no cartão de crédito fornecido acima. Confirmo que sou o titular legítimo do cartão e que todas as informações fornecidas são precisas e completas.</p>
+    </div>
+
+    <!-- Signature -->
+    <div class="divider"><span>Signature / Assinatura</span></div>
+    <div class="sig-pad-wrap">
+      <canvas id="sigPad" class="sig-pad"></canvas>
+      <div class="sig-hint">Draw your signature above / Desenhe sua assinatura acima</div>
+      <div class="sig-actions">
+        <button type="button" class="sig-clear" onclick="clearSig()">Clear / Limpar</button>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="field">
+        <label>Print Full Name / Nome Completo <span>*</span></label>
+        <input type="text" placeholder="Nome em letra de forma"/>
+      </div>
+      <div class="field">
+        <label>Date / Data <span>*</span></label>
+        <input type="date"/>
+      </div>
+    </div>
+
+    <div class="submit-wrap">
+      <button class="btn-primary" id="savePdfBtn" onclick="saveAsPdf()">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 19h16"/></svg>
+        Save as PDF / Salvar em PDF
+      </button>
+      <div class="submit-row">
+        <button class="btn-whatsapp" id="waBtn" onclick="shareViaWhatsApp()" title="Send via WhatsApp / Enviar via WhatsApp" aria-label="Send via WhatsApp">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.46 1.32 4.96L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2Zm5.8 14.03c-.24.68-1.4 1.3-1.93 1.38-.5.08-1.11.11-1.79-.11-.41-.13-.94-.3-1.62-.6-2.85-1.23-4.71-4.1-4.85-4.29-.14-.19-1.16-1.54-1.16-2.94s.73-2.09 1-2.38c.24-.26.53-.35.72-.35.18 0 .37.02.53.02.17.01.4-.06.62.48.24.58.81 2 .88 2.14.07.15.12.32.02.51-.1.19-.15.31-.29.48-.15.17-.31.38-.44.51-.15.15-.3.31-.13.6.17.29.76 1.26 1.63 2.04 1.12 1 2.06 1.31 2.35 1.46.29.15.46.13.63-.05.17-.19.72-.84.92-1.13.19-.29.39-.24.65-.14.26.1 1.68.79 1.97.94.29.15.48.22.55.34.07.13.07.72-.17 1.4Z"/></svg>
+        </button>
+        <button class="btn-secondary" id="submitBtn" onclick="saveAndSubmit()">Save and Submit / Salvar e Enviar</button>
+      </div>
+      <div class="submit-msg" id="submitMsg"></div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <span class="footer-l">KMP Consulting | keila.peixoto@kmpconsulting.com.au | Confidential</span>
+    <span class="footer-r">Card Authorisation</span>
+  </div>
+</div>
+<button class="print-btn" onclick="window.print()">Save as PDF</button>
+<script>
+(function(){
+  var canvas=document.getElementById('sigPad');
+  var ctx=canvas.getContext('2d');
+  var drawing=false;
+  var lastX=0,lastY=0;
+
+  function resizeCanvas(){
+    var ratio=window.devicePixelRatio||1;
+    var rect=canvas.getBoundingClientRect();
+    var imgData=null;
+    if(canvas.width>0&&canvas.height>0){imgData=canvas.toDataURL();}
+    canvas.width=rect.width*ratio;
+    canvas.height=rect.height*ratio;
+    ctx.setTransform(ratio,0,0,ratio,0,0);
+    ctx.lineWidth=2;
+    ctx.lineCap='round';
+    ctx.lineJoin='round';
+    ctx.strokeStyle='#1a1a1a';
+  }
+  resizeCanvas();
+  window.addEventListener('resize',resizeCanvas);
+
+  function getPos(e){
+    var rect=canvas.getBoundingClientRect();
+    var x,y;
+    if(e.touches&&e.touches.length){x=e.touches[0].clientX-rect.left;y=e.touches[0].clientY-rect.top;}
+    else{x=e.clientX-rect.left;y=e.clientY-rect.top;}
+    return{x:x,y:y};
+  }
+  function start(e){
+    drawing=true;
+    canvas.classList.add('has-signed');
+    var p=getPos(e);
+    lastX=p.x;lastY=p.y;
+    e.preventDefault();
+  }
+  function move(e){
+    if(!drawing)return;
+    var p=getPos(e);
+    ctx.beginPath();
+    ctx.moveTo(lastX,lastY);
+    ctx.lineTo(p.x,p.y);
+    ctx.stroke();
+    lastX=p.x;lastY=p.y;
+    e.preventDefault();
+  }
+  function end(){drawing=false;}
+
+  canvas.addEventListener('mousedown',start);
+  canvas.addEventListener('mousemove',move);
+  window.addEventListener('mouseup',end);
+  canvas.addEventListener('touchstart',start,{passive:false});
+  canvas.addEventListener('touchmove',move,{passive:false});
+  canvas.addEventListener('touchend',end);
+
+  window.clearSig=function(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    canvas.classList.remove('has-signed');
+  };
+})();
+
+function getFieldValue(labelStart){
+  var labels=document.querySelectorAll('.field label');
+  for(var i=0;i<labels.length;i++){
+    if(labels[i].textContent.trim().toLowerCase().indexOf(labelStart.toLowerCase())===0){
+      var input=labels[i].parentElement.querySelector('input,select');
+      return input?input.value:'';
+    }
+  }
+  return '';
+}
+
+async function buildPdf(){
+  var printBtn=document.querySelector('.print-btn');
+  var submitWrap=document.querySelector('.submit-wrap');
+  printBtn.style.display='none';
+  submitWrap.style.visibility='hidden';
+  try{
+    var pageEl=document.querySelector('.page');
+    var canvasImg=await html2canvas(pageEl,{scale:2,backgroundColor:'#ffffff',useCORS:true});
+    var imgData=canvasImg.toDataURL('image/jpeg',0.92);
+    var jsPDFLib=window.jspdf.jsPDF;
+    var pdf=new jsPDFLib('p','mm','a4');
+    var pageWidth=210,pageHeight=297;
+    var imgHeight=(canvasImg.height*pageWidth)/canvasImg.width;
+    var heightLeft=imgHeight,position=0;
+    pdf.addImage(imgData,'JPEG',0,position,pageWidth,imgHeight);
+    heightLeft-=pageHeight;
+    while(heightLeft>0){
+      position=heightLeft-imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData,'JPEG',0,position,pageWidth,imgHeight);
+      heightLeft-=pageHeight;
+    }
+    var clientName=getFieldValue('Print Full Name')||getFieldValue('Full Name as on Card')||'client';
+    var fileName='KMP_Card_Authorisation_'+clientName.replace(/[^a-z0-9]+/gi,'_')+'.pdf';
+    return{pdf:pdf,fileName:fileName,clientName:clientName};
+  }finally{
+    printBtn.style.display='';
+    submitWrap.style.visibility='';
+  }
+}
+
+function setMsg(text,kind){
+  var msg=document.getElementById('submitMsg');
+  msg.className='submit-msg'+(kind?(' '+kind):'');
+  msg.textContent=text;
+}
+
+function setButtonsDisabled(state){
+  document.getElementById('savePdfBtn').disabled=state;
+  document.getElementById('waBtn').disabled=state;
+  document.getElementById('submitBtn').disabled=state;
+}
+
+async function saveAsPdf(){
+  setButtonsDisabled(true);
+  setMsg('Generating PDF... / Gerando PDF...','pending');
+  try{
+    var built=await buildPdf();
+    built.pdf.save(built.fileName);
+    setMsg('PDF saved. / PDF salvo.','ok');
+  }catch(err){
+    console.error(err);
+    setMsg('Could not generate the PDF. / Não foi possível gerar o PDF.','err');
+  }finally{
+    setButtonsDisabled(false);
+  }
+}
+
+async function shareViaWhatsApp(){
+  setButtonsDisabled(true);
+  setMsg('Preparing PDF for WhatsApp... / Preparando PDF para o WhatsApp...','pending');
+  try{
+    var built=await buildPdf();
+    var blob=built.pdf.output('blob');
+    var file=new File([blob],built.fileName,{type:'application/pdf'});
+    if(navigator.canShare&&navigator.canShare({files:[file]})){
+      await navigator.share({files:[file],title:'KMP Consulting — Card Authorisation',text:'KMP Consulting — Card Authorisation Form'});
+      setMsg('Ready to send via WhatsApp. / Pronto para enviar via WhatsApp.','ok');
+    }else{
+      var url=URL.createObjectURL(blob);
+      var a=document.createElement('a');
+      a.href=url;a.download=built.fileName;a.click();
+      URL.revokeObjectURL(url);
+      window.open('https://wa.me/?text='+encodeURIComponent('KMP Consulting — Card Authorisation Form (attach the PDF just downloaded / anexe o PDF que acabou de baixar)'),'_blank');
+      setMsg('PDF downloaded — attach it in the WhatsApp chat that opened. / PDF baixado — anexe no WhatsApp que abriu.','ok');
+    }
+  }catch(err){
+    if(err&&err.name==='AbortError'){setMsg('','');}
+    else{console.error(err);setMsg('Could not share via WhatsApp. / Não foi possível compartilhar via WhatsApp.','err');}
+  }finally{
+    setButtonsDisabled(false);
+  }
+}
+
+async function saveAndSubmit(){
+  setButtonsDisabled(true);
+  setMsg('Generating PDF... / Gerando PDF...','pending');
+  try{
+    var built=await buildPdf();
+    built.pdf.save(built.fileName);
+
+    setMsg('Sending to KMP Consulting... / Enviando para a KMP Consulting...','pending');
+    var pdfBlob=built.pdf.output('blob');
+    var formData=new FormData();
+    formData.append('access_key','eb911200-f515-4a77-afbf-61c4f99be8cf');
+    formData.append('subject','KMP Consulting — Card Authorisation Form — '+built.clientName);
+    formData.append('email','keila.peixoto@kmpconsulting.com.au');
+    formData.append('Client Name',built.clientName);
+    formData.append('Visa Type',getFieldValue('Visa Type'));
+    formData.append('attachment',pdfBlob,built.fileName);
+
+    var res=await fetch('https://api.web3forms.com/submit',{method:'POST',body:formData});
+    var result=await res.json();
+    if(result.success){
+      setMsg('PDF saved and sent automatically to keila.peixoto@kmpconsulting.com.au. / PDF salvo e enviado automaticamente para keila.peixoto@kmpconsulting.com.au.','ok');
+    }else{
+      throw new Error(result.message||'Submission failed');
+    }
+  }catch(err){
+    console.error(err);
+    setMsg('PDF saved locally, but the automatic email failed — please send it manually. / PDF salvo localmente, mas o envio automático falhou — envie manualmente.','err');
+  }finally{
+    setButtonsDisabled(false);
+  }
+}
+</script>
+</body>
+</html>
