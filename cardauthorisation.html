@@ -76,6 +76,44 @@ body{font-family:'Outfit',sans-serif;background:#e8e8e8;padding:28px 16px;color:
 .submit-msg.pending{background:#fff7ed;color:#9a3412;display:block}
 
 .print-btn{display:block;margin:16px auto 0;padding:10px 20px;background:#1a1a1a;color:#fff;border:none;border-radius:6px;font-family:'Outfit',sans-serif;font-size:12px;cursor:pointer}
+.print-btn:disabled{opacity:0.6;cursor:default}
+
+/* Mobile: stack the grids so values are not cut off on narrow screens (live page only) */
+@media (max-width:640px){
+  body{padding:12px 8px}
+  .page:not(.pdf-mode) .hdr{flex-direction:column;align-items:flex-start;gap:14px;padding:20px 18px}
+  .page:not(.pdf-mode) .hdr-right{text-align:left}
+  .page:not(.pdf-mode) .body{padding:20px 18px 24px}
+  .page:not(.pdf-mode) .g2,.page:not(.pdf-mode) .g3{grid-template-columns:1fr;gap:0}
+  .page:not(.pdf-mode) .g4{grid-template-columns:1fr 1fr 1fr;gap:0 12px}
+  .page:not(.pdf-mode) .g4 > .field:first-child{grid-column:1 / -1}
+  .page:not(.pdf-mode) .g2 > .field,.page:not(.pdf-mode) .g3 > .field,.page:not(.pdf-mode) .g4 > .field{margin-bottom:14px}
+  .page:not(.pdf-mode) .field label{min-height:0}
+  .page:not(.pdf-mode) .card-types{gap:18px;flex-wrap:wrap}
+  .page:not(.pdf-mode) .footer{padding:8px 18px;gap:10px}
+}
+
+/* ===== PDF snapshot (A4, always desktop layout, same approach as the Checklist de Declarações) ===== */
+.page.pdf-mode{width:210mm;max-width:none;min-height:297mm;margin:0;box-shadow:none;display:flex;flex-direction:column}
+.pdf-mode .hdr{padding:22px 36px}
+.pdf-mode .body{flex:1;padding:16px 36px 14px}
+.pdf-mode .divider{margin:13px 0 9px}
+.pdf-mode .body > .divider:first-child{margin-top:4px}
+.pdf-mode .g2,.pdf-mode .g3,.pdf-mode .g4{align-items:end}
+.pdf-mode .field{gap:4px;margin-bottom:9px}
+.pdf-mode .g2 > .field,.pdf-mode .g3 > .field,.pdf-mode .g4 > .field{margin-bottom:0}
+.pdf-mode .field label{min-height:0}
+.pdf-mode .pv{border:1.5px solid #d1d5db;border-radius:7px;padding:8px 11px;min-height:34px;font-size:12.5px;line-height:1.35;color:#1a1a1a;background:#fafafa;word-break:break-word}
+.pdf-mode .sec-notice{padding:6px 11px;margin-bottom:9px}
+.pdf-mode .card-types{padding:2px 0}
+.pdf-mode .cb{width:15px;height:15px;border:1.5px solid #9ca3af;border-radius:3px;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pdf-mode .cb.on{background:#F27B20;border-color:#F27B20}
+.pdf-mode .ct-lbl.on{color:#c2410c;font-weight:600}
+.pdf-mode .auth-text{font-size:10.5px;line-height:1.6;padding:9px 13px}
+.pdf-mode .auth-text p{margin-bottom:5px}
+.pdf-mode .sig-pad-wrap{margin-bottom:9px}
+.pdf-mode .sig-box{width:100%;height:110px;border:1.5px solid #d1d5db;border-radius:7px;background:#fff;overflow:hidden}
+.pdf-mode .sig-box img{display:block;width:100%;height:110px}
 
 @page{size:A4;margin:0}
 @media print{
@@ -257,26 +295,41 @@ body{font-family:'Outfit',sans-serif;background:#e8e8e8;padding:28px 16px;color:
     <span class="footer-r">Card Authorisation</span>
   </div>
 </div>
-<button class="print-btn" onclick="window.print()">Save as PDF</button>
+<button class="print-btn" id="downloadBtn" onclick="downloadPdf()">Save as PDF</button>
 <script>
+/* ================= Signature pad ================= */
 (function(){
   var canvas=document.getElementById('sigPad');
   var ctx=canvas.getContext('2d');
   var drawing=false;
   var lastX=0,lastY=0;
+  var lastW=0;
 
-  function resizeCanvas(){
-    var ratio=window.devicePixelRatio||1;
-    var rect=canvas.getBoundingClientRect();
-    var imgData=null;
-    if(canvas.width>0&&canvas.height>0){imgData=canvas.toDataURL();}
-    canvas.width=rect.width*ratio;
-    canvas.height=rect.height*ratio;
-    ctx.setTransform(ratio,0,0,ratio,0,0);
+  function applyStyle(){
     ctx.lineWidth=2;
     ctx.lineCap='round';
     ctx.lineJoin='round';
     ctx.strokeStyle='#1a1a1a';
+  }
+  function resizeCanvas(){
+    var ratio=window.devicePixelRatio||1;
+    var rect=canvas.getBoundingClientRect();
+    // On phones, scrolling shows/hides the address bar and fires "resize" without a width change.
+    // Only rebuild the canvas when the width really changes, and keep the signature when it does.
+    if(rect.width===lastW&&canvas.width>0)return;
+    lastW=rect.width;
+    var old=null;
+    if(canvas.width>0&&canvas.height>0&&canvas.classList.contains('has-signed')){
+      old=document.createElement('canvas');
+      old.width=canvas.width;old.height=canvas.height;
+      old.getContext('2d').drawImage(canvas,0,0);
+    }
+    canvas.width=rect.width*ratio;
+    canvas.height=rect.height*ratio;
+    ctx.setTransform(1,0,0,1,0,0);
+    if(old){ctx.drawImage(old,0,0,old.width,old.height,0,0,canvas.width,canvas.height);}
+    ctx.setTransform(ratio,0,0,ratio,0,0);
+    applyStyle();
   }
   resizeCanvas();
   window.addEventListener('resize',resizeCanvas);
@@ -315,45 +368,183 @@ body{font-family:'Outfit',sans-serif;background:#e8e8e8;padding:28px 16px;color:
   canvas.addEventListener('touchend',end);
 
   window.clearSig=function(){
+    ctx.save();ctx.setTransform(1,0,0,1,0,0);
     ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.restore();
     canvas.classList.remove('has-signed');
   };
 })();
 
+/* ================= Helpers ================= */
 function getFieldValue(labelStart){
   var labels=document.querySelectorAll('.field label');
   for(var i=0;i<labels.length;i++){
     if(labels[i].textContent.trim().toLowerCase().indexOf(labelStart.toLowerCase())===0){
       var input=labels[i].parentElement.querySelector('input,select');
-      return input?input.value:'';
+      return input?input.value.trim():'';
     }
   }
   return '';
 }
 
-async function buildPdf(){
-  var printBtn=document.querySelector('.print-btn');
-  var submitWrap=document.querySelector('.submit-wrap');
-  printBtn.style.display='none';
-  submitWrap.style.visibility='hidden';
+function fmtDate(v){
+  var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(v||'');
+  return m?(m[3]+'/'+m[2]+'/'+m[1]):(v||'');
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});
+}
+
+function getNames(){
+  var clientName=getFieldValue('Print Full Name')||getFieldValue('Full Name as on Card')||'client';
+  var safe=clientName.replace(/[^a-z0-9]+/gi,'_').replace(/^_+|_+$/g,'')||'client';
+  return{clientName:clientName,fileName:'KMP_Card_Authorisation_'+safe+'.pdf'};
+}
+
+function triggerDownload(blob,filename){
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url;
+  a.download=filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(function(){URL.revokeObjectURL(url);},1500);
+}
+
+/* ================= A4 snapshot =================
+   Same approach as the Checklist de Declarações: the PDF is not a screenshot of the phone screen.
+   We build a clean A4 copy of the form (always desktop layout, 210mm wide), with every answer
+   baked in as plain text so nothing gets cut off, then render that copy. */
+function buildSnapshot(){
+  var original=document.querySelector('.page');
+  var clone=original.cloneNode(true);
+  clone.classList.add('pdf-mode');
+
+  var origFields=original.querySelectorAll('input:not([type=checkbox]),select');
+  var cloneFields=clone.querySelectorAll('input:not([type=checkbox]),select');
+  cloneFields.forEach(function(el,i){
+    var src=origFields[i];
+    var text='';
+    if(src.tagName==='SELECT'){
+      text=src.value?src.options[src.selectedIndex].text:'';
+    }else if(src.type==='date'){
+      text=fmtDate(src.value);
+    }else{
+      text=src.value;
+    }
+    var div=document.createElement('div');
+    div.className='pv';
+    div.innerHTML=text?escapeHtml(text):'&nbsp;';
+    el.parentNode.replaceChild(div,el);
+  });
+
+  // Card type: draw our own box so the tick shows the same in every renderer
+  var origChecks=original.querySelectorAll('.card-types input[type=checkbox]');
+  clone.querySelectorAll('.card-types input[type=checkbox]').forEach(function(cb,i){
+    var on=origChecks[i].checked;
+    var box=document.createElement('span');
+    box.className='cb'+(on?' on':'');
+    if(on){box.innerHTML='<svg width="10" height="10" viewBox="0 0 12 12"><path d="M2.5 6.5l2.3 2.3 4.7-5.1" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';}
+    if(on)cb.parentNode.classList.add('on');
+    cb.parentNode.replaceChild(box,cb);
+  });
+
+  // Signature: the canvas drawing does not copy with cloneNode, so turn it into an image
+  var srcCanvas=document.getElementById('sigPad');
+  var sigBox=document.createElement('div');
+  sigBox.className='sig-box';
+  if(srcCanvas.classList.contains('has-signed')){
+    var W=1444,H=220; // 2x of the 722 x 110 box on the A4 page
+    var out=document.createElement('canvas');
+    out.width=W;out.height=H;
+    var octx=out.getContext('2d');
+    octx.fillStyle='#ffffff';octx.fillRect(0,0,W,H);
+    var s=Math.min(W/srcCanvas.width,H/srcCanvas.height);
+    var dw=srcCanvas.width*s,dh=srcCanvas.height*s;
+    octx.drawImage(srcCanvas,(W-dw)/2,(H-dh)/2,dw,dh);
+    var img=document.createElement('img');
+    img.src=out.toDataURL('image/png');
+    sigBox.appendChild(img);
+  }
+  var cloneCanvas=clone.querySelector('#sigPad');
+  cloneCanvas.parentNode.replaceChild(sigBox,cloneCanvas);
+
+  // Remove interface elements that must not appear in the PDF
+  clone.querySelectorAll('.submit-wrap,.sig-actions,.sig-hint').forEach(function(n){n.remove();});
+  clone.querySelectorAll('[id]').forEach(function(n){n.removeAttribute('id');});
+  return clone;
+}
+
+function buildSnapshotHtml(snap){
+  var head=Array.prototype.map.call(document.querySelectorAll('link[rel=stylesheet],style'),function(n){return n.outerHTML;}).join('');
+  return '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/>'+head+
+    '<style>html,body{background:#fff!important;padding:0!important;margin:0!important}</style>'+
+    '</head><body>'+snap.outerHTML+'</body></html>';
+}
+
+/* Preferred path: server side rendering on Vercel (/api/generate-pdf), true A4 with real text */
+async function buildPdfServerSide(snap,fileName){
+  var ctrl=new AbortController();
+  var timer=setTimeout(function(){ctrl.abort();},25000);
   try{
-    var pageEl=document.querySelector('.page');
-    var canvasImg=await html2canvas(pageEl,{scale:2,backgroundColor:'#ffffff',useCORS:true});
-    var imgData=canvasImg.toDataURL('image/jpeg',0.92);
-    var jsPDFLib=window.jspdf.jsPDF;
-    var pageWidth=210;
-    var imgHeight=(canvasImg.height*pageWidth)/canvasImg.width;
-    var pdf=new jsPDFLib({unit:'mm',format:[pageWidth,imgHeight]});
-    pdf.addImage(imgData,'JPEG',0,0,pageWidth,imgHeight);
-    var clientName=getFieldValue('Print Full Name')||getFieldValue('Full Name as on Card')||'client';
-    var fileName='KMP_Card_Authorisation_'+clientName.replace(/[^a-z0-9]+/gi,'_')+'.pdf';
-    return{pdf:pdf,fileName:fileName,clientName:clientName};
+    var res=await fetch('/api/generate-pdf',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({html:buildSnapshotHtml(snap),filename:fileName}),
+      signal:ctrl.signal
+    });
+    var type=res.headers.get('content-type')||'';
+    if(!res.ok||type.indexOf('pdf')===-1)throw new Error('Server PDF unavailable');
+    return await res.blob();
   }finally{
-    printBtn.style.display='';
-    submitWrap.style.visibility='';
+    clearTimeout(timer);
   }
 }
 
+/* Fallback: html2canvas + jsPDF, rendered off screen at A4 width and sliced into A4 pages */
+async function buildPdfClientFallback(snap){
+  var holder=document.createElement('div');
+  holder.style.cssText='position:absolute;left:-10000px;top:0;width:794px;background:#fff;';
+  holder.appendChild(snap);
+  document.body.appendChild(holder);
+  try{
+    if(document.fonts&&document.fonts.ready){await document.fonts.ready;}
+    var c=await html2canvas(snap,{scale:2,backgroundColor:'#ffffff',useCORS:true,width:snap.offsetWidth,windowWidth:900});
+    var jsPDFLib=window.jspdf.jsPDF;
+    var pdf=new jsPDFLib({unit:'mm',format:'a4',orientation:'portrait'});
+    var pagePx=Math.floor(c.width*297/210);
+    var y=0,first=true;
+    while(y<c.height-4){
+      var h=Math.min(pagePx,c.height-y);
+      var pc=document.createElement('canvas');
+      pc.width=c.width;pc.height=pagePx;
+      var pctx=pc.getContext('2d');
+      pctx.fillStyle='#ffffff';pctx.fillRect(0,0,pc.width,pc.height);
+      pctx.drawImage(c,0,y,c.width,h,0,0,c.width,h);
+      if(!first)pdf.addPage();
+      pdf.addImage(pc.toDataURL('image/jpeg',0.92),'JPEG',0,0,210,297);
+      y+=pagePx;first=false;
+    }
+    return pdf.output('blob');
+  }finally{
+    holder.remove();
+  }
+}
+
+async function buildPdf(){
+  var names=getNames();
+  var blob;
+  try{
+    blob=await buildPdfServerSide(buildSnapshot(),names.fileName);
+  }catch(err){
+    blob=await buildPdfClientFallback(buildSnapshot());
+  }
+  return{blob:blob,fileName:names.fileName,clientName:names.clientName};
+}
+
+/* ================= Actions ================= */
 function setMsg(text,kind){
   var msg=document.getElementById('submitMsg');
   msg.className='submit-msg'+(kind?(' '+kind):'');
@@ -363,6 +554,22 @@ function setMsg(text,kind){
 function setButtonsDisabled(state){
   document.getElementById('waBtn').disabled=state;
   document.getElementById('submitBtn').disabled=state;
+  document.getElementById('downloadBtn').disabled=state;
+}
+
+async function downloadPdf(){
+  setButtonsDisabled(true);
+  setMsg('Generating PDF... / Gerando PDF...','pending');
+  try{
+    var built=await buildPdf();
+    triggerDownload(built.blob,built.fileName);
+    setMsg('PDF saved. / PDF salvo.','ok');
+  }catch(err){
+    console.error(err);
+    setMsg('Could not generate the PDF on this device. Please try Chrome or a computer. / Não foi possível gerar o PDF neste aparelho. Tente no Chrome ou em um computador.','err');
+  }finally{
+    setButtonsDisabled(false);
+  }
 }
 
 async function shareViaWhatsApp(){
@@ -370,18 +577,14 @@ async function shareViaWhatsApp(){
   setMsg('Preparing PDF for WhatsApp... / Preparando PDF para o WhatsApp...','pending');
   try{
     var built=await buildPdf();
-    var blob=built.pdf.output('blob');
-    var file=new File([blob],built.fileName,{type:'application/pdf'});
+    var file=new File([built.blob],built.fileName,{type:'application/pdf'});
     if(navigator.canShare&&navigator.canShare({files:[file]})){
       await navigator.share({files:[file],title:'KMP Consulting — Card Authorisation',text:'KMP Consulting — Card Authorisation Form'});
       setMsg('Ready to send via WhatsApp. / Pronto para enviar via WhatsApp.','ok');
     }else{
-      var url=URL.createObjectURL(blob);
-      var a=document.createElement('a');
-      a.href=url;a.download=built.fileName;a.click();
-      URL.revokeObjectURL(url);
+      triggerDownload(built.blob,built.fileName);
       window.open('https://wa.me/?text='+encodeURIComponent('KMP Consulting — Card Authorisation Form (attach the PDF just downloaded / anexe o PDF que acabou de baixar)'),'_blank');
-      setMsg('PDF downloaded — attach it in the WhatsApp chat that opened. / PDF baixado — anexe no WhatsApp que abriu.','ok');
+      setMsg('PDF downloaded. Attach it in the WhatsApp chat that opened. / PDF baixado. Anexe no WhatsApp que abriu.','ok');
     }
   }catch(err){
     if(err&&err.name==='AbortError'){setMsg('','');}
@@ -394,19 +597,25 @@ async function shareViaWhatsApp(){
 async function saveAndSubmit(){
   setButtonsDisabled(true);
   setMsg('Generating PDF... / Gerando PDF...','pending');
+  var built;
   try{
-    var built=await buildPdf();
-    built.pdf.save(built.fileName);
-
+    built=await buildPdf();
+    triggerDownload(built.blob,built.fileName);
+  }catch(err){
+    console.error(err);
+    setMsg('Could not generate the PDF on this device. Please try Chrome or a computer. / Não foi possível gerar o PDF neste aparelho. Tente no Chrome ou em um computador.','err');
+    setButtonsDisabled(false);
+    return;
+  }
+  try{
     setMsg('Sending to KMP Consulting... / Enviando para a KMP Consulting...','pending');
-    var pdfBlob=built.pdf.output('blob');
     var formData=new FormData();
     formData.append('access_key','eb911200-f515-4a77-afbf-61c4f99be8cf');
     formData.append('subject','KMP Consulting — Card Authorisation Form — '+built.clientName);
     formData.append('email','keila.peixoto@kmpconsulting.com.au');
     formData.append('Client Name',built.clientName);
     formData.append('Visa Type',getFieldValue('Visa Type'));
-    formData.append('attachment',pdfBlob,built.fileName);
+    formData.append('attachment',built.blob,built.fileName);
 
     var res=await fetch('https://api.web3forms.com/submit',{method:'POST',body:formData});
     var result=await res.json();
@@ -417,7 +626,7 @@ async function saveAndSubmit(){
     }
   }catch(err){
     console.error(err);
-    setMsg('PDF saved locally, but the automatic email failed — please send it manually. / PDF salvo localmente, mas o envio automático falhou — envie manualmente.','err');
+    setMsg('PDF saved locally, but the automatic email failed. Please send it manually. / PDF salvo localmente, mas o envio automático falhou. Envie manualmente.','err');
   }finally{
     setButtonsDisabled(false);
   }
