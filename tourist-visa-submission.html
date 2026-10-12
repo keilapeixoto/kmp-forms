@@ -548,7 +548,7 @@ const LOGO_PNG_B64 = "iVBORw0KGgoAAAANSUhEUgAAA+gAAADWCAYAAABCO6ikAABHlUlEQVR42u
 const LOGO_ASPECT_RATIO = 1000 / 214;
 const WHATSAPP_NUMBER = "61451051806"; // KMP Consulting, formato internacional sem 0 e sem +
 const DRAFT_KEY = "kmp_form600_draft";
-const FORM_VERSION = "2026.09.02"; // selo de versão para conferir o deploy
+const FORM_VERSION = "2026.10.12"; // selo de versão para conferir o deploy
 
 const APPLICATION_ID = new URLSearchParams(window.location.search).get("app_id") || "";
 
@@ -1259,7 +1259,7 @@ async function handleSubmit() {
   }
 
   // Se a pessoa indicou que já mudou de nome, a certidão de casamento E o
-  // documento de divórcio são obrigatórios, não é opcional enviar só um deles.
+  // documento de divórcio são obrigatórios.
   if (f.mudouNome === "SIM/YES") {
     const temCasamento = Array.isArray(f.file_certidaoCasamento) ? f.file_certidaoCasamento.length > 0 : !!f.file_certidaoCasamento;
     const temDivorcio = Array.isArray(f.file_certidaoDivorcio) ? f.file_certidaoDivorcio.length > 0 : !!f.file_certidaoDivorcio;
@@ -1274,13 +1274,15 @@ async function handleSubmit() {
     }
   }
 
-  // Guarda de tamanho por arquivo (mantido do fluxo anterior)
+  // Guarda de tamanho por arquivo
   const MAX = 25 * 1024 * 1024;
   for (const id in fileObjects) {
     for (const file of fileObjects[id]) {
       if (file.size > MAX) {
         sendError = `O arquivo "${file.name}" passa de 25 MB. Reduza o tamanho e anexe novamente.`;
-        sending = false; render(); return;
+        sending = false;
+        render();
+        return;
       }
     }
   }
@@ -1311,7 +1313,7 @@ async function handleSubmit() {
   const pdfBlob = generatePdfBlob();
   const pdfFile = new File([pdfBlob], `Comprovante_${nome.replace(/\s+/g, "_")}.pdf`, { type: "application/pdf" });
 
-  // Monta o texto do email (sempre enviado, com ou sem documentos)
+  // Texto do email (sempre enviado, com ou sem documentos)
   const idLinha = APPLICATION_ID ? `ID da aplicação (KMP Hub): ${APPLICATION_ID}\n` : "";
   const linhas = buildSummaryPairs().map(([k, v]) => `${k}: ${v}`).join("\n");
   const corpo = `Nova solicitação de visto de turista — KMP Consulting\nData: ${new Date().toLocaleString("pt-BR")}\n${idLinha}\n${"=".repeat(50)}\n\n${linhas}`;
@@ -1324,39 +1326,44 @@ async function handleSubmit() {
   formData.append("replyto", f.email || "");
   if (APPLICATION_ID) formData.append("application_id", APPLICATION_ID);
 
-  // Web3Forms tem limite de 5 MB por arquivo anexado. Um zip com fotos de
-  // passaporte, extratos etc facilmente passa disso, e se passar, o
-  // Web3Forms rejeita o ENVIO INTEIRO (nem o texto chega). Por isso: só
-  // anexamos o zip ao email se ele estiver dentro do limite; se estourar,
-  // enviamos o texto normalmente (sempre chega) e guardamos o zip para o
-  // passo obrigatório do WhatsApp, que é quem garante a entrega dos
-  // documentos nesse caso.
+  // Web3Forms aceita no máximo 5 MB por anexo e rejeita o envio inteiro se
+  // passar disso. Por isso o zip só entra no email se estiver dentro do limite.
   const ATTACH_LIMIT = 4.5 * 1024 * 1024;
   let attachmentNote = "";
   let zipBlob = null;
-  let zipFilename = `Documentos_${nome.replace(/\s+/g, "_")}.zip`;
+  const zipFilename = `Documentos_${nome.replace(/\s+/g, "_")}.zip`;
 
   try {
     sendingMsg = "Organizando e compactando os documentos…";
     render();
+    const falhas = [];
     const zip = new JSZip();
     zip.file(pdfFile.name, pdfBlob);
     for (const { id, file } of allEntries) {
       const folder = FOLDER_LABELS[id] || "Outros Documentos";
-      zip.folder(folder).file(file.name, file);
+      try {
+        // Lê o conteúdo agora. Se o arquivo tiver saído do aparelho (nuvem,
+        // galeria, pasta movida), só este item falha e o restante segue.
+        const bytes = await file.arrayBuffer();
+        zip.folder(folder).file(file.name, bytes);
+      } catch (err) {
+        falhas.push(`${folder}: ${file.name} (${err && err.message ? err.message : "arquivo inacessível"})`);
+      }
     }
     zipBlob = await zip.generateAsync({ type: "blob", compression: "DEFLATE" });
+
+    if (falhas.length) {
+      attachmentNote += `\n\nATENÇÃO: não foi possível ler estes arquivos no navegador do cliente, então eles não estão no zip:\n${falhas.join("\n")}`;
+    }
 
     if (zipBlob.size <= ATTACH_LIMIT) {
       const zipFile = new File([zipBlob], zipFilename, { type: "application/zip" });
       formData.append("attachment", zipFile);
     } else {
-      attachmentNote = `\n\nATENÇÃO: os documentos anexados pelo cliente somam ${(zipBlob.size / 1024 / 1024).toFixed(1)} MB, acima do limite de anexo por e-mail. Eles NÃO vieram neste e-mail — o cliente vai enviar o arquivo .zip separadamente pelo WhatsApp (passo obrigatório da tela de confirmação).`;
+      attachmentNote += `\n\nATENÇÃO: os documentos anexados pelo cliente somam ${(zipBlob.size / 1024 / 1024).toFixed(1)} MB, acima do limite de anexo por e-mail. Eles NÃO vieram neste e-mail. O cliente deve enviar o arquivo .zip separadamente pelo WhatsApp (passo obrigatório da tela de confirmação).`;
     }
   } catch (e) {
-    // Se a compactação falhar por qualquer motivo, não trava o envio:
-    // manda o formulário sem os documentos e avisa você no próprio email.
-    attachmentNote = `\n\nATENÇÃO: os documentos anexados pelo cliente não puderam ser incluídos automaticamente neste email (erro: ${e && e.message ? e.message : "desconhecido"}). Entre em contato com o cliente para solicitar por fora.`;
+    attachmentNote += `\n\nATENÇÃO: os documentos anexados pelo cliente não puderam ser incluídos automaticamente neste email (erro: ${e && e.message ? e.message : "desconhecido"}). Entre em contato com o cliente para solicitar por fora.`;
   }
 
   if (attachmentNote) {
@@ -1369,19 +1376,18 @@ async function handleSubmit() {
   try {
     const res = await fetch("https://api.web3forms.com/submit", {
       method: "POST",
-      body: formData, // não define Content-Type manualmente — o navegador cuida disso
+      body: formData,
     });
     const data = await res.json();
     if (data.success) {
       submitted = true;
-      // Guarda o zip (se ficou grande demais para o e-mail) e o PDF para o
-      // passo obrigatório de WhatsApp na tela de confirmação.
       window.__kmpZipBlob = zipBlob;
       window.__kmpZipFilename = zipFilename;
       window.__kmpZipTooBig = zipBlob ? zipBlob.size > ATTACH_LIMIT : false;
       window.__kmpPdfBlob = pdfBlob;
       window.__kmpPdfFilename = pdfFile.name;
       window.__kmpNome = nome;
+      window.__kmpAvisoArquivos = attachmentNote.trim();
       clearDraft();
       fileObjects = {};
     } else {
