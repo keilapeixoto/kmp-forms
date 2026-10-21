@@ -247,19 +247,8 @@
     amount_charged: 0, gov_fee: 0, agency_fee: 0, prof_fee: 0, prof_paid: 0, share_keila: 50, share_phill: 50
   };
 
-  // Starting list from the case notes. Stages, dates and fees are blank until filled in.
-  const SEED = [
-    { client: "Ingrid", visa: "482", status: "Active", next: "Discuss tomorrow. Passport sent to consulate" },
-    { client: "Bernardo", visa: "482", status: "Waiting client", next: "Employer will contact us" },
-    { client: "Joao (820)", visa: "820", status: "Active", stage: "Payment collected", next: "First instalment paid" },
-    { client: "Gihan", visa: "309", status: "Waiting client", next: "Payment pending. Wants to apply asap" },
-    { client: "Marli", visa: "Skills assessment", status: "Active", stage: "Payment collected", next: "Paid. Double check required docs" },
-    { client: "Bruna Arlati", visa: "482", status: "Active", next: "Retail Manager in a bakery. Appointment next week" },
-    { client: "Cris Deodato", visa: "820", status: "Waiting client", next: "Brisbane. On tourist visa. Waiting for appointment confirmation" },
-    { client: "Bruno Pacheco", visa: "TRA skills assessment", status: "Active", next: "Carpentry" },
-    { client: "Bruna Malfatti", visa: "Parent", status: "Active", next: "" },
-    { client: "Mirella", visa: "482", status: "Active", next: "Sponsor as a chef" }
-  ];
+  // No client data is stored in this file. Cases are added in the page and kept in the browser.
+  const SEED = [];
 
   function uid() { return "c" + Math.random().toString(36).slice(2, 10); }
 
