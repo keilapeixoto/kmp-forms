@@ -24,6 +24,10 @@ nav.scrolled{background:rgba(255,255,255,0.96);backdrop-filter:blur(12px);border
 .nav-logo{font-family:var(--font-display);font-size:1.5rem;font-weight:500;color:var(--white);text-decoration:none;letter-spacing:0.01em;transition:color 0.3s}
 nav.scrolled .nav-logo{color:var(--graphite)}
 .nav-logo span{color:var(--orange)}
+.nav-logo img{display:block;height:36px;width:auto}
+.nav-logo .logo-cor{display:none}
+nav.scrolled .nav-logo .logo-claro{display:none}
+nav.scrolled .nav-logo .logo-cor{display:block}
 .nav-links{display:flex;align-items:center;gap:2rem}
 .nav-links a{font-size:13px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:rgba(255,255,255,0.85);text-decoration:none;transition:color 0.2s}
 nav.scrolled .nav-links a{color:var(--graphite-light)}
@@ -152,6 +156,7 @@ section{padding:100px 3rem}
 footer{background:#111;padding:2.5rem 3rem;display:flex;align-items:center;justify-content:space-between}
 .footer-logo{font-family:var(--font-display);font-size:1.25rem;font-weight:500;color:rgba(255,255,255,0.6);text-decoration:none}
 .footer-logo span{color:var(--orange)}
+.footer-logo img{display:block;height:30px;width:auto;opacity:.9}
 footer p{font-size:12px;color:rgba(255,255,255,0.25)}
 .footer-links{display:flex;gap:1.5rem}
 .footer-links a{font-size:12px;color:rgba(255,255,255,0.3);text-decoration:none;transition:color 0.2s}
@@ -189,7 +194,7 @@ footer p{font-size:12px;color:rgba(255,255,255,0.25)}
 <body>
 
 <nav id="navbar">
-  <a href="#" class="nav-logo">KMP <span>Consulting</span></a>
+  <a href="#" class="nav-logo"><img class="logo-claro" src="kmp-logo-white.svg" alt="KMP Consulting"><img class="logo-cor" src="kmp-logo.svg" alt="" aria-hidden="true"></a>
   <div class="nav-links">
     <a href="#sobre" id="nav-about">Sobre</a>
     <a href="#servicos" id="nav-services">Serviços</a>
@@ -385,7 +390,7 @@ footer p{font-size:12px;color:rgba(255,255,255,0.25)}
 </section>
 
 <footer>
-  <a href="#" class="footer-logo">KMP <span>Consulting</span></a>
+  <a href="#" class="footer-logo"><img src="kmp-logo-white.svg" alt="KMP Consulting"></a>
   <p id="footer-copy">© 2025 KMP Consulting · Sydney, Australia</p>
   <div class="footer-links">
     <a href="kmp-booking-br.html" id="fl-br">Agendar · Brasil</a>
