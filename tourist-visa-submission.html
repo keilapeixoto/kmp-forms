@@ -548,7 +548,7 @@ const LOGO_PNG_B64 = "iVBORw0KGgoAAAANSUhEUgAAA+gAAADWCAYAAABCO6ikAABHlUlEQVR42u
 const LOGO_ASPECT_RATIO = 1000 / 214;
 const WHATSAPP_NUMBER = "61451051806"; // KMP Consulting, formato internacional sem 0 e sem +
 const DRAFT_KEY = "kmp_form600_draft";
-const FORM_VERSION = "2026.10.12"; // selo de versão para conferir o deploy
+const FORM_VERSION = "2026.10.21"; // selo de versão para conferir o deploy
 
 const APPLICATION_ID = new URLSearchParams(window.location.search).get("app_id") || "";
 
@@ -709,6 +709,7 @@ function renderStep() {
         q(label(5,"Cidade de nascimento","Town/city of birth",true) + input("cidadeNasc","Ex: São Paulo")),
         q(label(6,"País de nascimento","Country of birth",true) + input("paisNasc","Ex: Brasil"))
       )}
+      ${q(label(null,"Estado de nascimento","State/province of birth",true) + input("estadoNasc","Ex: São Paulo"))}
       ${q(label(7,"Estado civil","Relationship status",true) +
         select("estadoCivil",["Solteiro(a)/Single","Casado(a)/Married","Divorciado(a)/Divorced","Viúvo(a)/Widowed","Separado(a)/Separated","União Estável/De Facto","Noivo(a)/Engaged"]))}
       ${q(label(8,"Nacionalidade atual","Current nationality/citizenship",true) +
@@ -737,6 +738,8 @@ function renderStep() {
         radio("outroPassaporte",["SIM/YES","NÃO/NO"]) +
         conditional(f.outroPassaporte === "SIM/YES",
           input("outroPassaporteDetalhe","Detalhes: país, número, validade / Details: country, number, expiry")))}
+      ${q(label(null,"É cidadão(ã) do país do passaporte?","Are you a citizen of the country of your passport?",true) +
+        radio("cidadaoPaisPassaporte",["SIM/YES","NÃO/NO"]))}
       ${q(label(18,"Documento nacional de identidade","Do you have a national identity card?",true) +
         row2(
           input("rg","RG / Identity number"),
@@ -755,6 +758,9 @@ function renderStep() {
       )}
       ${q(label(23,"País","Country",true) +
         `<input type="text" value="${f.paisResidencia || "Brasil"}" oninput="setValue('paisResidencia', this.value)" />`)}
+      ${q(label(null,"Qual é a sua situação legal no país onde mora?","What is your legal status in the country where you live?",true) +
+        hint("Para quem mora no país de origem, em geral Cidadão / If you live in your home country, usually Citizen") +
+        select("situacaoLegal",["Cidadão/Citizen","Residente permanente/Permanent resident","Visitante/Visitor","Estudante/Student","Visto de trabalho/Work visa","Sem situação legal/No legal status","Outro/Other"]))}
       ${divider("Contato / Contact Details")}
       ${row2(
         q(label(24,"Telefone residencial","Home phone") + input("telRes","(00) 0000-0000")),
@@ -787,6 +793,10 @@ function renderStep() {
         radio("temFilhos",["SIM/YES","NÃO/NO"]) +
         conditional(f.temFilhos === "SIM/YES",
           textarea("filhosDetalhe","Nome, data de nasc., viaja junto? / Name, DOB, travelling?",4)))}
+      ${q(label(null,"Você tem familiares (cônjuge ou filhos dependentes) que não vão viajar e não são cidadãos nem residentes permanentes da Austrália?","Do you have any members of your family unit (partner or dependent children) not travelling to Australia who are not Australian citizens or permanent residents?",true) +
+        radio("familiaNaoViaja",["SIM/YES","NÃO/NO"]) +
+        conditional(f.familiaNaoViaja === "SIM/YES",
+          textarea("familiaNaoViajaDetalhe","Nome, relação, data de nascimento / Name, relationship, date of birth")))}
       ${divider("Outros Familiares / Other Family")}
       ${q(label(34,"Nome da mãe","Mother's full name") + input("nomeMae",""))}
       ${q(label(35,"Nome do pai","Father's full name") + input("nomePai",""))}
@@ -801,6 +811,8 @@ function renderStep() {
         select("motivoViagem",["Turismo/Tourism","Visitar família/amigos / Visit family/friends","Negócios/Business","Estudo de curta duração (até 12 semanas)/Short course (up to 12 weeks)","Tratamento médico/Medical treatment","Outro/Other"]))}
       ${q(label(38,"Data prevista de chegada na Austrália","Expected date of arrival in Australia",true) +
         input("dataChegada","","date"))}
+      ${q(label(null,"Data prevista de saída da Austrália","Expected date of final departure from Australia",true) +
+        input("dataSaida","","date"))}
       ${q(label(39,"Tempo de permanência pretendido","Expected length of stay",true) +
         select("tempoPermanencia",["Até 2 semanas/Up to 2 weeks","2 a 4 semanas/2 to 4 weeks","1 a 3 meses/1 to 3 months","3 a 6 meses/3 to 6 months","6 a 12 meses/6 to 12 months"]))}
       ${q(label(40,"Endereço na Austrália onde pretende ficar","Address in Australia where you intend to stay",true) +
@@ -811,6 +823,15 @@ function renderStep() {
         radio("acompanhante",["SIM/YES","NÃO/NO"]) +
         conditional(f.acompanhante === "SIM/YES",
           input("acompanhanteDetalhe","Nome(s) e relação / Name(s) and relationship")))}
+      ${q(label(null,"Pretende entrar na Austrália mais de uma vez durante a estadia?","Do you intend to enter Australia more than once during your stay?",true) +
+        hint("Marque Sim se pretende sair e voltar à Austrália durante o período do visto / Yes if you plan to leave and come back during the visa period") +
+        radio("maisDeUmaEntrada",["SIM/YES","NÃO/NO"]))}
+      ${q(label(null,"Há datas importantes em que você precisa estar na Austrália? (evento, casamento, formatura...)","Are there any significant dates on which you need to be in Australia? (event, wedding, graduation...)") +
+        textarea("datasImportantes","Se não houver, escreva: não há datas específicas / If none, write: no specific dates"))}
+      ${q(label(null,"Pretende fazer algum curso na Austrália?","Will you undertake a course of study in Australia?",true) +
+        radio("curso",["SIM/YES","NÃO/NO"]))}
+      ${q(label(null,"Vai visitar parentes, amigos ou outros contatos na Austrália?","Will you visit any relatives, friends or contacts while in Australia?",true) +
+        radio("visitaContatos",["SIM/YES","NÃO/NO"]))}
     `;
 
     case 5: return `
@@ -859,6 +880,11 @@ function renderStep() {
       ${q(label(55,"Você (ou qualquer pessoa incluída nesta aplicação) possui ou já possuiu visto para a Austrália ou qualquer outro país?","Have you, or any person included in this application, held or currently hold a visa to Australia or any other country?",true) +
         hint("Em quais países você (e seu partner, se houver) já teve ou tem visto?") +
         textarea("vistosAnteriores","Descreva / Describe",4))}
+      ${q(label(null,"Já teve algum visto da Austrália ou de outro país?","Have you held, or do you currently hold, a visa to Australia or any other country?",true) +
+        radio("jaTeveVisto",["SIM/YES","NÃO/NO"]))}
+      ${q(label(null,"Número do visto australiano anterior (se tiver)","Previous Australian visa grant number (if known)") +
+        hint("Está na carta de concessão do visto (grant letter) / It is on the visa grant letter") +
+        input("numVistoAnterior","Ex: 1234567890123"))}
     `;
 
     case 7: return `
@@ -869,6 +895,47 @@ function renderStep() {
           textarea("saudeDetalhe","Descreva / Describe")))}
       ${q(label(57,"Você pretende trabalhar ou prestar serviços profissionais na Austrália durante sua estadia?","Do you intend to work or provide professional services in Australia during your stay?",true) +
         radio("trabalharAustralia",["SIM/YES","NÃO/NO"]))}
+      ${hint("Perguntas do Department of Home Affairs (as mesmas do ImmiAccount) / Department of Home Affairs questions (same as ImmiAccount)")}
+      ${q(label(null,"Fez exame de saúde para visto australiano nos últimos 12 meses?","Have you undertaken a health examination for an Australian visa in the last 12 months?",true) +
+        radio("exameSaude",["SIM/YES","NÃO/NO"]) +
+        conditional(f.exameSaude === "SIM/YES",
+          textarea("exameSaudeDetalhe","Descreva / Describe")))}
+      ${q(label(null,"Nos últimos 5 anos, morou ou ficou mais de 3 meses seguidos fora do país do passaporte (sem contar a Austrália)?","In the last five years, have you visited or lived outside your country of passport, for more than 3 consecutive months (excluding Australia)?",true) +
+        radio("foraPais3Meses",["SIM/YES","NÃO/NO"]) +
+        conditional(f.foraPais3Meses === "SIM/YES",
+          textarea("foraPais3MesesDetalhe","Descreva / Describe")))}
+      ${q(label(null,"Pretende entrar em hospital ou unidade de saúde (inclusive casas de repouso) na Austrália?","Do you intend to enter a hospital or a health care facility (including nursing homes) while in Australia?",true) +
+        radio("hospital",["SIM/YES","NÃO/NO"]) +
+        conditional(f.hospital === "SIM/YES",
+          textarea("hospitalDetalhe","Descreva / Describe")))}
+      ${q(label(null,"Pretende trabalhar, estudar ou fazer estágio como profissional de saúde, ou trabalhar em unidade de saúde na Austrália?","Do you intend to work as, or study or train to be, a health care worker or work within a health care facility while in Australia?",true) +
+        radio("profSaude",["SIM/YES","NÃO/NO"]) +
+        conditional(f.profSaude === "SIM/YES",
+          textarea("profSaudeDetalhe","Descreva / Describe")))}
+      ${q(label(null,"Pretende trabalhar, estudar ou fazer estágio em cuidado de idosos ou de pessoas com deficiência na Austrália?","Do you intend to work, study or train within aged care or disability care while in Australia?",true) +
+        radio("idosos",["SIM/YES","NÃO/NO"]) +
+        conditional(f.idosos === "SIM/YES",
+          textarea("idososDetalhe","Descreva / Describe")))}
+      ${q(label(null,"Pretende trabalhar ou fazer estágio em creche ou pré-escola na Austrália?","Do you intend to work or be a trainee at a child care centre (including preschools and creches) while in Australia?",true) +
+        radio("creche",["SIM/YES","NÃO/NO"]) +
+        conditional(f.creche === "SIM/YES",
+          textarea("crecheDetalhe","Descreva / Describe")))}
+      ${q(label(null,"Pretende ficar em sala de aula por mais de 3 meses (como aluno, professor ou observador)?","Do you intend to be in a classroom situation for more than 3 months (as a student, teacher, lecturer or observer)?",true) +
+        radio("salaAula",["SIM/YES","NÃO/NO"]) +
+        conditional(f.salaAula === "SIM/YES",
+          textarea("salaAulaDetalhe","Descreva / Describe")))}
+      ${q(label(null,"Já teve ou tem tuberculose, teve contato próximo com alguém com tuberculose ativa, ou já fez raio-X do tórax com alteração?","Have you ever had, or currently have, tuberculosis; been in close contact with a person with active tuberculosis; or had a chest x-ray showing an abnormality?",true) +
+        radio("tuberculose",["SIM/YES","NÃO/NO"]) +
+        conditional(f.tuberculose === "SIM/YES",
+          textarea("tuberculoseDetalhe","Descreva / Describe")))}
+      ${q(label(null,"Espera ter custos médicos ou precisar de tratamento na Austrália (por exemplo câncer, doença cardíaca, hepatite B ou C, HIV, doença renal, doença mental)?","During your visit, do you expect to incur medical costs or require treatment (e.g. cancer, heart disease, hepatitis B or C, HIV, kidney disease, mental illness)?",true) +
+        radio("custosMedicos",["SIM/YES","NÃO/NO"]) +
+        conditional(f.custosMedicos === "SIM/YES",
+          textarea("custosMedicosDetalhe","Descreva / Describe")))}
+      ${q(label(null,"Precisa de cuidados médicos contínuos, equipamento especial ou ajuda de outras pessoas no dia a dia?","Do you require ongoing medical care or need special equipment or assistance from others for daily living?",true) +
+        radio("cuidadosContinuos",["SIM/YES","NÃO/NO"]) +
+        conditional(f.cuidadosContinuos === "SIM/YES",
+          textarea("cuidadosContinuosDetalhe","Descreva / Describe")))}
       ${divider("Declaração de Caráter / Character Declaration")}
       ${q(label(58,"Você (ou qualquer pessoa incluída nesta aplicação) já foi condenado(a) por algum crime em qualquer país?","Have you, or any person included in this application, ever been convicted of a crime in any country?",true) +
         radio("crime",["SIM/YES","NÃO/NO"]) +
@@ -887,6 +954,66 @@ function renderStep() {
         radio("recusado",["SIM/YES","NÃO/NO"]) +
         conditional(f.recusado === "SIM/YES",
           textarea("recusadoDetalhe","Descreva / Describe")))}
+      ${q(label(null,"Já esteve sujeito a medida protetiva de violência doméstica ou familiar, ou outra ordem judicial de proteção a outra pessoa?","Have you ever been the subject of a domestic or family violence order, or any other order for the protection of another person?",true) +
+        radio("medidaProtetiva",["SIM/YES","NÃO/NO"]) +
+        conditional(f.medidaProtetiva === "SIM/YES",
+          textarea("medidaProtetivaDetalhe","Descreva / Describe")))}
+      ${q(label(null,"Já foi alvo de mandado de prisão ou notificação da Interpol?","Have you ever been the subject of an arrest warrant or Interpol notice?",true) +
+        radio("interpol",["SIM/YES","NÃO/NO"]) +
+        conditional(f.interpol === "SIM/YES",
+          textarea("interpolDetalhe","Descreva / Describe")))}
+      ${q(label(null,"Já foi considerado culpado de crime sexual envolvendo criança (mesmo sem condenação registrada)?","Have you ever been found guilty of a sexually based offence involving a child (including where no conviction was recorded)?",true) +
+        radio("crimeSexualCrianca",["SIM/YES","NÃO/NO"]) +
+        conditional(f.crimeSexualCrianca === "SIM/YES",
+          textarea("crimeSexualCriancaDetalhe","Descreva / Describe")))}
+      ${q(label(null,"Já constou em cadastro de agressores sexuais?","Have you ever been named on a sex offender register?",true) +
+        radio("cadastroAgressores",["SIM/YES","NÃO/NO"]) +
+        conditional(f.cadastroAgressores === "SIM/YES",
+          textarea("cadastroAgressoresDetalhe","Descreva / Describe")))}
+      ${q(label(null,"Já foi absolvido de algum crime por insanidade ou falta de discernimento?","Have you ever been acquitted of any offence on the grounds of unsoundness of mind or insanity?",true) +
+        radio("insanidade",["SIM/YES","NÃO/NO"]) +
+        conditional(f.insanidade === "SIM/YES",
+          textarea("insanidadeDetalhe","Descreva / Describe")))}
+      ${q(label(null,"Já foi considerado por um tribunal incapaz de responder a um processo?","Have you ever been found by a court not fit to plead?",true) +
+        radio("incapazProcesso",["SIM/YES","NÃO/NO"]) +
+        conditional(f.incapazProcesso === "SIM/YES",
+          textarea("incapazProcessoDetalhe","Descreva / Describe")))}
+      ${q(label(null,"Já esteve envolvido ou associado a atividades que representem risco à segurança nacional da Austrália ou de outro país?","Have you ever been involved in, or associated with, activities which would represent a risk to national security in Australia or any other country?",true) +
+        radio("segurancaNacional",["SIM/YES","NÃO/NO"]) +
+        conditional(f.segurancaNacional === "SIM/YES",
+          textarea("segurancaNacionalDetalhe","Descreva / Describe")))}
+      ${q(label(null,"Já foi acusado de genocídio, crimes de guerra, crimes contra a humanidade, tortura, escravidão ou outro crime internacional grave?","Have you ever been charged with genocide, war crimes, crimes against humanity, torture, slavery, or any other crime of serious international concern?",true) +
+        radio("crimesInternacionais",["SIM/YES","NÃO/NO"]) +
+        conditional(f.crimesInternacionais === "SIM/YES",
+          textarea("crimesInternacionaisDetalhe","Descreva / Describe")))}
+      ${q(label(null,"Já esteve associado a pessoa, grupo ou organização envolvida em conduta criminosa?","Have you ever been associated with a person, group or organisation involved in criminal conduct?",true) +
+        radio("grupoCriminoso",["SIM/YES","NÃO/NO"]) +
+        conditional(f.grupoCriminoso === "SIM/YES",
+          textarea("grupoCriminosoDetalhe","Descreva / Describe")))}
+      ${q(label(null,"Já esteve associado a organização que pratica violência ou atos violentos (guerra, insurgência, terrorismo, protesto)?","Have you ever been associated with an organisation engaged in violence or acts of violence (war, insurgency, terrorism, protest)?",true) +
+        radio("organizacaoViolenta",["SIM/YES","NÃO/NO"]) +
+        conditional(f.organizacaoViolenta === "SIM/YES",
+          textarea("organizacaoViolentaDetalhe","Descreva / Describe")))}
+      ${q(label(null,"Já serviu em força militar, polícia, milícia ou serviço de inteligência?","Have you ever served in a military force, police force, militia or intelligence agency?",true) +
+        radio("militar",["SIM/YES","NÃO/NO"]) +
+        conditional(f.militar === "SIM/YES",
+          textarea("militarDetalhe","Descreva / Describe")))}
+      ${q(label(null,"Já teve treinamento militar ou paramilitar, com armas, explosivos ou produtos químicos ou biológicos?","Have you ever undergone military/paramilitary training, or been trained in weapons, explosives or chemical/biological products?",true) +
+        radio("treinamentoMilitar",["SIM/YES","NÃO/NO"]) +
+        conditional(f.treinamentoMilitar === "SIM/YES",
+          textarea("treinamentoMilitarDetalhe","Descreva / Describe")))}
+      ${q(label(null,"Já esteve envolvido em tráfico ou contrabando de pessoas?","Have you ever been involved in people smuggling or people trafficking?",true) +
+        radio("trafico",["SIM/YES","NÃO/NO"]) +
+        conditional(f.trafico === "SIM/YES",
+          textarea("traficoDetalhe","Descreva / Describe")))}
+      ${q(label(null,"Já foi removido, deportado ou excluído de algum país (inclusive da Austrália)?","Have you ever been removed, deported or excluded from any country (including Australia)?",true) +
+        radio("deportado",["SIM/YES","NÃO/NO"]) +
+        conditional(f.deportado === "SIM/YES",
+          textarea("deportadoDetalhe","Descreva / Describe")))}
+      ${q(label(null,"Tem dívidas pendentes com o governo australiano ou órgão público da Austrália?","Do you have any outstanding debts to the Australian Government or any public authority in Australia?",true) +
+        radio("dividasGoverno",["SIM/YES","NÃO/NO"]) +
+        conditional(f.dividasGoverno === "SIM/YES",
+          textarea("dividasGovernoDetalhe","Descreva / Describe")))}
     `;
 
     case 8: return `
@@ -987,6 +1114,45 @@ const QUESTIONS = {
   acusacao: "Você (ou qualquer pessoa incluída nesta aplicação) já foi acusado(a) de algum crime pendente?",
   descumpriu: "Você ou qualquer pessoa incluída nesta aplicação, já descumpriu condições de visto ou excedeu o período autorizado de permanência em qualquer país?",
   recusado: "Você ou qualquer pessoa incluída nesta aplicação, já teve um pedido de visto recusado ou cancelado em qualquer país?",
+  // Acrescentadas em out/2026: o que a extensão do KMP Hub preenche no
+  // ImmiAccount. Texto igual ao rótulo do Hub, para a importação do
+  // comprovante casar uma a uma (lib/formulario-antigo/parse.ts no kmp-hub).
+  estadoNasc: "Estado de nascimento",
+  cidadaoPaisPassaporte: "É cidadão do país do passaporte?",
+  situacaoLegal: "Qual é a sua situação legal no país onde mora?",
+  familiaNaoViaja: "Tem familiares (cônjuge ou filhos dependentes) que não vão viajar e não são cidadãos nem residentes permanentes da Austrália?",
+  dataSaida: "Data prevista de saída da Austrália",
+  maisDeUmaEntrada: "Pretende entrar na Austrália mais de uma vez durante a estadia?",
+  datasImportantes: "Há datas importantes em que você precisa estar na Austrália? (evento, casamento, formatura...)",
+  curso: "Pretende fazer algum curso na Austrália?",
+  visitaContatos: "Vai visitar parentes, amigos ou outros contatos na Austrália?",
+  jaTeveVisto: "Já teve algum visto da Austrália ou de outro país?",
+  numVistoAnterior: "Número do visto australiano anterior (se tiver)",
+  exameSaude: "Fez exame de saúde para visto australiano nos últimos 12 meses?",
+  foraPais3Meses: "Nos últimos 5 anos, morou ou ficou mais de 3 meses seguidos fora do país do passaporte (sem contar a Austrália)?",
+  hospital: "Pretende entrar em hospital ou unidade de saúde (inclusive casas de repouso) na Austrália?",
+  profSaude: "Pretende trabalhar, estudar ou fazer estágio como profissional de saúde, ou trabalhar em unidade de saúde na Austrália?",
+  idosos: "Pretende trabalhar, estudar ou fazer estágio em cuidado de idosos ou de pessoas com deficiência na Austrália?",
+  creche: "Pretende trabalhar ou fazer estágio em creche ou pré-escola na Austrália?",
+  salaAula: "Pretende ficar em sala de aula por mais de 3 meses (como aluno, professor ou observador)?",
+  tuberculose: "Já teve ou tem tuberculose, teve contato próximo com alguém com tuberculose ativa, ou já fez raio-X do tórax com alteração?",
+  custosMedicos: "Espera ter custos médicos ou precisar de tratamento na Austrália (por exemplo câncer, doença cardíaca, hepatite B ou C, HIV, doença renal, doença mental)?",
+  cuidadosContinuos: "Precisa de cuidados médicos contínuos, equipamento especial ou ajuda de outras pessoas no dia a dia?",
+  medidaProtetiva: "Já esteve sujeito a medida protetiva de violência doméstica ou familiar, ou outra ordem judicial de proteção a outra pessoa?",
+  interpol: "Já foi alvo de mandado de prisão ou notificação da Interpol?",
+  crimeSexualCrianca: "Já foi considerado culpado de crime sexual envolvendo criança (mesmo sem condenação registrada)?",
+  cadastroAgressores: "Já constou em cadastro de agressores sexuais?",
+  insanidade: "Já foi absolvido de algum crime por insanidade ou falta de discernimento?",
+  incapazProcesso: "Já foi considerado por um tribunal incapaz de responder a um processo?",
+  segurancaNacional: "Já esteve envolvido ou associado a atividades que representem risco à segurança nacional da Austrália ou de outro país?",
+  crimesInternacionais: "Já foi acusado de genocídio, crimes de guerra, crimes contra a humanidade, tortura, escravidão ou outro crime internacional grave?",
+  grupoCriminoso: "Já esteve associado a pessoa, grupo ou organização envolvida em conduta criminosa?",
+  organizacaoViolenta: "Já esteve associado a organização que pratica violência ou atos violentos (guerra, insurgência, terrorismo, protesto)?",
+  militar: "Já serviu em força militar, polícia, milícia ou serviço de inteligência?",
+  treinamentoMilitar: "Já teve treinamento militar ou paramilitar, com armas, explosivos ou produtos químicos ou biológicos?",
+  trafico: "Já esteve envolvido em tráfico ou contrabando de pessoas?",
+  deportado: "Já foi removido, deportado ou excluído de algum país (inclusive da Austrália)?",
+  dividasGoverno: "Tem dívidas pendentes com o governo australiano ou órgão público da Austrália?",
   assinatura: "Assinatura digital",
   dataAssinatura: "Data da assinatura",
 };
@@ -1056,6 +1222,43 @@ function buildSummaryPairs() {
     [QUESTIONS.acusacao, yn(f.acusacao, f.acusacaoDetalhe)],
     [QUESTIONS.descumpriu, yn(f.descumpriu, f.descumpriuDetalhe)],
     [QUESTIONS.recusado, yn(f.recusado, f.recusadoDetalhe)],
+    // Perguntas do ImmiAccount (out/2026) — sempre neste bloco e nesta ordem
+    [QUESTIONS.estadoNasc, f.estadoNasc],
+    [QUESTIONS.cidadaoPaisPassaporte, yn(f.cidadaoPaisPassaporte, f.cidadaoPaisPassaporteDetalhe)],
+    [QUESTIONS.situacaoLegal, f.situacaoLegal],
+    [QUESTIONS.familiaNaoViaja, yn(f.familiaNaoViaja, f.familiaNaoViajaDetalhe)],
+    [QUESTIONS.dataSaida, f.dataSaida],
+    [QUESTIONS.maisDeUmaEntrada, yn(f.maisDeUmaEntrada, f.maisDeUmaEntradaDetalhe)],
+    [QUESTIONS.datasImportantes, f.datasImportantes],
+    [QUESTIONS.curso, yn(f.curso, f.cursoDetalhe)],
+    [QUESTIONS.visitaContatos, yn(f.visitaContatos, f.visitaContatosDetalhe)],
+    [QUESTIONS.jaTeveVisto, yn(f.jaTeveVisto, f.jaTeveVistoDetalhe)],
+    [QUESTIONS.numVistoAnterior, f.numVistoAnterior],
+    [QUESTIONS.exameSaude, yn(f.exameSaude, f.exameSaudeDetalhe)],
+    [QUESTIONS.foraPais3Meses, yn(f.foraPais3Meses, f.foraPais3MesesDetalhe)],
+    [QUESTIONS.hospital, yn(f.hospital, f.hospitalDetalhe)],
+    [QUESTIONS.profSaude, yn(f.profSaude, f.profSaudeDetalhe)],
+    [QUESTIONS.idosos, yn(f.idosos, f.idososDetalhe)],
+    [QUESTIONS.creche, yn(f.creche, f.crecheDetalhe)],
+    [QUESTIONS.salaAula, yn(f.salaAula, f.salaAulaDetalhe)],
+    [QUESTIONS.tuberculose, yn(f.tuberculose, f.tuberculoseDetalhe)],
+    [QUESTIONS.custosMedicos, yn(f.custosMedicos, f.custosMedicosDetalhe)],
+    [QUESTIONS.cuidadosContinuos, yn(f.cuidadosContinuos, f.cuidadosContinuosDetalhe)],
+    [QUESTIONS.medidaProtetiva, yn(f.medidaProtetiva, f.medidaProtetivaDetalhe)],
+    [QUESTIONS.interpol, yn(f.interpol, f.interpolDetalhe)],
+    [QUESTIONS.crimeSexualCrianca, yn(f.crimeSexualCrianca, f.crimeSexualCriancaDetalhe)],
+    [QUESTIONS.cadastroAgressores, yn(f.cadastroAgressores, f.cadastroAgressoresDetalhe)],
+    [QUESTIONS.insanidade, yn(f.insanidade, f.insanidadeDetalhe)],
+    [QUESTIONS.incapazProcesso, yn(f.incapazProcesso, f.incapazProcessoDetalhe)],
+    [QUESTIONS.segurancaNacional, yn(f.segurancaNacional, f.segurancaNacionalDetalhe)],
+    [QUESTIONS.crimesInternacionais, yn(f.crimesInternacionais, f.crimesInternacionaisDetalhe)],
+    [QUESTIONS.grupoCriminoso, yn(f.grupoCriminoso, f.grupoCriminosoDetalhe)],
+    [QUESTIONS.organizacaoViolenta, yn(f.organizacaoViolenta, f.organizacaoViolentaDetalhe)],
+    [QUESTIONS.militar, yn(f.militar, f.militarDetalhe)],
+    [QUESTIONS.treinamentoMilitar, yn(f.treinamentoMilitar, f.treinamentoMilitarDetalhe)],
+    [QUESTIONS.trafico, yn(f.trafico, f.traficoDetalhe)],
+    [QUESTIONS.deportado, yn(f.deportado, f.deportadoDetalhe)],
+    [QUESTIONS.dividasGoverno, yn(f.dividasGoverno, f.dividasGovernoDetalhe)],
     [QUESTIONS.assinatura, f.assinatura],
     [QUESTIONS.dataAssinatura, f.dataAssinatura],
     ...buildFilePairs(),
