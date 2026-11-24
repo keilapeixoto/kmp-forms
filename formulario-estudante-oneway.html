@@ -10,7 +10,7 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--orange:#1F3B8A;--orange-dark:#172E6E;--orange-light:#DCEBFF;--dark:#1a1a1a;--gray:#6b7280;--border:#e5e7eb}
 body{font-family:'Outfit',sans-serif;background:#f8f8f8;min-height:100vh;color:var(--dark)}
-.topbar{background:#fff;border-bottom:4px solid #1F3B8A;padding:14px 24px;display:flex;align-items:center;justify-content:center}
+.topbar{background:linear-gradient(135deg,#1F3B8A,#2C4FA8);padding:14px 24px;display:flex;align-items:center;justify-content:center}
 .topbar img.kmp{height:34px;width:auto;display:block}
 .container{max-width:760px;margin:0 auto;padding:24px 16px 40px}
 .page-title{text-align:center;margin-bottom:20px}
@@ -50,7 +50,7 @@ textarea{resize:vertical;min-height:96px}
 </style>
 </head>
 <body>
-<div class="topbar"><img src="/kmp-logo-color.svg" alt="KMP Consulting" class="kmp" /></div>
+<div class="topbar"><img src="/kmp-logo-white.svg" alt="KMP Consulting" class="kmp" /></div>
 <div class="container" id="app">
  <div id="formView">
   <div class="page-title">
@@ -72,6 +72,7 @@ textarea{resize:vertical;min-height:96px}
      <div class="q"><label>Assinatura (nome completo) <span class="req">*</span></label><input id="assinatura" type="text" /></div>
      <div class="q"><label>Local e data <span class="req">*</span></label><input id="local_data" type="text" /></div>
    </div>
+   <div class="q"><label>Assinatura desenhada <span class="req">*</span></label><div class="hint">Desenhe a sua assinatura no quadro abaixo, com o dedo ou o mouse.</div><canvas id="pad" style="display:block;width:100%;height:150px;border:1.5px solid var(--border);border-radius:8px;background:#fff;touch-action:none"></canvas><button type="button" class="btn" style="padding:8px 18px;font-size:13px;margin-top:8px;background:#fff;color:#1F3B8A;border:1.5px solid #1F3B8A" onclick="limparPad()">Limpar assinatura</button></div>
    <input class="hp" id="botcheck" type="text" tabindex="-1" autocomplete="off" />
    <p class="err" id="erro" hidden></p>
    <div class="actions"><button class="btn" id="enviar" onclick="salvarEEnviar()">Salvar e enviar</button></div>
@@ -131,6 +132,7 @@ function atualizar(k){
 function guardar(){
   const o = {}; IDS.forEach(j => o[j] = $(j).value);
   CAMPOS.filter(c => c.yn).forEach(c => o["yn_"+c.k] = escolha(c.k));
+  o.sig = (typeof desenhou !== "undefined" && desenhou) ? pad.toDataURL("image/png") : "";
   try { localStorage.setItem(KEY, JSON.stringify(o)); } catch(e){}
 }
 try {
@@ -139,6 +141,28 @@ try {
   CAMPOS.filter(c => c.yn).forEach(c => { const r = s["yn_"+c.k] && document.querySelector('input[name="yn_'+c.k+'"][value="'+s["yn_"+c.k]+'"]'); if (r) { r.checked = true; atualizar(c.k); } });
 } catch(e){}
 IDS.forEach(i => $(i).addEventListener("input", guardar));
+
+// ---- assinatura desenhada ----
+const pad = $("pad"), pctx = pad.getContext("2d");
+var desenhou = false, desenhando = false;
+function ajustarPad(manter){
+  const img = manter && desenhou ? pad.toDataURL() : null;
+  const r = pad.getBoundingClientRect();
+  pad.width = Math.round(r.width*2); pad.height = Math.round(r.height*2);
+  pctx.setTransform(2,0,0,2,0,0); pctx.lineWidth = 2.2; pctx.lineCap = "round"; pctx.lineJoin = "round"; pctx.strokeStyle = "#111";
+  if (img) { const i = new Image(); i.onload = () => pctx.drawImage(i,0,0,r.width,r.height); i.src = img; }
+}
+function posPad(e){ const r = pad.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; }
+pad.addEventListener("pointerdown", e => { e.preventDefault(); pad.setPointerCapture(e.pointerId); desenhando = true; const [x,y] = posPad(e); pctx.beginPath(); pctx.moveTo(x,y); pctx.lineTo(x+.1,y+.1); pctx.stroke(); desenhou = true; });
+pad.addEventListener("pointermove", e => { if (!desenhando) return; e.preventDefault(); const [x,y] = posPad(e); pctx.lineTo(x,y); pctx.stroke(); });
+["pointerup","pointercancel"].forEach(ev => pad.addEventListener(ev, () => { if (desenhando) { desenhando = false; guardar(); } }));
+function limparPad(){ pctx.clearRect(0,0,pad.width,pad.height); desenhou = false; guardar(); }
+ajustarPad(false);
+window.addEventListener("resize", () => ajustarPad(true));
+try {
+  const s = JSON.parse(localStorage.getItem(KEY) || "{}");
+  if (s.sig) { const i = new Image(); const r = pad.getBoundingClientRect(); i.onload = () => { pctx.drawImage(i,0,0,r.width,r.height); desenhou = true; }; i.src = s.sig; }
+} catch(e){}
 
 // ---- PDF no mesmo layout do formulário da One Way (gerado pelo KMP Hub) ----
 const A4 = [595.28, 841.89], MARGEM = 48, LARGURA = A4[0] - MARGEM*2;
@@ -220,6 +244,15 @@ async function gerarPdf(v){
   assina("Assinatura (nome completo)","assinatura",v.assinatura, LARGURA*.62-6, MARGEM);
   assina("Local e data","local_data",v.local_data, LARGURA*.38-6, MARGEM+LARGURA*.62+6);
   y -= 58;
+  if (v.sig) {
+    espaco(112);
+    pagina.drawText("Assinatura",{x:MARGEM,y:y-9,size:9,font:negrito,color:ESCURO});
+    const png = await pdf.embedPng(Uint8Array.from(atob(v.sig.split(",")[1]), c => c.charCodeAt(0)));
+    const bw = 240, bh = 80, e2 = Math.min((bw-12)/png.width, (bh-12)/png.height), s2 = png.scale(e2);
+    pagina.drawRectangle({x:MARGEM,y:y-14-bh,width:bw,height:bh,borderColor:BORDA,borderWidth:1});
+    pagina.drawImage(png,{x:MARGEM+(bw-s2.width)/2,y:y-14-bh+(bh-s2.height)/2,width:s2.width,height:s2.height});
+    y -= bh + 26;
+  }
   texto("Documento preenchido em "+new Date().toLocaleDateString("pt-BR")+".", normal, 8, CINZA);
   form.updateFieldAppearances(normal);
   return new Blob([await pdf.save()], {type:"application/pdf"});
@@ -230,6 +263,7 @@ let pdfBlob=null, pdfNome="Formulario-do-estudante.pdf", nomeAluno="";
 function valores(){
   const v = {};
   IDS.forEach(i => v[i] = $(i).value.trim());
+  v.sig = desenhou ? pad.toDataURL("image/png") : "";
   CAMPOS.filter(c => c.yn).forEach(c => {
     const o = c.yn[escolha(c.k)];
     v[c.k] = !o ? "" : o.valor ? o.valor : (v[c.k] ? o.pre + v[c.k] : "");
@@ -253,9 +287,10 @@ async function salvarEEnviar(){
     }
     if (!v.assinatura) return ["assinatura","Preencha a assinatura (nome completo)."];
     if (!v.local_data) return ["local_data","Preencha local e data."];
+    if (!v.sig) return ["pad","Desenhe a sua assinatura no quadro."];
     return null;
   })();
-  if (problema) { mostrarErro(problema[1]); const alvo = problema[0] ? $(problema[0]) : document.querySelector('input[name="yn_'+problema[2]+'"]'); if (alvo) alvo.focus(); return; }
+  if (problema) { mostrarErro(problema[1]); const alvo = problema[0] ? $(problema[0]) : document.querySelector('input[name="yn_'+problema[2]+'"]'); if (alvo) { alvo.scrollIntoView({block:"center"}); if (alvo.focus) alvo.focus(); } return; }
   if (!/^\S+@\S+\.\S+$/.test(v.email)) { mostrarErro("Confira o e-mail digitado."); $("email").focus(); return; }
   const b = $("enviar"); b.disabled = true; b.textContent = "Gerando PDF…";
   try {
