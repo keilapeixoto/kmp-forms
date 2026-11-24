@@ -46,6 +46,10 @@ textarea{resize:vertical;min-height:96px}
 .radios label:has(input:checked){border-color:var(--orange);background:var(--orange-light);color:var(--orange)}
 .radios input{width:auto;accent-color:var(--orange);margin:0}
 .det{margin-top:12px;padding:12px 16px;background:var(--orange-light);border-left:3px solid var(--orange);border-radius:8px}
+.big{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;border:none;border-radius:14px;padding:22px 18px;font-family:'Outfit',sans-serif;font-weight:700;font-size:16px;color:#fff;cursor:pointer;margin-top:12px}
+.big:disabled{opacity:.65;cursor:wait}
+.big.blue{background:linear-gradient(135deg,#1F3B8A,#2C4FA8);box-shadow:0 8px 24px rgba(31,59,138,.28)}
+.big.green{background:#25D366;box-shadow:0 8px 24px rgba(37,211,102,.22)}
 .hp{position:absolute;left:-9999px}
 </style>
 </head>
@@ -75,7 +79,8 @@ textarea{resize:vertical;min-height:96px}
    <div class="q"><label>Assinatura desenhada <span class="req">*</span></label><div class="hint">Desenhe a sua assinatura no quadro abaixo, com o dedo ou o mouse.</div><canvas id="pad" style="display:block;width:100%;height:150px;border:1.5px solid var(--border);border-radius:8px;background:#fff;touch-action:none"></canvas><button type="button" class="btn" style="padding:8px 18px;font-size:13px;margin-top:8px;background:#fff;color:#1F3B8A;border:1.5px solid #1F3B8A" onclick="limparPad()">Limpar assinatura</button></div>
    <input class="hp" id="botcheck" type="text" tabindex="-1" autocomplete="off" />
    <p class="err" id="erro" hidden></p>
-   <div class="actions"><button class="btn" id="enviar" onclick="salvarEEnviar()">Salvar e enviar</button></div>
+   <button class="big blue" id="bEmail" onclick="preparar('email')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Salvar PDF e enviar por e-mail</span></button>
+   <button class="big green" id="bWhats" onclick="preparar('whats')"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.39 1.26 4.81L2 22l5.44-1.43a9.85 9.85 0 0 0 4.6 1.17h.01c5.46 0 9.9-4.45 9.9-9.91C21.95 6.45 17.5 2 12.04 2zm0 18.06h-.01a8.19 8.19 0 0 1-4.17-1.14l-.3-.18-3.1.81.83-3.02-.19-.31a8.18 8.18 0 0 1-1.26-4.31c0-4.53 3.69-8.22 8.22-8.22 2.2 0 4.26.86 5.82 2.41a8.15 8.15 0 0 1 2.4 5.81c0 4.53-3.7 8.22-8.24 8.22z"/></svg><span>Enviar pelo WhatsApp</span></button>
   </div>
  </div>
  <div id="okView" hidden>
@@ -130,6 +135,7 @@ function atualizar(k){
   guardar();
 }
 function guardar(){
+  emailEnviado = false;
   const o = {}; IDS.forEach(j => o[j] = $(j).value);
   CAMPOS.filter(c => c.yn).forEach(c => o["yn_"+c.k] = escolha(c.k));
   o.sig = (typeof desenhou !== "undefined" && desenhou) ? pad.toDataURL("image/png") : "";
@@ -271,13 +277,12 @@ function valores(){
   return v;
 }
 function mostrarErro(m){ const e=$("erro"); e.textContent=m; e.hidden=!m; }
-async function salvarEEnviar(){
-  mostrarErro("");
-  const v = valores();
-  if ($("botcheck").value) return;
+var emailEnviado = false;
+function validar(v){
   const problema = (() => {
     if (!v.estudante) return ["estudante","Preencha o nome do estudante."];
     if (!v.email) return ["email","Preencha o seu e-mail."];
+    if (!/^\S+@\S+\.\S+$/.test(v.email)) return ["email","Confira o e-mail digitado."];
     for (const c of CAMPOS) {
       if (c.yn) {
         const ch = escolha(c.k);
@@ -290,32 +295,54 @@ async function salvarEEnviar(){
     if (!v.sig) return ["pad","Desenhe a sua assinatura no quadro."];
     return null;
   })();
-  if (problema) { mostrarErro(problema[1]); const alvo = problema[0] ? $(problema[0]) : document.querySelector('input[name="yn_'+problema[2]+'"]'); if (alvo) { alvo.scrollIntoView({block:"center"}); if (alvo.focus) alvo.focus(); } return; }
-  if (!/^\S+@\S+\.\S+$/.test(v.email)) { mostrarErro("Confira o e-mail digitado."); $("email").focus(); return; }
-  const b = $("enviar"); b.disabled = true; b.textContent = "Gerando PDF…";
+  if (!problema) return true;
+  mostrarErro(problema[1]);
+  const alvo = problema[0] ? $(problema[0]) : document.querySelector('input[name="yn_'+problema[2]+'"]');
+  if (alvo) { alvo.scrollIntoView({block:"center"}); if (alvo.focus) alvo.focus(); }
+  return false;
+}
+async function enviarEmail(v){
+  const fd = new FormData();
+  fd.append("access_key", WEB3FORMS_KEY);
+  fd.append("subject", "Formulário do estudante — One Way Intercâmbio — " + v.estudante);
+  fd.append("from_name", "Formulário KMP Consulting");
+  fd.append("replyto", v.email);
+  fd.append("message", "Formulário de Informações do Estudante (One Way Intercâmbio)\nEstudante: "+v.estudante+"\nE-mail: "+v.email+"\nData: "+new Date().toLocaleString("pt-BR")+"\n\nO PDF preenchido segue em anexo.");
+  fd.append("attachment", new File([pdfBlob], pdfNome, {type:"application/pdf"}));
+  const r = await fetch("https://api.web3forms.com/submit",{method:"POST",body:fd});
+  const d = await r.json();
+  if (!d.success) throw new Error(d.message || "erro desconhecido");
+  emailEnviado = true;
+}
+function ocupado(on, qual, texto){
+  ["bEmail","bWhats"].forEach(id => $(id).disabled = on);
+  const s = $(qual === "email" ? "bEmail" : "bWhats").querySelector("span");
+  if (on) { s.dataset.t = s.textContent; s.textContent = texto; } else if (s.dataset.t) s.textContent = s.dataset.t;
+}
+// modo "email": baixa o PDF e envia por e-mail. modo "whats": abre o WhatsApp com o PDF e garante o e-mail.
+async function preparar(modo){
+  mostrarErro("");
+  if ($("botcheck").value) return;
+  const v = valores();
+  if (!validar(v)) return;
+  ocupado(true, modo, "Gerando PDF…");
   try {
     pdfBlob = await gerarPdf(v);
-    nomeAluno = v.estudante;
-    pdfNome = "Formulario-do-estudante - " + v.estudante.replace(/[\\/:*?"<>|]+/g,"").replace(/\s+/g," ") + ".pdf";
-    baixar();
-    b.textContent = "Enviando…";
-    const fd = new FormData();
-    fd.append("access_key", WEB3FORMS_KEY);
-    fd.append("subject", "Formulário do estudante — One Way Intercâmbio — " + v.estudante);
-    fd.append("from_name", "Formulário KMP Consulting");
-    fd.append("replyto", v.email);
-    fd.append("message", "Formulário de Informações do Estudante (One Way Intercâmbio)\nEstudante: "+v.estudante+"\nE-mail: "+v.email+"\nData: "+new Date().toLocaleString("pt-BR")+"\n\nO PDF preenchido segue em anexo.");
-    fd.append("attachment", new File([pdfBlob], pdfNome, {type:"application/pdf"}));
-    const r = await fetch("https://api.web3forms.com/submit",{method:"POST",body:fd});
-    const d = await r.json();
-    if (!d.success) throw new Error(d.message || "erro desconhecido");
-    try{localStorage.removeItem(KEY)}catch(e){}
-  } catch(e) {
-    if (!pdfBlob) { mostrarErro("Não foi possível gerar o PDF: "+(e.message||"erro")); b.disabled=false; b.textContent="Salvar e enviar"; return; }
-    $("okTexto").innerHTML = "O PDF foi salvo no seu aparelho, mas o envio automático por e-mail falhou. Envie o arquivo pelo WhatsApp da KMP Consulting (botão abaixo).";
-  }
+  } catch(e) { mostrarErro("Não foi possível gerar o PDF: "+(e.message||"erro")); ocupado(false, modo); return; }
+  nomeAluno = v.estudante;
+  pdfNome = "Formulario-do-estudante - " + v.estudante.replace(/[\\/:*?"<>|]+/g,"").replace(/\s+/g," ") + ".pdf";
+  if (modo === "email") baixar();
+  const envio = emailEnviado ? Promise.resolve() : enviarEmail(v).catch(e => e);
+  if (modo === "whats") await whatsapp();
+  else ocupado(true, modo, "Enviando…");
+  const falha = await envio;
+  if (!(falha instanceof Error)) { try{localStorage.removeItem(KEY)}catch(e){} }
+  $("okTexto").innerHTML = falha instanceof Error
+    ? "O PDF foi gerado, mas o envio automático por e-mail falhou ("+falha.message+"). Envie o arquivo pelo WhatsApp da KMP Consulting (botão abaixo)."
+    : (modo === "whats" ? "O PDF foi enviado por e-mail à <strong style=\"color:#1F3B8A\">KMP Consulting</strong> e aberto no WhatsApp. Se não chegou a enviar no WhatsApp, use o botão abaixo."
+                        : "O PDF preenchido já foi enviado por e-mail à <strong style=\"color:#1F3B8A\">KMP Consulting</strong> e uma cópia foi salva no seu aparelho. Se quiser, envie também pelo WhatsApp.");
   $("formView").hidden = true; $("okView").hidden = false; window.scrollTo({top:0,behavior:"smooth"});
-  b.disabled=false; b.textContent="Salvar e enviar";
+  ocupado(false, modo);
 }
 function baixar(){
   const a=document.createElement("a"); a.href=URL.createObjectURL(pdfBlob); a.download=pdfNome;
